@@ -1,6 +1,6 @@
-const{connectionPromise, query, executeQuery} = require('../database')
+const{query} = require('../database')
 
-const {searchUserByUsername, createUser} = require('../user/user');
+const {searchUserByUsername} = require('../user/user');
 
 //Map all tweets with username, content, postTime, category, #likes, #dislikes, #comments, #retweets
 //Accept username, tweetContent and category as optional parameter
@@ -24,13 +24,11 @@ async function searchTweetByMultiple(username, tweetContent, category){
         
         return `{"message": "Retrieve succeeded", "result": ${JSON.stringify(rows)}}`
     } catch(err) {
-        console.log(err);
-        return err;   
+        return `{"message": "Retrieve tweet failed. db error."}`;   
     }
 }
 
 /*
-
 async function searchTweetByTweetId(tweetId){
     try{
         return await query(`
@@ -44,9 +42,14 @@ async function searchTweetByTweetId(tweetId){
 
 async function createTweet(username, tweetContent, category){
     try{
-        let id = await searchUserByUsername(username);
-        id = id[0].userId;
+        var id = await searchUserByUsername(username, "true");
+        id = JSON.parse(id).result[0].userId;
+
+    } catch {
+        return `{"message": "Search user by username failed. db error."}`;
+    }
     
+    try{
         const now = new Date();
         const formattedTime = now.toISOString().replace('T', ' ').slice(0, -5);
     
@@ -55,7 +58,7 @@ async function createTweet(username, tweetContent, category){
 
         return `{"message": "Create a tweet success"}`;
     } catch {
-        return `{"message": "DB arises an error."}`;
+        return `{"message": "Create tweet failed. db error."}`;
     }
 }
 

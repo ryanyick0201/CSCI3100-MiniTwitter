@@ -1,5 +1,5 @@
-const{connectionPromise, query, executeQuery} = require('../database')
-const {searchUserByUsername, createUser} = require('../user/user');
+const{query} = require('../database')
+const {searchUserByUsername} = require('../user/user');
 
 async function viewLikeTweetByUser(userId, username, tweetId){
     try{
@@ -7,7 +7,11 @@ async function viewLikeTweetByUser(userId, username, tweetId){
 
         if (reqQuery.map((item) => (!!item)).reduce((a, b) => a + b, 0) === 2)
             throw("Too many fields");
+    } catch (err) {
+        return `{"message": "${err}"}`
+    }
 
+    try {
         if (userId && !username){
             var rows = await query(`SELECT * FROM TweetLike WHERE userId = ${userId} AND tweetId = ${tweetId};`);
         }
@@ -22,18 +26,22 @@ async function viewLikeTweetByUser(userId, username, tweetId){
 
         return `{"message": "Retrieve succeeded", "result": ${JSON.stringify(rows)}}`      
     } catch(err) {
-        return `{"message": "DB arises an error."}`;
+        return `{"message": "View tweet likes/dislikes failed. Db error."}`;
     }
 }
 
 async function likeTweet(username, tweetId, status) {
     try {
-        let id = await searchUserByUsername(username);
+        var id = await searchUserByUsername(username, "true");
         id = JSON.parse(id)['result'][0].userId;
 
-        let rec = await viewLikeTweetByUser(id, null, tweetId)
+        var rec = await viewLikeTweetByUser(id, null, tweetId)
         rec = JSON.parse(rec)['result'];
-    
+    } catch {
+        return `{"message": "Search user/likes failed. db error."}`
+    }
+
+    try{
         if (rec.length === 0){
             let x = await query(`INSERT INTO TweetLike (tweetId, userId, status)
             VALUES (${tweetId}, ${id}, "${status}");`);
@@ -52,7 +60,7 @@ async function likeTweet(username, tweetId, status) {
         return `{"message": "Like/dislike a tweet success"}`;
 
     } catch {
-        return `{"message": "DB arises an error."}`;
+        return `{"message": "Like/dislike tweet failed. Db error."}`;
     }
 }
 

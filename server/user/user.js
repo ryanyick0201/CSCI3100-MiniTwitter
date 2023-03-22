@@ -1,12 +1,13 @@
-const express = require('express');
-const{connectionPromise, query, executeQuery} = require('../database')
+const{query} = require('../database')
 
-async function searchUserByUsername(username){
+async function searchUserByUsername(username, exactMatch){
     try{
-        if (username){
-            var rows = await query(`SELECT username, personalBio, privacySetting FROM User WHERE username = "${username}"`);
+        if (username && exactMatch === "true"){
+            var rows = await query(`SELECT userId, username, personalBio, privacySetting FROM User WHERE username = "${username}";`);
+        } else if (username){
+            var rows = await query(`SELECT userId, username, personalBio, privacySetting FROM User WHERE username LIKE "%${username}%";`);
         } else{
-            var rows = await query(`SELECT username, personalBio, privacySetting FROM User`);
+            var rows = await query(`SELECT userId, username, personalBio, privacySetting FROM User;`);
         }
         return `{"message": "Retrieve succeeded", "result": ${JSON.stringify(rows)}}`
     } catch {
@@ -16,7 +17,7 @@ async function searchUserByUsername(username){
 
 async function createUser(username, password, email, hasVerified){
     try{
-        let rec = await searchUserByUsername(username);
+        let rec = JSON.parse(await searchUserByUsername(username))["result"];
         if (rec.length >= 1){
             throw `{"message": "Username has been used."}`;
         } else {
@@ -29,8 +30,11 @@ async function createUser(username, password, email, hasVerified){
             return `{"message": "Create user succeeded"}`;
         }
 
-    } catch(err) {
-        return err;   
+    } catch(err){
+        if (err)
+            return err;
+        else
+            return `{"message": "Create user failed. Db error."}`;
     }
 }
 
@@ -41,12 +45,59 @@ async function deleteUser(username){
             WHERE username = "${username}";`); 
             return `{"message": "Delete succeeded. Note that other tables may be affected."}`;
         } else{
-            console.log("username is missing");
-            throw "username is missing";
+            throw `{"message": "Delete user failed. Username is missing."}`;
         }
-    } catch {
-        return `{"message": "DB arises an error."}`;
+    } catch(err) {
+        if (err)
+            return err;
+        else
+            return `{"message": "Delete user failed. Db error."}`;
     }  
 }
 
-module.exports = {searchUserByUsername, createUser, deleteUser};
+async function updateUser(oldUsername, newUsername, password, personalBio, privacySetting, hasVerified) {
+    try {
+        if (oldUsername){
+            var fieldArr = [oldUsername, newUsername, password, personalBio, privacySetting, hasVerified];
+
+            for (let i = 0; i < fieldArr.length; i++) {
+                if (typeof fieldArr[i] === 'string') {
+                    fieldArr[i] = `'${fieldArr[i]}'`;
+                }
+            }
+
+            var userInfoArray = [
+                newUsername !== null ? `username = '${newUsername}'` : '',
+                password !== null ? `password = '${password}'` : '',
+                personalBio !== null ? `personalBio = '${personalBio}'` : '',
+                privacySetting !== null ? `privacySetting = '${privacySetting}'` : '',
+                hasVerified !== null ? `hasVerified = ${hasVerified}` : ''
+              ];
+
+            console.log(`
+            UPDATE User
+            SET 
+            ${userInfoArray.filter(Boolean).join(', ')}
+            WHERE username = "${oldUsername}";
+            `);
+
+            let x = await query(`
+            UPDATE User
+            SET 
+            ${userInfoArray.filter(Boolean).join(', ')}
+            WHERE username = "${oldUsername}";
+            `)
+
+            return `{"message": "Update an user success"}`;
+
+        } else {
+            throw(`{"message": "Old username cannot be null."}`)
+        }
+
+    } catch(err) {
+        return `{"message": "DB arises an error."}`;
+    }
+}
+
+
+module.exports = {searchUserByUsername, createUser, deleteUser, updateUser};

@@ -1,4 +1,4 @@
-const{connectionPromise, query, executeQuery} = require('../database')
+const{query} = require('../database')
 
 async function archiveTweet(tweetId, status) {
     if (status) 
