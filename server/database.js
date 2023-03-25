@@ -1,22 +1,23 @@
 const mysql = require('mysql2');
+require('dotenv').config();
 
 const connectionPromise = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '', //Your password
+    password: process.env.DB_PASSWORD,
     database: 'Twitter'
 }).promise()
 
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '', //Your password
+    password: process.env.DB_PASSWORD,
     database: 'Twitter'
 })
 
-async function query(cmd){
+async function query(cmd, placeholder = []){
     return new Promise(function (resolve, reject){
-        connection.query(cmd, (err, rows) => {
+        connection.query(cmd, placeholder, (err, rows) => {
             if (err){
                 return reject(err);
             } else {
