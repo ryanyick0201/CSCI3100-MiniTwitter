@@ -10,7 +10,6 @@ CREATE TABLE User (
     email VARCHAR(100),
     personalBio VARCHAR(200),
     privacySetting ENUM('public', 'follower', 'private') DEFAULT 'public',
-    sessionId VARCHAR(50),
     otp VARCHAR(50)
   );
 

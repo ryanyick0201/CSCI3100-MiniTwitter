@@ -54,12 +54,13 @@ async function createTweet(username, tweetContent, category){
         const formattedTime = now.toISOString().replace('T', ' ').slice(0, -5);
     
         let x = await query(`INSERT INTO Tweet (creator, tweetContent, postTime, category)
-        VALUES (${id}, "${tweetContent}", "${formattedTime}", "${category}")`);
+        VALUES (?, ?, ?, ?)`, [id, tweetContent, formattedTime, category]);
 
         return `{"message": "Create a tweet success"}`;
     } catch {
         return `{"message": "Create tweet failed. db error."}`;
     }
 }
+
 
 module.exports = {searchTweetByMultiple, createTweet/*, searchTweetByTweetId*/};

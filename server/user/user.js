@@ -1,4 +1,5 @@
 const{query} = require('../database')
+const bcrypt = require("bcrypt");
 
 async function searchUserByUsername(username, exactMatch){
     try{
@@ -17,7 +18,10 @@ async function searchUserByUsername(username, exactMatch){
 
 async function createUser(username, password, email, hasVerified){
     try{
+        console.log(password);
         let rec = JSON.parse(await searchUserByUsername(username))["result"];
+        password = await bcrypt.hash(password, 10);
+
         if (rec.length >= 1){
             throw `{"message": "Username has been used."}`;
         } else {
@@ -74,13 +78,6 @@ async function updateUser(oldUsername, newUsername, password, personalBio, priva
                 hasVerified !== null ? `hasVerified = ${hasVerified}` : ''
               ];
 
-            console.log(`
-            UPDATE User
-            SET 
-            ${userInfoArray.filter(Boolean).join(', ')}
-            WHERE username = "${oldUsername}";
-            `);
-
             let x = await query(`
             UPDATE User
             SET 
@@ -98,6 +95,5 @@ async function updateUser(oldUsername, newUsername, password, personalBio, priva
         return `{"message": "DB arises an error."}`;
     }
 }
-
-
+ 
 module.exports = {searchUserByUsername, createUser, deleteUser, updateUser};

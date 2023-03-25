@@ -16,7 +16,8 @@ async function commentTweet(userId, tweetId, commentContent){
     try{
     //console.log([userId, tweetId ,commentContent]);
 
-    let rec = await query(`SELECT MAX(commentId) AS maxCommentId FROM TweetComment WHERE tweetId = ${tweetId};`);
+    var rec = await query(`SELECT MAX(commentId) AS maxCommentId FROM TweetComment WHERE tweetId = ?;`, [tweetId]);
+
     if (rec.length > 0)
         commentId = rec[0]['maxCommentId'];
     else
@@ -32,8 +33,8 @@ async function commentTweet(userId, tweetId, commentContent){
         
         let x = await query(`
             INSERT INTO TweetComment (userId, tweetId, commentId, commentTime, commentContent)
-            VALUES (${userId}, ${tweetId}, ${commentId + 1}, '${formattedTime}', '${commentContent}');
-        `);
+            VALUES (?, ?, ?, ?, ?);
+        `, [userId, tweetId, commentId + 1, formattedTime, commentContent]);
 
         return `{"message": "Comment succeeded"}`;
     } catch {
