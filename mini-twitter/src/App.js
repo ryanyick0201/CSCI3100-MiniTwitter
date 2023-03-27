@@ -10,13 +10,14 @@ import React from 'react';
 
 function App() {
   return (
-    <div className='App'>
-      <h1> Testing</h1>
       <Routes>
         <Route path="/" element={<Content />}/>
         <Route path="/forgot_password" element={<ForgotPassword />}/>
       </Routes>
-    </div>
+    // <div className='App'>
+    //   <Content />
+    //   <ForgotPassword />
+    // </div>
   );
 }
 

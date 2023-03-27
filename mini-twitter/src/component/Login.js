@@ -105,7 +105,7 @@ function Login() {
           />
           <Typography variant="h6">
             Password:
-            {/* <Link to="/forgot_password">Forgot password?</Link> */}
+            <Link to="/forgot_password">Forgot password?</Link>
           </Typography>
           <TextField
             className={classes.textField}
