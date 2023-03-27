@@ -3,7 +3,7 @@ import { Paper, TextField, Button, makeStyles } from "@material-ui/core";
 import clsx from "clsx"; // To pass class names into the package
 
 // Import hook
-import useChat from "./useChatRoom.jsx";
+import useChatRoom from "./useChatRoom.jsx";
 
 const Room = () => {
     // Use hook
