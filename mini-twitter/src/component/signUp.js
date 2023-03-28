@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import { TextField, Button, Typography, Box} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,6 +10,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     height: '100vh',
     backgroundColor: '#FFA500',
+  },
+  form_title: {
+    padding: '10px 50px 50px 50px',
+    color: "orange",
   },
   formContainer: {
     display: 'flex',
@@ -28,9 +30,17 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     marginTop: theme.spacing(4),
   },
+  form_item: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "start",
+    padding: '20px 0 20px 0',
+  },
   textField: {
     margin: theme.spacing(1),
     width: '25ch',
+    
   },
   submitButton: {
     margin: theme.spacing(2, 0),
@@ -90,36 +100,43 @@ function SignUp() {
     <div className={classes.root}>
       <div className={classes.formContainer}>
         <form className={classes.form} onSubmit={handleSubmit}>
-          <Typography variant="h3">
+          <Typography variant="h2" className={classes.form_title}>
             Mini Twitter
           </Typography>
-          <Typography variant="h6">Please fill in your email</Typography>
-          <TextField
-            className={classes.textField}
-            label="Email"
-            variant="outlined"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-          <Typography variant="h6">Please fill in your username:</Typography>
-          <TextField
-            className={classes.textField}
-            label="Username"
-            variant="outlined"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <Typography variant="h6">
-          Please fill in your Password:
-          </Typography>
-          <TextField
-            className={classes.textField}
-            label="Password"
-            variant="outlined"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
+          <Box className = {classes.form_item}>
+            <Typography variant="h6">Please fill in your email</Typography>
+            <TextField
+              className={classes.textField}
+              label="Email"
+              variant="outlined"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </Box>
+          <Box className = {classes.form_item}>
+            <Typography variant="h6">Please fill in your username:</Typography>
+            <TextField
+              className={classes.textField}
+              label="Username"
+              variant="outlined"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
+          </Box>
+          <Box className = {classes.form_item}>
+            <Typography variant="h6">
+            Please fill in your Password:
+            </Typography>
+            <TextField
+              className={classes.textField}
+              label="Password"
+              variant="outlined"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </Box>
+          
           <Button
             className={classes.submitButton}
             variant="contained"
@@ -130,10 +147,10 @@ function SignUp() {
           >
             Sign Up
           </Button>
-          <Typography variant="h6">
-            OR
-            <Link to="/Login">return to login</Link>
+          <Typography variant="h6" style={{ fontSize: '12px' }}>
+            OR<br></br>
           </Typography>
+          <Link to="/">return to login</Link>
         </form>
       </div>
     </div>

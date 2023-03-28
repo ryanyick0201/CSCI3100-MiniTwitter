@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import { TextField, Button, Typography, Box} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,103 +30,76 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     width: '25ch',
   },
-  submitButton: {
-    margin: theme.spacing(2, 0),
+  SubButton: {
+    padding: '20px 40px 20px 40px',
   },
 }));
 
-function Login() {
+function EmailVerf() {
   const classes = useStyles();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [loginMode, setMode] = useState('');
+  const [otp, setOTP] = useState('');
+
+  const handleOtpChange = (event) => {
+    setOTP(event.target.value);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    loginAction();
     // handle login logic here
   };
 
-  const loginAction= () => {
-    console.log('Enter loginAction');
-    let login_Url = 'http://'+ window.location.hostname;
-    if (username === 'admin' && password === 'admin') {
-      console.log('Login as Admin');
-      setMode('admin');
-      login_Url = login_Url + '/loginOut/adminLogin';
-    } else {
-      console.log('Login as User');
-      setMode('user');
-      login_Url = login_Url + '/loginOut/userLogin';
-    }
-      let ok = false;
-      fetch(
-        login_Url,
-        {
-          method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({username, password, loginMode}),
-        }
-      )
-        .then((res) => {
-          ok = res.ok ? true : false;
-          return res.text()
-        })
-        .then((res) => {
-          if(ok){
-            sessionStorage.setItem('username', res);
-            this.props.setUsername(res);
-          }
-          document.getElementById('login-msg').innerText = res;
-        })
-        .catch((err)=> document.getElementById('login-msg').innerText = err );
-  }
+  const handleResent = (event) => {
+    event.preventDefault();
+    // handle login logic here
+  };
 
+ 
   return (
     <div className={classes.root}>
       <div className={classes.formContainer}>
         <form className={classes.form} onSubmit={handleSubmit}>
-          <Typography variant="h6">
-            Welcome back
-          </Typography>
-          <Typography variant="h3">
-            Sign in
-          </Typography>
-          <Typography variant="h6">Username:</Typography>
-          <TextField
-            className={classes.textField}
-            label="Username"
-            variant="outlined"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <Typography variant="h6">
-            Password:
-            {/* <Link to="/forgot_password">Forgot password?</Link> */}
-          </Typography>
-          <TextField
-            className={classes.textField}
-            label="Password"
-            variant="outlined"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          <Button
-            className={classes.submitButton}
-            variant="contained"
-            color="primary"
-            type="submit"
-            fullWidth
-            style={{ height: '40px', width: '100px' }}
-          >
-            Sign In
-          </Button>
-          <Typography variant="h6">
-            I don't have an account ?
-            {/* <Link to="/forgot_password">Sign Up?</Link> */}
-          </Typography>
+          <Box>
+            <Typography variant="h3">
+              Email Verification
+            </Typography>
+            <Typography variant="h6">
+              We have sent an OTP to your email account, please <br></br> 
+              enter the OTP to finish the verification process.
+            </Typography>
+          </Box>  
+          <Box>
+            <Typography variant="h6">
+              Please fill in the OTP
+            </Typography>
+            <TextField
+              label="OTP"
+              variant="outlined"
+              value={otp}
+              onChange={handleOtpChange}
+              margin="dense"
+              fullWidth
+            />
+          </Box>
+          <Box>
+            <Button
+              className={classes.SubButton}
+              variant="contained"
+              color="primary"
+              type="submit"
+              style={{ margin: '50px' }}
+            >
+              Submit
+            </Button>
+            <Button 
+              variant="contained" 
+              className={classes.SubButton} 
+              color="primary" 
+              onClick={handleResent}
+              style={{ margin: '50px' }}
+            >
+              Send again
+            </Button>
+          </Box>
         </form>
       </div>
     </div>
@@ -136,4 +107,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default EmailVerf;

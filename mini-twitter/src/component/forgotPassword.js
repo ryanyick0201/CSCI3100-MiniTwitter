@@ -105,8 +105,7 @@ function ForgotPassword() {
           </Button>
         </Box>
         <p>
-          {/* OR <br></br> <Link to="/login">return to login</Link> */}
-          OR <br></br> return to login
+          OR <br></br> <Link to="/">return to login</Link>
         </p>
       </FormControl>
     </Box>
