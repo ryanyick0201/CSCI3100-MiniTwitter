@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Paper, TextField, Button, makeStyles } from "@material-ui/core";
-import clsx from "clsx"; // To pass class names into the package
 
 // Import hook
 import useChatRoom from "./useChatRoom.jsx";
@@ -104,7 +103,7 @@ const Room = () => {
                         {messages.map((message, i) => (
                             <li
                                 key={i}
-                                className={clsx(classes.message, message.isOwner ? classes.owner : classes.guest)}
+                                className={classes.message + " " + (message.isOwner ? classes.owner : classes.guest)}
                             >
                                 <span>{message.body}</span>
                             </li>
