@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Paper, TextField, Button, makeStyles } from "@material-ui/core"; // makeStyles is not supported by /core in v5
-import EmojiPicker from 'emoji-picker-react';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import EmojiPicker from 'emoji-picker-react';
 
 // Import hook
 import useChatRoom from "./useChatRoom.jsx";
@@ -27,6 +27,9 @@ const useStyles = makeStyles({
     margin: "1em",
     position: "absolute",
     bottom: 0
+  },
+  emojiIcon: {
+    margin: "0 0.5em"
   },
   sendButton: {
     width: "10em",
@@ -73,10 +76,11 @@ const useStyles = makeStyles({
 });
 
 const Room = () => {
-  // Use hook
+  const classes = useStyles();
+  
+  // Hooks for sending messages
   const { messages, sendMessage } = useChatRoom();
   const [newMessage, setNewMessage] = useState("");
-  const classes = useStyles();
   
   // Scroll to bottom automatically on new message received
   const messageRef = useRef();
@@ -84,24 +88,23 @@ const Room = () => {
     messageRef.current.scrollIntoView({ behavior: "smooth" });
   })
 
-  // Event handlers
+  // Message event handlers
   const handleNewMessageChange = (e) => {
     setNewMessage(e.target.value);
   };
-
   const handleSendMessage = () => {
     if (newMessage !== "") {
       sendMessage(newMessage);
       setNewMessage("");
     }
   };
-
   const handleKeyUp = (e) => {
     if (e.key === "Enter" && newMessage !== "") {
         sendMessage(newMessage);
         setNewMessage("");
     }
   };
+  
   // emojiPicker
   const inputRef = useRef();
   const [cursorPos, setCursorPos] = useState();
@@ -110,11 +113,11 @@ const Room = () => {
   const pickEmoji = ({ emoji }) => {
     const ref = inputRef.current;
     ref.focus();
-    const start = newMessage.substring(0, ref.selectionStart);
+    const front = newMessage.substring(0, ref.selectionStart);
     const end = newMessage.substring(ref.selectionStart);
-    const msg = start + emoji + end;
+    const msg = front + emoji + end;
     setNewMessage(msg);
-    setCursorPos(start.length + emoji.length);
+    setCursorPos(front.length + emoji.length);
   }
 
   const handleShowEmojis = () => {
@@ -145,7 +148,7 @@ const Room = () => {
           {showEmojis &&
             <EmojiPicker
               className={classes.emojiPicker}
-              onEmojiClick={({ emoji }) => { console.log({ emoji }); console.log({ emoji }); pickEmoji({ emoji }); }}
+              onEmojiClick={({ emoji }) => pickEmoji({ emoji }); }}
             />
           }
         </div>
