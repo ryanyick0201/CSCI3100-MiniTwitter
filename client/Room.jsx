@@ -5,6 +5,65 @@ import clsx from "clsx"; // To pass class names into the package
 // Import hook
 import useChatRoom from "./useChatRoom.jsx";
 
+const useStyles = makeStyles({
+  container: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100vh",
+    backgroundColor: "#263238"
+  },
+  paper: {
+    width: "50em",
+    height: "80%",
+    position: "relative"
+  },
+  action: {
+    display: "flex",
+    width: "96%",
+    alignItems: "center",
+    margin: "1em",
+    position: "absolute",
+    bottom: 0
+  },
+  sendButton: {
+    width: "10em",
+    height: "50%",
+    margin: "0 2em"
+  },
+  messageInput: {
+    width: "100%"
+  },
+  messageContainer: {
+    overflowY: "auto",
+    height: "85%"
+  },
+  divider: {
+    margin: "0.1em"
+  },
+  message: {
+    listStyle: "none",
+    margin: "1em",
+    padding: "0.5em 1.5em",
+    borderRadius: "20px",
+    color: "#FFF",
+    wordBreak: "break-word",
+    maxWidth: "65%",
+    width: "fit-content",
+  },
+  guest: {
+    backgroundColor: "#8BC34A",
+    marginRight: "auto"
+  },
+  owner: {
+    backgroundColor: "#0091EA",
+    marginLeft: "auto"
+  },
+  ol: {
+    paddingInlineEnd: "40px"
+  }
+});
+
 const Room = () => {
     // Use hook
     const { messages, sendMessage } = useChatRoom();
