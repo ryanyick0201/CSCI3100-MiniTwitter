@@ -35,7 +35,7 @@ const Room = () => {
                 setNewMessage("");
             }
         }
-    }
+    };
 
     return (
         <div className={classes.container}>
