@@ -148,7 +148,7 @@ const Room = () => {
           {showEmojis &&
             <EmojiPicker
               className={classes.emojiPicker}
-              onEmojiClick={({ emoji }) => pickEmoji({ emoji }); }}
+              onEmojiClick={({ emoji }) => {pickEmoji({ emoji }); }}
             />
           }
         </div>
