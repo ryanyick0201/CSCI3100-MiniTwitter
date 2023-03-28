@@ -77,11 +77,11 @@ const useStyles = makeStyles({
 
 const Room = () => {
   const classes = useStyles();
-  
+
   // Hooks for sending messages
   const { messages, sendMessage } = useChatRoom();
   const [newMessage, setNewMessage] = useState("");
-  
+
   // Scroll to bottom automatically on new message received
   const messageRef = useRef();
   useEffect(() => {
@@ -100,11 +100,11 @@ const Room = () => {
   };
   const handleKeyUp = (e) => {
     if (e.key === "Enter" && newMessage !== "") {
-        sendMessage(newMessage);
-        setNewMessage("");
+      sendMessage(newMessage);
+      setNewMessage("");
     }
   };
-  
+
   // emojiPicker
   const inputRef = useRef();
   const [cursorPos, setCursorPos] = useState();
@@ -129,7 +129,7 @@ const Room = () => {
     inputRef.current.selectionEnd = cursorPos;
   })
   // emojiPicker end
-  
+
   return (
     <div className={classes.container}>
       <Paper elevation={24} className={classes.paper}>
@@ -146,9 +146,9 @@ const Room = () => {
           </ol>
           <div ref={messageRef}></div>
           {showEmojis &&
-            <EmojiPicker
+            <EmojiPicker previewConfig={{ showPreview: false }}
               className={classes.emojiPicker}
-              onEmojiClick={({ emoji }) => {pickEmoji({ emoji }); }}
+              onEmojiClick={({ emoji }) => { pickEmoji({ emoji }); }}
             />
           }
         </div>
@@ -163,6 +163,7 @@ const Room = () => {
             value={newMessage}
             onChange={handleNewMessageChange}
             onKeyUp={handleKeyUp}
+            ref={inputRef}
           />
           <Button
             disabled={!newMessage}
