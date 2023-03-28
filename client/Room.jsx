@@ -45,17 +45,18 @@ const useStyles = makeStyles({
     margin: "1em",
     padding: "0.5em 1.5em",
     borderRadius: "20px",
-    color: "#FFF",
     wordBreak: "break-word",
     maxWidth: "65%",
     width: "fit-content",
   },
   guest: {
-    backgroundColor: "#8BC34A",
+    backgroundColor: "#CCC",
+    color: "#000",
     marginRight: "auto"
   },
   owner: {
     backgroundColor: "#0091EA",
+    color: "#FFF",
     marginLeft: "auto"
   },
   ol: {
