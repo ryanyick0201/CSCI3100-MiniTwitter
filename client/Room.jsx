@@ -1,10 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Paper, TextField, Button, makeStyles } from "@material-ui/core"; // makeStyles is not supported by /core in v5
-import EmojiPicker from 'emoji-picker-react';
-import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import { Paper, TextField, Button, makeStyles } from "@material-ui/core";
 
-
-import useChat from "./useChatRoom";
+// Import hook
+import useChatRoom from "./useChatRoom.jsx";
 
 const useStyles = makeStyles({
   container: {
@@ -19,7 +17,7 @@ const useStyles = makeStyles({
     height: "80%",
     position: "relative"
   },
-  footer: {
+  action: {
     display: "flex",
     width: "96%",
     alignItems: "center",
@@ -67,13 +65,19 @@ const useStyles = makeStyles({
 });
 
 const Room = () => {
-  const { messages, sendMessage } = useChat();
+  // Use hook
+  const { messages, sendMessage } = useChatRoom();
   const [newMessage, setNewMessage] = useState("");
-  const classes = useStyles();
-  const messageRef = useRef()
+  //const classes = useStyles();
 
-  const handleNewMessageChange = event => {
-    setNewMessage(event.target.value);
+  const messageRef = useRef();
+  useEffect(() => {
+    messageRef.current.scrollIntoView({ behavior: "smooth" });
+  })
+
+  // Event handlers
+  const handleNewMessageChange = (e) => {
+    setNewMessage(e.target.value);
   };
 
   const handleSendMessage = () => {
@@ -83,17 +87,14 @@ const Room = () => {
     }
   };
 
-  const handleKeyUp = event => {
-    if (event.key === "Enter") {
+  const handleKeyUp = (e) => {
+    if (e.key === "Enter") {
       if (newMessage !== "") {
         sendMessage(newMessage);
         setNewMessage("");
       }
     }
-  }
-
-  useEffect(() => messageRef.current.scrollIntoView({ behavior: "smooth" }))
-
+  };
 
   return (
     <div className={classes.container}>
@@ -111,13 +112,12 @@ const Room = () => {
           </ol>
           <div ref={messageRef}></div>
         </div>
-        <div className={classes.footer}>
-          <InsertEmoticonIcon />
+        <div className={classes.action}>
           <TextField
             className={classes.messageInput}
             id="message"
             label="Message"
-            placeholder="enter message here"
+            placeholder="Enter message here"
             variant="outlined"
             value={newMessage}
             onChange={handleNewMessageChange}
@@ -137,5 +137,3 @@ const Room = () => {
     </div>
   );
 };
-
-export default Room;
