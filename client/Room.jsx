@@ -1,9 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Paper, TextField, Button, makeStyles } from "@material-ui/core";
+import { Paper, TextField, Button, makeStyles } from "@material-ui/core"; // makeStyles is not supported by /core in v5
+import EmojiPicker from 'emoji-picker-react';
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 
 // Import hook
 import useChatRoom from "./useChatRoom.jsx";
 
+// Styling
 const useStyles = makeStyles({
   container: {
     display: "flex",
@@ -17,7 +20,7 @@ const useStyles = makeStyles({
     height: "80%",
     position: "relative"
   },
-  action: {
+  footer: {
     display: "flex",
     width: "96%",
     alignItems: "center",
@@ -68,7 +71,7 @@ const Room = () => {
   // Use hook
   const { messages, sendMessage } = useChatRoom();
   const [newMessage, setNewMessage] = useState("");
-  //const classes = useStyles();
+  const classes = useStyles();
 
   const messageRef = useRef();
   useEffect(() => {
@@ -88,17 +91,15 @@ const Room = () => {
   };
 
   const handleKeyUp = (e) => {
-    if (e.key === "Enter") {
-      if (newMessage !== "") {
+    if (e.key === "Enter" && newMessage !== "") {
         sendMessage(newMessage);
         setNewMessage("");
-      }
     }
   };
 
   return (
     <div className={classes.container}>
-      <Paper elevation={5} className={classes.paper}>
+      <Paper elevation={24} className={classes.paper}>
         <div className={classes.messageContainer}>
           <ol className={classes.ol}>
             {messages.map((message, i) => (
@@ -112,12 +113,13 @@ const Room = () => {
           </ol>
           <div ref={messageRef}></div>
         </div>
-        <div className={classes.action}>
+        <div className={classes.footer}>
+          <InsertEmoticonIcon />
           <TextField
             className={classes.messageInput}
             id="message"
             label="Message"
-            placeholder="Enter message here"
+            placeholder="Type here..."
             variant="outlined"
             value={newMessage}
             onChange={handleNewMessageChange}
