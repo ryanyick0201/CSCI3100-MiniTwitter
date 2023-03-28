@@ -64,6 +64,11 @@ const useStyles = makeStyles({
   },
   ol: {
     paddingInlineEnd: "40px"
+  },
+  emojiPicker: {
+    position: "fixed",
+    bottom: 0,
+    left: 0
   }
 });
 
@@ -72,7 +77,8 @@ const Room = () => {
   const { messages, sendMessage } = useChatRoom();
   const [newMessage, setNewMessage] = useState("");
   const classes = useStyles();
-
+  
+  // Scroll to bottom automatically on new message received
   const messageRef = useRef();
   useEffect(() => {
     messageRef.current.scrollIntoView({ behavior: "smooth" });
@@ -96,7 +102,31 @@ const Room = () => {
         setNewMessage("");
     }
   };
+  // emojiPicker
+  const inputRef = useRef();
+  const [cursorPos, setCursorPos] = useState();
+  const [showEmojis, setShowEmojis] = useState();
 
+  const pickEmoji = ({ emoji }) => {
+    const ref = inputRef.current;
+    ref.focus();
+    const start = newMessage.substring(0, ref.selectionStart);
+    const end = newMessage.substring(ref.selectionStart);
+    const msg = start + emoji + end;
+    setNewMessage(msg);
+    setCursorPos(start.length + emoji.length);
+  }
+
+  const handleShowEmojis = () => {
+    inputRef.current.focus();
+    setShowEmojis(!showEmojis);
+  }
+
+  useEffect(() => {
+    inputRef.current.selectionEnd = cursorPos;
+  })
+  // emojiPicker end
+  
   return (
     <div className={classes.container}>
       <Paper elevation={24} className={classes.paper}>
@@ -112,9 +142,15 @@ const Room = () => {
             ))}
           </ol>
           <div ref={messageRef}></div>
+          {showEmojis &&
+            <EmojiPicker
+              className={classes.emojiPicker}
+              onEmojiClick={({ emoji }) => { console.log({ emoji }); console.log({ emoji }); pickEmoji({ emoji }); }}
+            />
+          }
         </div>
         <div className={classes.footer}>
-          <InsertEmoticonIcon />
+          <InsertEmoticonIcon className={classes.emojiIcon} onClick={handleShowEmojis} />
           <TextField
             className={classes.messageInput}
             id="message"
