@@ -31,13 +31,13 @@ const useStyles = makeStyles({
   emojiIcon: {
     margin: "0 0.5em"
   },
+  messageInput: {
+    width: "100%"
+  },
   sendButton: {
     width: "10em",
     height: "50%",
     margin: "0 2em"
-  },
-  messageInput: {
-    width: "100%"
   },
   messageContainer: {
     overflowY: "auto",
