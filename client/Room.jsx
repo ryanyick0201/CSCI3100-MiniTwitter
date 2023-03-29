@@ -117,10 +117,9 @@ const Room = () => {
   }
 
   const handleEmojiClick = ({ emoji }) => {
-    const ref = inputRef.current;
-    ref.focus();
-    const front = newMessage.substring(0, ref.selectionStart);
-    const end = newMessage.substring(ref.selectionStart);
+    inputRef.current.focus();
+    const front = newMessage.substring(0, inputRef.current.selectionStart);
+    const end = newMessage.substring(inputRef.current.selectionStart);
     const msg = front + emoji + end;
     setNewMessage(msg);
     setCursorPos(front.length + emoji.length);
