@@ -98,7 +98,7 @@ const Room = () => {
       setNewMessage("");
     }
   };
-  const handleKeyUp = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && newMessage !== "") {
       sendMessage(newMessage);
       setNewMessage("");
@@ -164,7 +164,7 @@ const Room = () => {
             variant="outlined"
             value={newMessage}
             onChange={handleNewMessageChange}
-            onKeyUp={handleKeyUp}
+            onKeyDown={handleKeyUp}
             multiline maxRows={3}
           />
           <Button
