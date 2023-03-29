@@ -1,5 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Paper, TextField, Button, IconButton, Fab, makeStyles } from "@material-ui/core"; // makeStyles is not supported by /core in v5
+import React, { useRef, useState, useEffect } from 'react';
+import { Paper, TextField, Button, IconButton, makeStyles } from '@material-ui/core';
+//import { Paper, TextField, Button, IconButton } from '@mui/material';
+//import { makeStyles } from '@mui/styles'; // makeStyles is not supported by in v5
 import EmojiPicker from 'emoji-picker-react';
 
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
@@ -18,7 +20,7 @@ const useStyles = makeStyles({
   },
   paper: {
     width: "50em",
-    height: "80%",
+    height: "100%",
     position: "relative"
   },
   footer: {
@@ -42,10 +44,7 @@ const useStyles = makeStyles({
   },
   messageContainer: {
     overflowY: "auto",
-    height: "85%"
-  },
-  divider: {
-    margin: "0.1em"
+    height: "87.5%"
   },
   message: {
     listStyle: "none",
@@ -158,18 +157,16 @@ const Room = () => {
               </li>
             ))}
           </ol>
+          <div id="01" style={{ position: "absolute", left: 0, bottom: "12.5%" }}>
+            {showEmojis &&
+              <EmojiPicker previewConfig={{ showPreview: false }}
+                className={classes.emojiPicker}
+                onEmojiClick={({ emoji }) => { handleEmojiClick({ emoji }); }}
+              />
+            }
+          </div>
           <div ref={messageRef}></div>
-
-          {showEmojis &&
-            <EmojiPicker previewConfig={{ showPreview: false }}
-              className={classes.emojiPicker}
-              onEmojiClick={({ emoji }) => { handleEmojiClick({ emoji }); }}
-              style={{ position: "fixed", bottom: 0, right: 0 }}//???
-            />
-          }
-
         </div>
-
         <div className={classes.footer}>
           <IconButton className={classes.icon} onClick={handleShowEmojis}>
             <InsertEmoticonIcon color={showEmojis ? "warning" : "disabled"} />
