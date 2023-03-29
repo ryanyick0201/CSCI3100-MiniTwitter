@@ -6,8 +6,10 @@ import EmojiPicker from 'emoji-picker-react';
 
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-// Import hook
+
+// Import self-defined items
 import useChatRoom from "./useChatRoom.jsx";
+import Messages from "./Messages.jsx"
 
 // Styling
 const useStyles = makeStyles({
@@ -46,28 +48,6 @@ const useStyles = makeStyles({
     overflowY: "auto",
     height: "87.5%"
   },
-  message: {
-    listStyle: "none",
-    margin: "1em",
-    padding: "0.5em 1.5em",
-    borderRadius: "20px",
-    wordBreak: "break-word",
-    maxWidth: "65%",
-    width: "fit-content",
-  },
-  guest: {
-    backgroundColor: "#CCC",
-    color: "#000",
-    marginRight: "auto"
-  },
-  owner: {
-    backgroundColor: "#0091EA",
-    color: "#FFF",
-    marginLeft: "auto"
-  },
-  ol: {
-    paddingInlineEnd: "40px"
-  },
   emojiPicker: {
     position: "fixed",
     bottom: 0,
@@ -79,7 +59,7 @@ const Room = () => {
   const classes = useStyles();
 
   // Hooks for sending messages
-  const { messages, sendMessage } = useChatRoom();
+  const { sendMessage } = useChatRoom();
   const [newMessage, setNewMessage] = useState("");
 
   // Scroll to bottom automatically on new message received
@@ -131,32 +111,11 @@ const Room = () => {
   }, [cursorPos])
   // emojiPicker end
 
-
-  // File uploader
-  const handleUploadClick = (e) => {
-    var file = e.target.files[0];
-    const reader = new FileReader();
-    var url = reader.readAsDataURL(file);
-
-
-    console.log("url", url); // Would see a path?
-
-  };
-  // File uploader end
   return (
     <div className={classes.container}>
       <Paper elevation={24} className={classes.paper}>
         <div className={classes.messageContainer}>
-          <ol className={classes.ol}>
-            {messages.map((message, i) => (
-              <li
-                key={i}
-                className={classes.message + " " + (message.isOwner ? classes.owner : classes.guest)}
-              >
-                <span>{message.body}</span>
-              </li>
-            ))}
-          </ol>
+          <Messages />
           <div id="01" style={{ position: "absolute", left: 0, bottom: "12.5%" }}>
             {showEmojis &&
               <EmojiPicker previewConfig={{ showPreview: false }}
