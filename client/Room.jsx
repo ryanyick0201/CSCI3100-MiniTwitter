@@ -111,6 +111,19 @@ const Room = () => {
   }, [cursorPos])
   // emojiPicker end
 
+
+  // File uploader
+  const handleUploadClick = (e) => {
+    var file = e.target.files[0];
+    const reader = new FileReader();
+    var url = reader.readAsDataURL(file);
+
+
+    console.log("url", url); // Would see a path?
+
+  };
+  // File uploader end
+
   return (
     <div className={classes.container}>
       <Paper elevation={24} className={classes.paper}>
