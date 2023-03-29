@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Paper, TextField, Button, IconButton, makeStyles } from "@material-ui/core"; // makeStyles is not supported by /core in v5
-import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import { Paper, TextField, Button, IconButton, Fab, makeStyles } from "@material-ui/core"; // makeStyles is not supported by /core in v5
 import EmojiPicker from 'emoji-picker-react';
 
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 // Import hook
 import useChatRoom from "./useChatRoom.jsx";
 
@@ -28,8 +29,8 @@ const useStyles = makeStyles({
     position: "absolute",
     bottom: 0
   },
-  emojiIcon: {
-    margin: "0 0.5em"
+  icon: {
+    margin: "0 0.01em"
   },
   messageInput: {
     width: "100%"
@@ -117,9 +118,10 @@ const Room = () => {
   }
 
   const handleEmojiClick = ({ emoji }) => {
-    inputRef.current.focus();
-    const front = newMessage.substring(0, inputRef.current.selectionStart);
-    const end = newMessage.substring(inputRef.current.selectionStart);
+    const ref = inputRef.current;
+    ref.focus();
+    const front = newMessage.substring(0, ref.selectionStart);
+    const end = newMessage.substring(ref.selectionStart);
     const msg = front + emoji + end;
     setNewMessage(msg);
     setCursorPos(front.length + emoji.length);
@@ -130,6 +132,18 @@ const Room = () => {
   }, [cursorPos])
   // emojiPicker end
 
+
+  // File uploader
+  const handleUploadClick = (e) => {
+    var file = e.target.files[0];
+    const reader = new FileReader();
+    var url = reader.readAsDataURL(file);
+
+
+    console.log("url", url); // Would see a path?
+
+  };
+  // File uploader end
   return (
     <div className={classes.container}>
       <Paper elevation={24} className={classes.paper}>
@@ -155,10 +169,25 @@ const Room = () => {
           }
 
         </div>
+
         <div className={classes.footer}>
-          <IconButton className={classes.emojiIcon} onClick={handleShowEmojis}>
+          <IconButton className={classes.icon} onClick={handleShowEmojis}>
             <InsertEmoticonIcon color="disabled" />
           </IconButton>
+
+          <input style={{ display: "none" }}
+            accept="image/*"
+            id="img-uploader"
+            multiple
+            type="file"
+            onChange={handleUploadClick}
+          />
+          <label htmlFor="img-uploader">
+            <IconButton component="span" className={classes.icon}>
+              <AddPhotoAlternateIcon color="primary" />
+            </IconButton>
+          </label>
+
           <TextField inputRef={inputRef}
             className={classes.messageInput}
             id="message"
