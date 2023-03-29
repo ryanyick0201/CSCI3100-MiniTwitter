@@ -9,7 +9,8 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 // Import self-defined items
 import useChatRoom from "./useChatRoom.jsx";
-import Messages from "./Messages.jsx"
+import Messages from "./Messages.jsx";
+import RoomHeader from './RoomHeader.jsx';
 
 // Styling
 const useStyles = makeStyles({
@@ -59,7 +60,7 @@ const Room = () => {
   const classes = useStyles();
 
   // Hooks for sending messages
-  const { sendMessage } = useChatRoom();
+  const { messages, sendMessage } = useChatRoom();
   const [newMessage, setNewMessage] = useState("");
 
   // Scroll to bottom automatically on new message received
@@ -127,11 +128,13 @@ const Room = () => {
   return (
     <div className={classes.container}>
       <Paper elevation={24} className={classes.paper}>
+        <RoomHeader title="hello" />
+
         <div className={classes.messageContainer}>
-          <Messages />
-          <div id="01" style={{ position: "absolute", left: 0, bottom: "12.5%" }}>
+          <Messages state={messages} />
+          <div style={{ position: "absolute", left: 0, bottom: "12.5%" }}>
             {showEmojis &&
-              <EmojiPicker previewConfig={{ showPreview: false }}
+              <EmojiPicker previewConfig={{ showPreview: false }} height={300} width={270}
                 className={classes.emojiPicker}
                 onEmojiClick={({ emoji }) => { handleEmojiClick({ emoji }); }}
               />
@@ -139,6 +142,7 @@ const Room = () => {
           </div>
           <div ref={messageRef}></div>
         </div>
+
         <div className={classes.footer}>
           <IconButton className={classes.icon} onClick={handleShowEmojis}>
             <InsertEmoticonIcon color={showEmojis ? "warning" : "disabled"} />
