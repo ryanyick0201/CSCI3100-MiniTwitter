@@ -35,7 +35,7 @@ const useStyles = makeStyles({
     width: "100%"
   },
   sendButton: {
-    width: "10em",
+    //width: "auto",
     height: "50%",
     margin: "0 2em"
   },
