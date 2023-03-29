@@ -35,7 +35,7 @@ const useStyles = makeStyles({
     width: "100%"
   },
   sendButton: {
-    //width: "auto",
+    //width: "10em",
     height: "50%",
     margin: "0 2em"
   },
@@ -90,18 +90,19 @@ const Room = () => {
 
   // Message event handlers
   const handleNewMessageChange = (e) => {
-    setNewMessage(e.target.value);
-  };
+    if (e.key !== "Enter") {
+      setNewMessage(e.target.value);
+    };
+  }
   const handleSendMessage = () => {
-    if (newMessage !== "") {
+    if (newMessage.trim() !== "") {
       sendMessage(newMessage);
       setNewMessage("");
     }
   };
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && newMessage !== "") {
-      sendMessage(newMessage);
-      setNewMessage("");
+    if (e.key === "Enter") {
+      handleSendMessage();
     }
   };
 
@@ -110,7 +111,12 @@ const Room = () => {
   const [cursorPos, setCursorPos] = useState();
   const [showEmojis, setShowEmojis] = useState();
 
-  const pickEmoji = ({ emoji }) => {
+  const handleShowEmojis = () => {
+    inputRef.current.focus();
+    setShowEmojis(!showEmojis);
+  }
+
+  const handleEmojiClick = ({ emoji }) => {
     const ref = inputRef.current;
     ref.focus();
     const front = newMessage.substring(0, ref.selectionStart);
@@ -120,12 +126,9 @@ const Room = () => {
     setCursorPos(front.length + emoji.length);
   }
 
-  const handleShowEmojis = () => {
-    inputRef.current.focus();
-    setShowEmojis(!showEmojis);
-  }
-
   useEffect(() => {
+    console.log("cursorPos", cursorPos);
+    console.log("inputRef", inputRef.current);
     inputRef.current.selectionEnd = cursorPos;
   }, [cursorPos])
   // emojiPicker end
@@ -145,18 +148,21 @@ const Room = () => {
             ))}
           </ol>
           <div ref={messageRef}></div>
+
           {showEmojis &&
             <EmojiPicker previewConfig={{ showPreview: false }}
               className={classes.emojiPicker}
-              onEmojiClick={({ emoji }) => { pickEmoji({ emoji }); }}
+              onEmojiClick={({ emoji }) => { handleEmojiClick({ emoji }); }}
+              style={{ position: "fixed", bottom: 0, right: 0 }}//???
             />
           }
+
         </div>
         <div className={classes.footer}>
           <IconButton className={classes.emojiIcon} onClick={handleShowEmojis}>
-            <InsertEmoticonIcon color="disabled"/>
+            <InsertEmoticonIcon color="disabled" />
           </IconButton>
-          <TextField ref={inputRef}
+          <TextField inputRef={inputRef}
             className={classes.messageInput}
             id="message"
             label="Message"
@@ -164,11 +170,11 @@ const Room = () => {
             variant="outlined"
             value={newMessage}
             onChange={handleNewMessageChange}
-            onKeyDown={handleKeyUp}
-            multiline maxRows={3}
+            onKeyDown={handleKeyDown}
+          //multiline maxRows={3}
           />
           <Button
-            disabled={!newMessage}
+            disabled={!newMessage.trim()}
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
