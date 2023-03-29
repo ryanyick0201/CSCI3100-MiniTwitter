@@ -127,8 +127,6 @@ const Room = () => {
   }
 
   useEffect(() => {
-    console.log("cursorPos", cursorPos);
-    console.log("inputRef", inputRef.current);
     inputRef.current.selectionEnd = cursorPos;
   }, [cursorPos])
   // emojiPicker end
