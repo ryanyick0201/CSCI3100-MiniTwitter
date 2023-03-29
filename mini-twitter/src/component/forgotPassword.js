@@ -1,48 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button, FormControl, Typography, Box } from '@material-ui/core';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#FFA500',
-  },
-  formContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: theme.spacing(4),
-    backgroundColor: 'white',
-    borderRadius: theme.spacing(1),
-  },
-  form: {
-    display: 'flex',
-    width: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginTop: theme.spacing(4),
-  },
-  textField: {
-    margin: theme.spacing(1),
-    width: '25ch',
-  },
-  submitButton: {
-    margin: theme.spacing(2, 0),
-  },
-}));
+import { UseStyles } from './CssFormat';
 
 function ForgotPassword() {
-  const classes = useStyles();
+  const classes = UseStyles();
   const [email, setEmail] = useState('');
   const [otp, setOTP] = useState('');
 
   const handleSendOTP = (event) => {
     event.preventDefault();
     console.log('Send OTP button clicked');
+    
     
   }
 
@@ -63,52 +32,61 @@ function ForgotPassword() {
   };
 
   return (
-      <Box m={2} p={2} border={1} borderColor="grey.400">
-      <Typography variant="h3" gutterBottom>
-        Trouble with logging in?
-      </Typography>
-      <Typography variant="body1" gutterBottom>
-        Enter your email address and we'll send you an OTP. <br></br>
-            you can change your password after login.
-      </Typography>
-      <FormControl onSubmit={handleSubmitOTP}>
-        <Box mt={2}>
-        <Typography variant="h6">
-            Please fill in your email
+    <div className={classes.rootNormal}>
+      <div className={classes.formContainer}>
+        <Box m={2} p={2} border={1} borderColor="grey.400">
+          <Typography variant="h3" className={classes.form_title}>
+            Trouble with logging in?
           </Typography>
-          <TextField
-            label="Email"
-            variant="outlined"
-            value={email}
-            onChange={handleEmailChange}
-            margin="dense"
-            fullWidth
-          />
-          <Button variant="contained" color="primary" onClick={handleSendOTP}>
-            Send me OTP
-          </Button>
-        </Box>
-        <Box mt={2}>
-          <Typography variant="h6">
-            Please fill in the OTP
+          <Typography variant="body1" className={classes.formDescription}>
+            Enter your email address and we'll send you an OTP. <br></br>
+                you can change your password after login.
           </Typography>
-          <TextField
-            label="OTP"
-            variant="outlined"
-            value={otp}
-            onChange={handleOtpChange}
-            margin="dense"
-            fullWidth
-          />
-          <Button type="submit" variant="contained" color="primary">
-            Submit
-          </Button>
+          <FormControl onSubmit={handleSubmitOTP} className={classes.form}>
+            <Box mt={2} className={classes.form_item}>
+              <Typography variant="h6">
+                Please fill in your email
+              </Typography>
+              <TextField
+                label="Email"
+                variant="outlined"
+                value={email}
+                onChange={handleEmailChange}
+                margin="dense"
+                fullWidth
+              />
+            </Box>
+            <Box className={classes.form_button_grp}>
+              <Button variant="contained" color="primary" onClick={handleSendOTP} classes={{ root: classes.button }}>
+                Send me OTP
+              </Button>
+            </Box>
+            <Box mt={2} className={classes.form_item}>
+              <Typography variant="h6">
+                Please fill in the OTP
+              </Typography>
+              <TextField
+                label="OTP"
+                variant="outlined"
+                value={otp}
+                onChange={handleOtpChange}
+                margin="dense"
+                fullWidth
+              />
+            </Box>
+            <Box className={classes.form_button_grp}>
+              <Button type="submit" variant="contained" color="primary" classes={{ root: classes.button }}>
+                Submit
+              </Button>
+            </Box>
+            <Box className={classes.form_redirect}>
+              OR
+              <Link className={classes.linkText} to="/">return to login</Link>
+            </Box>
+          </FormControl>
         </Box>
-        <p>
-          OR <br></br> <Link to="/">return to login</Link>
-        </p>
-      </FormControl>
-    </Box>
+      </div>
+    </div>
   );
 }
 

@@ -1,42 +1,17 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button, Typography, Box} from '@material-ui/core';
+import { TextField, Button, FormControl, Typography, Box} from '@material-ui/core';
+import { UseStyles } from './CssFormat';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#FFA500',
-  },
-  formContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: theme.spacing(4),
-    backgroundColor: 'white',
-    borderRadius: theme.spacing(1),
-  },
-  form: {
-    display: 'flex',
-    width: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginTop: theme.spacing(4),
-  },
-  textField: {
-    margin: theme.spacing(1),
-    width: '25ch',
-  },
   SubButton: {
     padding: '20px 40px 20px 40px',
   },
 }));
 
 function EmailVerf() {
-  const classes = useStyles();
+  //const classes = useStyles();
+  const classes = UseStyles();
   const [otp, setOTP] = useState('');
 
   const handleOtpChange = (event) => {
@@ -51,22 +26,22 @@ function EmailVerf() {
   const handleResent = (event) => {
     event.preventDefault();
     // handle login logic here
+    //TODO 
+    // Only can click each 60s
   };
 
  
   return (
-    <div className={classes.root}>
+    <div className={classes.rootNormal}>
       <div className={classes.formContainer}>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <Box>
-            <Typography variant="h3">
-              Email Verification
-            </Typography>
-            <Typography variant="h6">
-              We have sent an OTP to your email account, please <br></br> 
-              enter the OTP to finish the verification process.
-            </Typography>
-          </Box>  
+          <Typography variant="h3" className={classes.form_title}>
+            Email Verification
+          </Typography>
+          <Typography variant="h6" className={classes.formDescription}>
+            We have sent an OTP to your email account, please <br></br> 
+            enter the OTP to finish the verification process.
+          </Typography>
+          <FormControl className={classes.form} onSubmit={handleSubmit}>  
           <Box>
             <Typography variant="h6">
               Please fill in the OTP
@@ -80,27 +55,25 @@ function EmailVerf() {
               fullWidth
             />
           </Box>
-          <Box>
+          <div style={{ display: 'flex', justifyContent: 'space-around', padding: '50px 0 50px 0'}}>
             <Button
-              className={classes.SubButton}
               variant="contained"
               color="primary"
+              classes={{ root: classes.button }} 
               type="submit"
-              style={{ margin: '50px' }}
             >
               Submit
             </Button>
             <Button 
               variant="contained" 
-              className={classes.SubButton} 
               color="primary" 
+              classes={{ root: classes.button }} 
               onClick={handleResent}
-              style={{ margin: '50px' }}
             >
               Send again
             </Button>
-          </Box>
-        </form>
+          </div>
+        </FormControl>
       </div>
     </div>
     

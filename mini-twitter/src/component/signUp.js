@@ -1,54 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button, Typography, Box} from '@material-ui/core';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#FFA500',
-  },
-  form_title: {
-    padding: '10px 50px 50px 50px',
-    color: "orange",
-  },
-  formContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: theme.spacing(4),
-    backgroundColor: 'white',
-    borderRadius: theme.spacing(1),
-  },
-  form: {
-    display: 'flex',
-    width: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginTop: theme.spacing(4),
-  },
-  form_item: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "start",
-    padding: '20px 0 20px 0',
-  },
-  textField: {
-    margin: theme.spacing(1),
-    width: '25ch',
-    
-  },
-  submitButton: {
-    margin: theme.spacing(2, 0),
-  },
-}));
+import { UseStyles } from './CssFormat';
 
 function SignUp() {
-  const classes = useStyles();
+  const classes = UseStyles();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
