@@ -156,7 +156,7 @@ const Room = () => {
           <IconButton className={classes.emojiIcon} onClick={handleShowEmojis}>
             <InsertEmoticonIcon color="disabled"/>
           </IconButton>
-          <TextField
+          <TextField ref={inputRef}
             className={classes.messageInput}
             id="message"
             label="Message"
@@ -165,7 +165,7 @@ const Room = () => {
             value={newMessage}
             onChange={handleNewMessageChange}
             onKeyUp={handleKeyUp}
-            ref={inputRef}
+            multiline maxRows={3}
           />
           <Button
             disabled={!newMessage}
