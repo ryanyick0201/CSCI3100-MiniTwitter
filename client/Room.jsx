@@ -172,7 +172,7 @@ const Room = () => {
 
         <div className={classes.footer}>
           <IconButton className={classes.icon} onClick={handleShowEmojis}>
-            <InsertEmoticonIcon color="disabled" />
+            <InsertEmoticonIcon color={showEmojis ? "warning" : "disabled"} />
           </IconButton>
 
           <input style={{ display: "none" }}
@@ -184,7 +184,7 @@ const Room = () => {
           />
           <label htmlFor="img-uploader">
             <IconButton component="span" className={classes.icon}>
-              <AddPhotoAlternateIcon color="primary" />
+              <AddPhotoAlternateIcon color="warning" />
             </IconButton>
           </label>
 
