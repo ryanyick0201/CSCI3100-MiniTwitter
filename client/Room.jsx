@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Paper, TextField, Button, makeStyles } from "@material-ui/core"; // makeStyles is not supported by /core in v5
+import { Paper, TextField, Button, IconButton, makeStyles } from "@material-ui/core"; // makeStyles is not supported by /core in v5
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -153,7 +153,9 @@ const Room = () => {
           }
         </div>
         <div className={classes.footer}>
-          <InsertEmoticonIcon className={classes.emojiIcon} onClick={handleShowEmojis} />
+          <IconButton className={classes.emojiIcon} onClick={handleShowEmojis}>
+            <InsertEmoticonIcon color="disabled"/>
+          </IconButton>
           <TextField
             className={classes.messageInput}
             id="message"
