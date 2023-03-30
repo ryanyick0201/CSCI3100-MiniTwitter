@@ -7,7 +7,7 @@ const PanelHeader = ({ sender }) => {
     }
 
     return (
-        <Card square >
+        <Card square style={{ height: "10%" }}>
             <Grid container justifyContent="center" alignItems="center">
                 <CardHeader
                     avatar={

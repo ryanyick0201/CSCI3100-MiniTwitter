@@ -1,63 +1,32 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Paper, TextField, Button, IconButton, makeStyles } from '@material-ui/core';
+import { Paper, makeStyles } from '@material-ui/core';
 //import { Paper, TextField, Button, IconButton } from '@mui/material';
 //import { makeStyles } from '@mui/styles'; // makeStyles is not supported by in v5
 import EmojiPicker from 'emoji-picker-react';
 
-import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+
 
 // Import self-defined items
 import useChatRoom from "./useChatRoom.jsx";
 import MsgBubble from "./MsgBubble.jsx";
 import RoomHeader from './RoomHeader.jsx';
+import RoomFooter from './RoomFooter.jsx';
 
 // Styling
 const useStyles = makeStyles({
-  container: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
-    backgroundColor: "#263238"
-  },
   paper: {
-    width: "50em",
+    width: "50%",
     height: "100%",
     position: "relative"
-  },
-  footer: {
-    display: "flex",
-    width: "96%",
-    alignItems: "center",
-    margin: "1em",
-    position: "absolute",
-    bottom: 0
-  },
-  icon: {
-    margin: "0 0.01em"
-  },
-  messageInput: {
-    width: "100%"
-  },
-  sendButton: {
-    //width: "10em",
-    height: "50%",
-    margin: "0 2em"
   },
   messageContainer: {
     backgroundColor: "red",
     overflowY: "auto",
     height: "80%"
-  },
-  emojiPicker: {
-    position: "fixed",
-    bottom: 0,
-    left: 0
   }
 });
 
-const Room = () => {
+const Room = ({ roomName }) => {
   const classes = useStyles();
 
   // Hooks for sending messages
@@ -70,33 +39,11 @@ const Room = () => {
     messageRef.current.scrollIntoView({ behavior: "smooth" });
   })
 
-  // Message event handlers
-  const handleNewMessageChange = (e) => {
-    if (e.key !== "Enter") {
-      setNewMessage(e.target.value);
-    };
-  }
-  const handleSendMessage = () => {
-    if (newMessage.trim() !== "") {
-      sendMessage(newMessage);
-      setNewMessage("");
-    }
-  };
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSendMessage();
-    }
-  };
-
   // emojiPicker
   const inputRef = useRef();
   const [cursorPos, setCursorPos] = useState();
   const [showEmojis, setShowEmojis] = useState();
 
-  const handleShowEmojis = () => {
-    inputRef.current.focus();
-    setShowEmojis(!showEmojis);
-  }
 
   const handleEmojiClick = ({ emoji }) => {
     const ref = inputRef.current;
@@ -108,84 +55,33 @@ const Room = () => {
     setCursorPos(front.length + emoji.length);
   }
 
-  useEffect(() => {
-    inputRef.current.selectionEnd = cursorPos;
-  }, [cursorPos])
-  // emojiPicker end
-
-
-  // File uploader
-  const handleUploadClick = (e) => {
-    var file = e.target.files[0];
-    const reader = new FileReader();
-    var url = reader.readAsDataURL(file);
-
-
-    console.log("url", url); // Would see a path?
-
-  };
-  // File uploader end
-
+  // Remove the outermost container class and set Paper height as 100vh
   return (
-    <div className={classes.container}>
-      <Paper elevation={8} className={classes.paper}>
+    <Paper elevation={8} className={classes.paper}>
 
-        <RoomHeader recipient="hello" />
+      <RoomHeader roomName={roomName} />
 
-        <div className={classes.messageContainer}>
-          <MsgBubble msgList={messages} />
-          <div style={{ position: "absolute", left: 0, bottom: "12.5%" }}>
-            {showEmojis &&
-              <EmojiPicker previewConfig={{ showPreview: false }} height={300} width={270}
-                className={classes.emojiPicker}
-                onEmojiClick={({ emoji }) => { handleEmojiClick({ emoji }); }}
-              />
-            }
-          </div>
-          <div ref={messageRef}></div>
+      <div className={classes.messageContainer}>
+        <MsgBubble msgList={messages} />
+        <div style={{ position: "absolute", left: 0, bottom: "10%" }}>
+          {showEmojis &&
+            <EmojiPicker previewConfig={{ showPreview: false }} height={300} width={270}
+              onEmojiClick={({ emoji }) => { handleEmojiClick({ emoji }); }}
+            />
+          }
         </div>
+        <div ref={messageRef}></div>
+      </div>
+      <RoomFooter
+        sendMessage={sendMessage}
+        newMessage={newMessage}
+        setNewMessage={setNewMessage}
+        showEmojis={showEmojis}
+        setShowEmojis={setShowEmojis}
+        cursorPos={cursorPos}
+        inputRef={inputRef} />
 
-        <div className={classes.footer}>
-          <IconButton className={classes.icon} onClick={handleShowEmojis}>
-            <InsertEmoticonIcon color={showEmojis ? "warning" : "disabled"} />
-          </IconButton>
-
-          <input style={{ display: "none" }}
-            accept="image/*"
-            id="img-uploader"
-            multiple
-            type="file"
-            onChange={handleUploadClick}
-          />
-          <label htmlFor="img-uploader">
-            <IconButton component="span" className={classes.icon}>
-              <AddPhotoAlternateIcon color="warning" />
-            </IconButton>
-          </label>
-
-          <TextField inputRef={inputRef}
-            className={classes.messageInput}
-            id="message"
-            label="Message"
-            placeholder="Type here..."
-            variant="outlined"
-            value={newMessage}
-            onChange={handleNewMessageChange}
-            onKeyDown={handleKeyDown}
-          //multiline maxRows={3}
-          />
-          <Button
-            disabled={!newMessage.trim()}
-            variant="contained"
-            color="primary"
-            onClick={handleSendMessage}
-            className={classes.sendButton}
-          >
-            Send
-          </Button>
-        </div>
-      </Paper>
-    </div>
+    </Paper>
   );
 };
 

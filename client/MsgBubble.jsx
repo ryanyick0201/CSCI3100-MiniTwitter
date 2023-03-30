@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 });
 
 
-const MsgBubble = ({msgList}) => {
+const MsgBubble = ({ msgList }) => {
     const classes = useStyles();
 
     return (
@@ -34,7 +34,7 @@ const MsgBubble = ({msgList}) => {
             {msgList.map((msg, i) => (
                 <li
                     key={i}
-                    className={classes.message + " " + (message.isOwner ? classes.owner : classes.guest)}
+                    className={classes.message + " " + (msg.isOwner ? classes.owner : classes.guest)}
                 >
                     <span>{msg.body}</span>
                 </li>
