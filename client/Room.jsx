@@ -11,6 +11,7 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import useChatRoom from "./useChatRoom.jsx";
 import Messages from "./Messages.jsx";
 import RoomHeader from './RoomHeader.jsx';
+import PanelHeader from './PanelHeader.jsx';
 
 // Styling
 const useStyles = makeStyles({
@@ -46,8 +47,9 @@ const useStyles = makeStyles({
     margin: "0 2em"
   },
   messageContainer: {
+    backgroundColor: "red",
     overflowY: "auto",
-    height: "87.5%"
+    height: "80%"
   },
   emojiPicker: {
     position: "fixed",
@@ -127,8 +129,9 @@ const Room = () => {
 
   return (
     <div className={classes.container}>
-      <Paper elevation={24} className={classes.paper}>
-        <RoomHeader title="hello" />
+      <Paper elevation={8} className={classes.paper}>
+
+        <RoomHeader recipient="hello" />
 
         <div className={classes.messageContainer}>
           <Messages state={messages} />

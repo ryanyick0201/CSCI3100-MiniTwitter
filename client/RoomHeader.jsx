@@ -1,14 +1,14 @@
 import { Card, CardHeader, Avatar, Grid } from '@material-ui/core';
 
-const RoomHeader = (props) => {
+const RoomHeader = ({ recipient }) => {
     return (
         <Card square >
             <Grid container justifyContent="center" alignItems="center">
                 <CardHeader
                     avatar={
-                        <Avatar alt={props.title} src="" />
+                        <Avatar alt={recipient} src="" />
                     }
-                    title={props.title}
+                    title={recipient}
                 />
             </Grid>
         </Card>
