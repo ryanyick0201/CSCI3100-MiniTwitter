@@ -1,8 +1,5 @@
 import { makeStyles } from '@material-ui/core';
 
-import useChatRoom from "./useChatRoom.jsx";
-
-
 const useStyles = makeStyles({
     ol: {
         paddingInlineEnd: "40px"
@@ -29,10 +26,10 @@ const useStyles = makeStyles({
 });
 
 
-const Messages = () => {
+const Messages = (props) => {
     const classes = useStyles();
 
-    const { messages } = useChatRoom();
+    const messages = props.state;
 
     return (
         <ol className={classes.ol}>
