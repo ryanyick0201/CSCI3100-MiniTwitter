@@ -87,7 +87,7 @@ const RoomFooter = ({ sendMessage, newMessage, setNewMessage, showEmojis, setSho
                     value={newMessage}
                     onChange={handleNewMessageChange}
                     onKeyDown={handleKeyDown}
-                    multiline maxRows={3}
+                //multiline maxRows={3}
                 />
                 <Button
                     disabled={!newMessage.trim()}

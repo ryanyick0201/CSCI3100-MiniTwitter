@@ -6,9 +6,15 @@ import Panel from './Panel';
 
 const useStyles = makeStyles({
     pageContainer: {
+        position: "fixed",
+        top: "5%",
+        left: "5%",
+        borderStyle: "solid",
+        borderColor: "green",
+
         display: "flex",
-        width: "100vw",
-        height: "100vh",
+        width: "90vw",
+        height: "90vh",
         backgroundColor: "#263238"
     },
 })

@@ -30,7 +30,7 @@ const Room = ({ roomName }) => {
   const classes = useStyles();
 
   // Hooks for sending messages
-  const { messages, sendMessage } = useChatRoom();
+  const { messages, sendMessage } = useChatRoom("Me", roomName);
   const [newMessage, setNewMessage] = useState("");
 
   // Scroll to bottom automatically on new message received

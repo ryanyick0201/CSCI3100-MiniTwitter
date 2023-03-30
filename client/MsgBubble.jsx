@@ -18,7 +18,7 @@ const useStyles = makeStyles({
         color: "#000",
         marginRight: "auto"
     },
-    owner: {
+    sender: {
         backgroundColor: "#0091EA",
         color: "#FFF",
         marginLeft: "auto"
@@ -34,9 +34,9 @@ const MsgBubble = ({ msgList }) => {
             {msgList.map((msg, i) => (
                 <li
                     key={i}
-                    className={classes.message + " " + (msg.isOwner ? classes.owner : classes.guest)}
+                    className={classes.message + " " + (msg.isSender ? classes.sender : classes.guest)}
                 >
-                    <span>{msg.body}</span>
+                    <span>{msg.message}</span>
                 </li>
             ))}
         </ol>
