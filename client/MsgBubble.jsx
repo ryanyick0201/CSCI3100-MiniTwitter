@@ -36,7 +36,7 @@ const MsgBubble = ({msgList}) => {
                     key={i}
                     className={classes.message + " " + (message.isOwner ? classes.owner : classes.guest)}
                 >
-                    <span>{m.body}</span>
+                    <span>{msg.body}</span>
                 </li>
             ))}
         </ol>
