@@ -9,9 +9,8 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 // Import self-defined items
 import useChatRoom from "./useChatRoom.jsx";
-import Messages from "./Messages.jsx";
+import MsgBubble from "./MsgBubble.jsx";
 import RoomHeader from './RoomHeader.jsx';
-import PanelHeader from './PanelHeader.jsx';
 
 // Styling
 const useStyles = makeStyles({
