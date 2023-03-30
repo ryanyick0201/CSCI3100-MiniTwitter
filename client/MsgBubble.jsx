@@ -26,23 +26,21 @@ const useStyles = makeStyles({
 });
 
 
-const Messages = (props) => {
+const MsgBubble = ({msgList}) => {
     const classes = useStyles();
-
-    const messages = props.state;
 
     return (
         <ol className={classes.ol}>
-            {messages.map((message, i) => (
+            {msgList.map((msg, i) => (
                 <li
                     key={i}
                     className={classes.message + " " + (message.isOwner ? classes.owner : classes.guest)}
                 >
-                    <span>{message.body}</span>
+                    <span>{m.body}</span>
                 </li>
             ))}
         </ol>
     )
 }
 
-export default Messages;
+export default MsgBubble;
