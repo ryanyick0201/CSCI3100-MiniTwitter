@@ -134,7 +134,7 @@ const Room = () => {
         <RoomHeader recipient="hello" />
 
         <div className={classes.messageContainer}>
-          <Messages state={messages} />
+          <MsgBubble msgList={messages} />
           <div style={{ position: "absolute", left: 0, bottom: "12.5%" }}>
             {showEmojis &&
               <EmojiPicker previewConfig={{ showPreview: false }} height={300} width={270}
