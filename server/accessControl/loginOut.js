@@ -11,7 +11,10 @@ async function login(username, password){
         
         if (username === rows[0].username){
             if (bcrypt.compareSync(password, rows[0].password))
-                return `{"message": "Login succeeded."}`   
+                if (rows[0].hasVerified)
+                    return `{"message": "Login succeeded."}`;
+                else
+                    return `{"message": "Account not yet verified."}`;
         }
         return `{"message": "Login failed. Credentials not matched."}`
                    

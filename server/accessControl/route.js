@@ -64,7 +64,7 @@ router.delete('/deleteOTP', async(req, res) => {
     setTimeout(async () => {
         x = await deleteOTP(req.body.username);
         res.send(x);
-    }, 10000);
+    }, 300000);
 })
 
 /*

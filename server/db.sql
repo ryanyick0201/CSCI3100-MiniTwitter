@@ -90,19 +90,18 @@ CREATE TABLE Message (
     FOREIGN KEY (receiver) REFERENCES User(userId) ON DELETE CASCADE
   );
 
-
-INSERT INTO User (username, password, email, hasVerified, personalBio, privacySetting, sessionId, otp)
+INSERT INTO User (username, password, email, hasVerified, personalBio, privacySetting, otp)
 VALUES 
-('user1', 'password1', 'user1@example.com', TRUE, NULL, 'public', NULL, NULL),
-('user2', 'password2', 'user2@example.com', TRUE, NULL, 'public', NULL, NULL),
-('user3', 'password3', 'user3@example.com', TRUE, NULL, 'public', NULL, NULL),
-('user4', 'password4', 'user4@example.com', TRUE, NULL, 'public', NULL, NULL),
-('user5', 'password5', 'user5@example.com', TRUE, NULL, 'public', NULL, NULL),
-('user6', 'password6', 'user6@example.com', FALSE, NULL, 'public', NULL, NULL),
-('user7', 'password7', 'user7@example.com', FALSE, NULL, 'public', NULL, NULL),
-('user8', 'password8', 'user8@example.com', FALSE, NULL, 'public', NULL, NULL),
-('user9', 'password9', 'user9@example.com', FALSE, NULL, 'public', NULL, NULL),
-('user10', 'password10', 'user10@example.com', FALSE, NULL, 'public', NULL, NULL);
+('user1', '$2b$10$oybdKhG2ObjFjK7Khn1l..ixNc6/sv63gjuFJJ8w8RIvCx6CebXLq', 'user1@example.com', TRUE, NULL, 'public', NULL),
+('user2', '$2b$10$sDB80/9hrkgRE.lAyUkaSu.QUCCdhan2TRU8krrl.yVmxpBZpcYGG', 'user2@example.com', TRUE, NULL, 'public', NULL),
+('user3', '$2b$10$amD9Y/o5wVsw.BqNdihyhOhs4APUrJwnXIBy0uXumDHHvxTbJduXG', 'user3@example.com', TRUE, NULL, 'public', NULL),
+('user4', '$2b$10$n.UTF3C6J50u0wsS07BlQOpb9M40Gwdc0/MnWVx0PqupcoanZvPqq', 'user4@example.com', TRUE, NULL, 'public', NULL),
+('user5', '$2b$10$ZtHTKlLGmE4bQIBg.vdnUO6e9yN8hdoMFeNco5XjCwwK26nqosiAG', 'user5@example.com', TRUE, NULL, 'public', NULL),
+('user6', '$2b$10$SK9bEa6ANqKwphlBKuN7rOrgHa2ESgm6ykXKyfKEQwObrUfX29ncm', 'user6@example.com', FALSE, NULL, 'public', NULL),
+('user7', '$2b$10$wtkTFlWz8O.b7IJ0ue6kD.gegskMYVJwTzF07nkqVGuizmu8Y8ibG', 'user7@example.com', FALSE, NULL, 'public', NULL),
+('user8', '$2b$10$AvbbezeESY25/qahhXF/POpEKuKUvmxDQrIU5aWG1WoFxB6bovO0q', 'user8@example.com', FALSE, NULL, 'public', NULL),
+('user9', '$2b$10$f2mISfMiIrfi/aBvjTPF.eCt96/Dl2zKF8vAtjuqrecJgApDVtupe', 'user9@example.com', FALSE, NULL, 'public', NULL),
+('user10', '$2b$10$7UVDWCjukFCIDraUgDljZuwrp7tBRAN6KU33z0u9EFlb6zhP4TIY6', 'user10@example.com', FALSE, NULL, 'public', NULL);
 
 INSERT INTO Admin (adminname, password, sessionId)
 VALUES
@@ -132,7 +131,26 @@ VALUES
 (5, 'Exciting news! My startup just got funded!', '2022-02-20 09:15:00', 'programming'),
 (10, 'Just finished reading a fascinating book about the human brain', '2022-09-17 12:00:00', 'science'),
 (6, 'Who else is excited for the World Cup?', '2022-11-22 08:00:00', 'sports'),
-(4, 'I just got back from a week-long beach vacation and I''m already missing it', '2022-04-05 11:00:00', 'travel');
+(4, 'I just got back from a week-long beach vacation and I''m already missing it', '2022-04-05 11:00:00', 'travel'),
+(1, 'Just tried the new sushi restaurant in town and it was amazing!', '2022-08-15 18:30:00', 'travel'),
+(3, 'I can''t wait to go skydiving next weekend!', '2022-07-28 11:15:00', 'sports'),
+(5, 'I just finished reading a book about the history of programming languages and it was fascinating', '2022-06-04 14:45:00', 'science'),
+(2, 'My cat always seems to know when I''m feeling down and cuddles up with me', '2023-01-21 08:00:00', 'pets'),
+(7, 'I just got back from a trip to Paris and it was absolutely beautiful', '2022-03-19 16:00:00', 'travel'),
+(9, 'I''m training for a marathon and it''s tough but worth it', '2023-02-28 07:30:00', 'sports'),
+(4, 'I just adopted a new puppy and he''s already stolen my heart', '2022-02-12 09:00:00', 'pets'),
+(10, 'I''ve been studying machine learning and it''s blowing my mind', '2022-09-01 12:00:00', 'programming'),
+(8, 'I love exploring new cities and trying new foods', '2023-03-03 15:30:00', 'travel'),
+(6, 'I can''t wait for the next space mission to discover more about our universe', '2022-05-24 13:15:00', 'science'),
+(2, 'My dog just learned a new trick and I couldn''t be more proud', '2022-12-10 10:30:00', 'pets'),
+(9, 'I just completed my first triathlon and it was an amazing experience', '2023-02-17 09:45:00', 'sports'),
+(3, 'I''m planning a trip to Japan and I''m so excited to try all the delicious food', '2022-04-30 14:00:00', 'travel'),
+(5, 'I''m amazed at how much we''ve learned about the human brain in the past decade', '2022-11-05 11:00:00', 'science'),
+(7, 'I just got back from a trip to Hawaii and the beaches were incredible', '2023-01-02 17:00:00', 'travel'),
+(1, 'I love playing basketball and I''m always looking for new pickup games', '2022-07-14 08:00:00', 'sports'),
+(8, 'I just started learning how to code and it''s challenging but exciting', '2023-03-08 10:30:00', 'programming'),
+(4, 'I''m planning a road trip across the country with my best friend and I can''t wait', '2022-05-01 09:30:00', 'travel'),
+(6, 'I''m fascinated by the latest discoveries in quantum mechanics', '2022-10-12 14:15:00', 'science');
 
 INSERT INTO TweetLike (tweetId, userId, status) VALUES
 (1, 1, 'like'),
