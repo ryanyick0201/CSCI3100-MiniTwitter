@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
 import Room from './Room';
 import Panel from './Panel';
@@ -19,13 +19,15 @@ const useStyles = makeStyles({
     },
 })
 
-const ChatPage = () => {
+
+
+const ChatPage = ({ sender }) => {
     const classes = useStyles();
     const [recipient, setRecipient] = useState("");
 
     return (
         <div className={classes.pageContainer}>
-            <Panel sender="Me" setRecipient={setRecipient} />
+            <Panel sender={sender ? sender : "Me"} setRecipient={setRecipient} />
             <Room recipient={recipient} />
         </div>
     )

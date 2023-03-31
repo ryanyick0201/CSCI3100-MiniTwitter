@@ -3,7 +3,7 @@ import { Card, CardActionArea, CardHeader, Avatar, makeStyles } from '@material-
 import PanelHeader from './PanelHeader';
 
 const useStyles = makeStyles({
-    paper: {
+    panelContainer: {
         width: "25%",
         height: "100%",
         position: "relative"
@@ -14,7 +14,6 @@ const useStyles = makeStyles({
     }
 }
 )
-
 // to be replaced by API
 const getRecipientList = () => {
     const names = [];
@@ -31,7 +30,7 @@ const Panel = ({ sender, setRecipient }) => {
     const [recipients, setRecipients] = useState(getRecipientList());
 
     return (
-        <Card square className={classes.paper}>
+        <Card square className={classes.panelContainer}>
             <PanelHeader sender={sender} />
             <div className={classes.recipientContainer}>
                 {recipients.map((recipient, i) => (

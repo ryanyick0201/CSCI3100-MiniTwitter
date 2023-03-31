@@ -14,7 +14,7 @@ import RoomFooter from './RoomFooter.jsx';
 
 // Styling
 const useStyles = makeStyles({
-  paper: {
+  roomContainer: {
     width: "50%",
     height: "100%",
     position: "relative"
@@ -57,7 +57,7 @@ const Room = ({ recipient }) => {
 
   // Remove the outermost container class and set Paper height as 100vh
   return (
-    <Paper elevation={8} className={classes.paper}>
+    <Paper elevation={8} className={classes.roomContainer}>
 
       <RoomHeader recipient={recipient} />
 

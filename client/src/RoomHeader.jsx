@@ -2,7 +2,7 @@ import { Card, CardHeader, Avatar, Grid } from '@material-ui/core';
 
 const RoomHeader = ({ recipient }) => {
     return (
-        <Card square style={{ backgroundColor: "green", height: "10%" }}>
+        <Card square style={{ backgroundColor: "green", minHeight: "10%" }}>
             <Grid container justifyContent="center" alignItems="center">
                 <CardHeader
                     avatar={<Avatar alt={recipient} src="" />}
