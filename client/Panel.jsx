@@ -15,6 +15,7 @@ const useStyles = makeStyles({
 }
 )
 
+// to be replaced by API
 const getRecipientList = () => {
     const names = [];
     for (let i = 0; i < 2; i++) {
