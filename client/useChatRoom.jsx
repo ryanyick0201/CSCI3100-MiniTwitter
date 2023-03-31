@@ -12,7 +12,7 @@ const getMsgHistory = (msgSender, msgRecipient) => {
     sendTime: new Date(2018, 11, 24, 10, 33, 30, 0)
   }]
   serverRes.forEach((item) => {
-    item.isSender = (item.sender == msgSender);
+    item["isSender"] = (item.sender == msgSender);
   })
   return serverRes
 }
