@@ -22,7 +22,7 @@ const RoomFooter = ({ sendMessage, newMessage, setNewMessage, showEmojis, setSho
     const handleShowEmojis = () => {
         inputRef.current.focus();
         setShowEmojis(!showEmojis);
-    }
+    } 
 
     useEffect(() => {
         inputRef.current.selectionEnd = cursorPos;
