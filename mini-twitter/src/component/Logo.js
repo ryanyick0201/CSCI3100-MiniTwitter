@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   },
   image: {
     width: '100%',
-    maxWidth: '400px',
+    maxWidth: 'auto',
     height: 'auto',
   },
 });

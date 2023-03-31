@@ -29,11 +29,10 @@ function Login() {
     console.log('Enter loginAction');
     let mode = "";
     let hashedPassword = "";
-    let login_Url = 'http://'+ window.location.hostname;
+    let login_Url = 'http://'+ window.location.hostname + ':3000/login';
     if (username === 'admin' && password === 'admin') {
       console.log('Login as Admin');
       mode = 'admin';
-      login_Url = login_Url + '/loginOut/adminLogin'; //change it if needed
     } else {
         console.log('Login as User');
         let userValidateResult = usernameValidator(username);
@@ -45,73 +44,79 @@ function Login() {
         }        
         else {
           mode = 'user';
-          login_Url = login_Url + '/loginOut/userLogin';
           hashedPassword = await hashPassword(password); // hash password
         }
     }
     let ok = false;
+    const postBody = {
+      username: username,
+      password: hashedPassword
+    };
     fetch(
       login_Url,
       {
         method: 'POST',
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({username, hashedPassword, mode}),
+        body: JSON.stringify(postBody),
       }
     )
-      .then((res) => {
-        ok = res.ok ? true : false;
-        return res.text()
-      })
-      .then((res) => {
-        if(ok){
-          sessionStorage.setItem('username', res);
-          this.props.setUsername(res);
-          // Uncomment after integration
+      .then(response => response.json())
+      .then((data) => {
+        if(data.message == "Login succeeded."){
+          sessionStorage.setItem('username', username);
+          this.props.setUsername(username);
+          // TODO Need Integration
           // if(mode === "user") 
           //   navigate('/userHome');
           // else 
           //   navigate('/adminHome');
+          alert('Login Success')
+        } else {
+          alert(data.message);
         }
-        document.getElementById('login-msg').innerText = res;
       })
-      .catch((err)=> document.getElementById('login-msg').innerText = err );
+      .catch((err)=> alert(err));
   }
 
   return (
     <div className={classes.root}>
-      <div className={classes.formContainer} style={{padding:'120px 120px 120px 120px'}}>
-      <Box m={2} p={2} border={1} borderColor="grey.400">
+      <div className={classes.formContainer} style={{padding: '5%', width: '70%', height: '80%', borderColor: 'white', borderRadius: '25px',}}>
+      <Box>
         <Typography variant="h6" className={classes.loginDesc}>
           Welcome back
         </Typography>
-        <Typography variant="h3" className={classes.loginTitle}>
+        <Typography variant="h3" className={classes.loginTitle} style={{fontWeight: "800"}}>
           Sign in
         </Typography>
       </Box>
         <FormControl className={classes.form} onSubmit={handleSubmit}>
-          <Box mt={2} className={classes.form_item}>
+          <Box className={classes.form_item}>
             <Typography variant="h6">Username:</Typography>
             <TextField
-              className={classes.textField}
               label="Username"
               variant="outlined"
+              required 
+              className={classes.inputField}
               value={username}
               onChange={(event) => setUsername(event.target.value)}
               margin="dense"
               fullWidth
             />
           </Box>
-          <Box mt={2} className={classes.form_item}>
-            <Typography variant="h6">
-              Password:
-              <Link className={classes.linkText} to="/forgot_password">Forgot password?</Link>
-            </Typography>
+          <Box style={{display: "flex",flexDirection: "column",padding: '20px 0 20px 0',}}>
+            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+              <Typography variant="h6">
+                Password:
+              </Typography>
+              <Link className={classes.linkText} style={{opacity: '0.6'}} to="/forgot_password"> Forgot password?</Link>
+            </div>
             <TextField
-              className={classes.textField}
               label="Password"
               variant="outlined"
+              required 
               type="password"
+              className={classes.inputField}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               margin="dense"
@@ -122,18 +127,15 @@ function Login() {
             <Button
               classes={{ root: classes.button }}
               variant="contained"
-              color="primary"
               type="submit"
-              fullWidth
-              style={{ height: '40px', width: '100px' }}
             >
               Sign In
             </Button>
           </Box>
-          <Box className={classes.form_item}>
+          <Box className={classes.form_redirect}>
             <Typography variant="h6" >
-              I don't have an account ?
-              <Link className={classes.linkText} to="/signUp">Sign Up</Link>
+              I don't have an account ? 
+              <Link className={classes.linkText} style={{color: "#F47458"}} to="/signUp"> Sign Up</Link>
             </Typography>
           </Box>
         </FormControl>

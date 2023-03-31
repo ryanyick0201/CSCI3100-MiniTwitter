@@ -25,7 +25,7 @@ function SignUp() {
     event.preventDefault();
     console.log('Enter handleSubmit');
     let hashedPassword = "";
-    let signUp_Url = 'http://'+ window.location.hostname + '';
+    let signUp_Url = 'http://'+ window.location.hostname + ':3000/user/createUser';
     let userValidateResult = usernameValidator(username);
     let pwdValidateResult = passwordValidator(password);
     let emailValidateResult = emailValidator(email);
@@ -36,26 +36,28 @@ function SignUp() {
     }        
     else {
       hashedPassword = await hashPassword(password); // hash password
+      const postBody = {
+        username: username,
+        password: hashedPassword,
+        email: email,
+        hasVerified: false
+      };
       fetch(
         signUp_Url,
         {
           method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({username, hashedPassword, email}),
+          body: JSON.stringify(postBody),
         }
       )
-        .then((res) => {
-          if (res.ok) {
-
-          }
-        })
-        .then((res) => {
-          if(res.ok){
-            Cookies.set('signUpEmailCookie', email);
-            //   navigate('/emailVerf');
+        .then(response => response.json())
+        .then((data) => {
+          if(data.message === "Create user succeeded"){
+            Cookies.set('signUpUsernameCookie', username);
+            navigate('/emailVerf');
           } else {
-            alert(res.text);
+            alert(data.message);
           }
         })
         .catch((err)=> alert(err));
@@ -82,17 +84,17 @@ function SignUp() {
 
   return (
     <div className={classes.rootNormal}>
-      <div className={classes.formContainer}>
+      <div className={classes.formContainer} style={{width: '40%', }}>
         <form className={classes.form} onSubmit={handleSubmit}>
-          <Typography variant="h2" className={classes.form_title} style={{ color: 'orange' }}>
+          <Typography variant="h2" className={classes.form_title} style={{ color: '#FB9231' }}>
             Mini Twitter
           </Typography>
           <Box className = {classes.form_item}>
             <Typography variant="h6">Please fill in your email</Typography>
             <TextField
-              className={classes.textField}
               label="Email"
               variant="outlined"
+              className={classes.inputField}
               value={email}
               onChange={handleEmailChange}
               error={emailError}
@@ -107,9 +109,9 @@ function SignUp() {
           <Box className = {classes.form_item}>
             <Typography variant="h6">Please fill in your username:</Typography>
             <TextField
-              className={classes.textField}
               label="Username"
               variant="outlined"
+              className={classes.inputField}
               value={username}
               onChange={(event) => setUsername(event.target.value)}
               fullWidth
@@ -120,9 +122,9 @@ function SignUp() {
             Please fill in your Password:
             </Typography>
             <TextField
-              className={classes.textField}
               label="Password"
               variant="outlined"
+              className={classes.inputField}
               type="password"
               value={password}
               onChange={handlePasswordChange}

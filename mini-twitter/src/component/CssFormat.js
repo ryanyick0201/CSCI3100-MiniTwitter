@@ -6,7 +6,7 @@ export const UseStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
-    backgroundColor: '#FFA500',
+    backgroundColor: '#FFD6BA',
   },
   rootNormal: {
     display: 'flex',
@@ -18,9 +18,8 @@ export const UseStyles = makeStyles((theme) => ({
   formContainer: {
     display: 'flex',
     borderStyle: 'solid',
-    borderColor: 'grey',
+    borderColor: 'black',
     flexDirection: 'column',
-    alignItems: 'center',
     padding: theme.spacing(5),
     backgroundColor: 'white',
   },
@@ -31,7 +30,11 @@ export const UseStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
   },
   form_title: {
-    padding: '10px 50px 20px 50px',
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    padding: '0 0 20px 0',
+    fontWeight: 'bold', 
   },
   formDescription: {
     display: 'flex',
@@ -58,25 +61,27 @@ export const UseStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    padding: '0 0 10px 0',
-  },
-  textField: {
-    margin: theme.spacing(1),
-    width: '25ch',
-    
+    padding: '20px 0 10px 0',
   },
   linkText: {
     color: 'black',
+    textDecoration: 'none',
+    fontWeight: 'bold', 
   },
   submitButton: {
     margin: theme.spacing(2, 0),
   },
   button: {
     textTransform: 'none',
-    backgroundColor: 'orange',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    height: '46px',
+    width: '146px',
+    fontWeight: 'bold', 
+    color: 'white',
   },
   loginTitle: {
-    padding: '10px 0 20px 0',
+    padding: '0 0 20px 0',
     justifyContent: "start",
     alignItems: "flex-start",
   },
@@ -84,8 +89,10 @@ export const UseStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: "flex-start",
-    padding: '10px 0 20px 0',
-    backgroundColor: 'white',
+    padding: '30px 0 20px 0',
     justifyContent: "start",
   },
+  inputField: {
+    backgroundColor: "#FFF6F4",
+  }
 }));

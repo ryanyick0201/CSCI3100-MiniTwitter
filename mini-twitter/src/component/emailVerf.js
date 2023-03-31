@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button, FormControl, Typography, Box} from '@material-ui/core';
 import { UseStyles } from './CssFormat';
-import { optValidator, emailValidator } from './Validator';
+import { optValidator} from './Validator';
 import Cookies from 'js-cookie';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +16,7 @@ function EmailVerf() {
   //const classes = useStyles();
   const classes = UseStyles();
   const navigate  = useNavigate();
-  const userEmail = Cookies.get('signUpEmailCookie');
+  const username = Cookies.get('signUpUsernameCookie');
   const [otp, setOTP] = useState('');
   const [isResendEnable, setIsResendEnable] = useState(false);
   const [countdown, setCountdown] = useState(null);
@@ -49,23 +49,27 @@ function EmailVerf() {
     console.log('Send OTP button clicked');
     
     //Email validation
-    if (!userEmail) {     //If ok, call api with email to send 
-      let api_url = '';
+    if (username) {     //If ok, call api with email to send 
+      const api_url = 'http://'+ window.location.hostname + ':3000/setOTP';
+      const postBody = {
+        username: username
+      };
       fetch(
         api_url,
         {
-          method: 'GET',
+          method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({userEmail}),
+          body: JSON.stringify({postBody}),
         }
       )
-      .then((res) => {
-        if (res.ok) {
+      .then(response => response.json())
+      .then((data) => {
+        if (data.message === "Set otp success.") {
           alert("OTP is sended to your email account. ");
         } else {
           //Alert user
-          alert(res.text);
+          alert(data.message);
         }
       })
       .catch((err)=> alert(err) );
@@ -83,28 +87,30 @@ function EmailVerf() {
     if (otpValidateResult !== '') {
       alert(otpValidateResult);
     } else {
-      let api_url = '';
-      const userEmail = Cookies.get('signUpEmailCookie'); 
+      let api_url = 'http://'+ window.location.hostname + ':3000/verfOTP';
+      const postBody = {
+        username: username,
+        otp: otp
+      };
       fetch(
         api_url,
         {
-          method: 'GET',
+          method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({userEmail, otp}),
+          body: JSON.stringify(postBody),
         }
       )
-      .then((res) => {
-        if (res.ok) {
-          // Store email in cookie
+      .then(response => response.json())
+      .then((data) => {
+        if (data.message === "Verify otp success.") {
           navigate('/');
         } else {
           //Alert user
-          alert(res.text);
+          alert(data.message);
         }
       })
       .catch((err)=> alert(err) );
-      console.log('Form submitted');
     }
   };
 
@@ -127,6 +133,7 @@ function EmailVerf() {
             <TextField
               label="OTP"
               variant="outlined"
+              className={classes.inputField}
               value={otp}
               onChange={handleOtpChange}
               margin="dense"

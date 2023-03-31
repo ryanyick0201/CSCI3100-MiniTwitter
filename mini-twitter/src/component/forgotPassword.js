@@ -42,11 +42,11 @@ function ForgotPassword() {
       alert(emailValidateResult);
       return null;
     } else {     //If ok, call api with email to send 
-      let api_url = '';
+      let api_url ='http://'+ window.location.hostname + ':3000/setOTP';
       fetch(
         api_url,
         {
-          method: 'GET',
+          method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({email}),
@@ -79,7 +79,7 @@ function ForgotPassword() {
     if (otpValidateResult !== '') {
       alert(otpValidateResult);
     } else {
-      let api_url = '';
+      let api_url ='http://'+ window.location.hostname + ':3000/verifyOTP';
       const userEmail = Cookies.get('forgotPasswordEmailCookie'); 
       fetch(
         api_url,
@@ -123,7 +123,7 @@ function ForgotPassword() {
             Trouble with logging in?
           </Typography>
           <Typography variant="body1" className={classes.formDescription}>
-            Enter your email address and we'll send you an OTP. <br></br>
+            Enter your email address and we'll send you an OTP, <br></br>
                 you can change your password after login.
           </Typography>
           <FormControl onSubmit={handleSubmitOTP} className={classes.form}>
@@ -134,6 +134,7 @@ function ForgotPassword() {
               <TextField
                 label="Email"
                 variant="outlined"
+                className={classes.inputField}
                 value={email}
                 onChange={handleEmailChange}
                 margin="dense"
@@ -152,6 +153,7 @@ function ForgotPassword() {
               <TextField
                 label="OTP"
                 variant="outlined"
+                className={classes.inputField}
                 value={otp}
                 onChange={handleOtpChange}
                 margin="dense"
