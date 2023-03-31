@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core';
+import moment from 'moment';
 
 const useStyles = makeStyles({
     ol: {
@@ -36,7 +37,8 @@ const MsgBubble = ({ msgList }) => {
                     key={i}
                     className={classes.message + " " + (msg.isSender ? classes.sender : classes.guest)}
                 >
-                    <span>{msg.message}</span>
+                    <div>{msg.message}</div>
+                    <div style={{ border: "3px solid #73AD21", textAlign: "right", fontSize: "80%", fontStyle: "italic" }}>{moment(msg.sendTime).format("MMM Do, YYYY HH:mm")} </div>
                 </li>
             ))}
         </ol>
