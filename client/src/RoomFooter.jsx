@@ -64,7 +64,7 @@ const RoomFooter = ({ sendMessage, newMessage, setNewMessage, showEmojis, setSho
     /* Message event handlers end */
 
     return (
-        <Card square className={classes.footerContainer} style={{ display: "flex", width: "100%", minHeight: "10%", position: "absolute", bottom: 0, backgroundColor: "yellow" }}>
+        <Card square className={classes.footerContainer} style={{ display: "flex", width: "100%", minHeight: "10%", position: "absolute", bottom: 0 }}>
             <Grid container justifyContent="center" alignItems="center">
                 <IconButton className={classes.icon} onClick={handleShowEmojis}>
                     <InsertEmoticonIcon color={showEmojis ? "warning" : "disabled"} />

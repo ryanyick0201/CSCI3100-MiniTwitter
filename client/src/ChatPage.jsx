@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
+import { io } from "socket.io-client";
+
 
 import Room from './Room';
 import Panel from './Panel';
+
+const SOCKET_SERVER_URL = "http://localhost:3030";
+
 
 const useStyles = makeStyles({
     pageContainer: {
@@ -24,11 +29,14 @@ const useStyles = makeStyles({
 const ChatPage = ({ sender }) => {
     const classes = useStyles();
     const [recipient, setRecipient] = useState("");
+    console.log(`sender is ${sender}`);
+
+    const [socket, setSocket] = useState(io(SOCKET_SERVER_URL));
 
     return (
         <div className={classes.pageContainer}>
-            <Panel sender={sender ? sender : "Me"} setRecipient={setRecipient} />
-            <Room recipient={recipient} />
+            <Panel sender={sender} setRecipient={setRecipient} socket={socket} />
+            <Room sender={sender} recipient={recipient} socket={socket} />
         </div>
     )
 }

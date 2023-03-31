@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardActionArea, CardHeader, Avatar, makeStyles } from '@material-ui/core';
 import PanelHeader from './PanelHeader';
+import usePanel from "./usePanel.jsx";
+
 
 const useStyles = makeStyles({
     panelContainer: {
@@ -14,33 +16,24 @@ const useStyles = makeStyles({
     }
 }
 )
-// to be replaced by API
-const getRecipientList = () => {
-    const names = [];
-    for (let i = 0; i < 2; i++) {
-        names.push("Placeholder" + i);
-    }
-    return names;
-}
 
-
-const Panel = ({ sender, setRecipient }) => {
+const Panel = ({ sender, setRecipient, socket }) => {
     const classes = useStyles();
 
-    const [recipients, setRecipients] = useState(getRecipientList());
+    const { nameList } = usePanel(sender, socket);
 
     return (
         <Card square className={classes.panelContainer}>
             <PanelHeader sender={sender} />
             <div className={classes.recipientContainer}>
-                {recipients.map((recipient, i) => (
-                    <CardActionArea key={recipient}
+                {nameList.map((name, i) => (
+                    <CardActionArea key={name}
                         onClick={(e) => {
                             setRecipient(e.target.innerText);
                         }}>
                         <CardHeader
-                            avatar={<Avatar alt={recipient} src="" />}
-                            title={recipient} />
+                            avatar={<Avatar alt={name} src="" />}
+                            title={name} />
                     </CardActionArea>
                 ))}
             </div>

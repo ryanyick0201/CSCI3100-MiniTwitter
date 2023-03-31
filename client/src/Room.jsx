@@ -20,17 +20,16 @@ const useStyles = makeStyles({
     position: "relative"
   },
   messageContainer: {
-    backgroundColor: "red",
     overflowY: "auto",
     height: "80%"
   }
 });
 
-const Room = ({ recipient }) => {
+const Room = ({ sender, recipient, socket }) => {
   const classes = useStyles();
 
   // Hooks for sending messages
-  const { messages, sendMessage } = useChatRoom("Me", recipient);
+  const { messages, sendMessage } = useChatRoom(sender, recipient, socket);
   const [newMessage, setNewMessage] = useState("");
 
   // Scroll to bottom automatically on new message received
