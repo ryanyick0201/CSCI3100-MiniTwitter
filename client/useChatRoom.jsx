@@ -5,6 +5,7 @@ const NEW_MESSAGE_EVENT = "new-message-event";
 const SOCKET_SERVER_URL = "http://localhost:3030";
 
 const getMsgHistory = (msgSender, msgRecipient) => {
+  // to be replaced by API
   let serverRes = [{
     sender: msgSender,
     recipient: msgRecipient,
