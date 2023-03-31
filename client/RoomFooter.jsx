@@ -18,32 +18,33 @@ const useStyles = makeStyles({
 
 const RoomFooter = ({ sendMessage, newMessage, setNewMessage, showEmojis, setShowEmojis, cursorPos, inputRef }) => {
     const classes = useStyles();
-    // emojiPicker
+    /* emojiPicker */
     const handleShowEmojis = () => {
         inputRef.current.focus();
         setShowEmojis(!showEmojis);
     }
 
-
-
     useEffect(() => {
         inputRef.current.selectionEnd = cursorPos;
     }, [cursorPos])
-    // emojiPicker end
+    /* emojiPicker end */
 
-    // File uploader
-    const handleUploadClick = (e) => {
-        var file = e.target.files[0];
-        const reader = new FileReader();
-        var url = reader.readAsDataURL(file);
+    /* File uploader */
+    const handleSendFile = (e) => {
+        const files = e.target.files;
+        console.log(files);
+        for (let file of files) {
+            let msgObj = {
+                file: file,
+                mimeType: file.type,
+                fileName: file.name
+            };
+            sendMessage(msgObj, true);
+        }
+    }
+    /* File uploader end */
 
-
-        console.log("url", url); // Would see a path?
-
-    };
-    // File uploader end
-
-    // Message event handlers
+    /* Message event handlers */
     const handleNewMessageChange = (e) => {
         if (e.key !== "Enter") {
             setNewMessage(e.target.value);
@@ -60,6 +61,8 @@ const RoomFooter = ({ sendMessage, newMessage, setNewMessage, showEmojis, setSho
             handleSendMessage();
         }
     };
+    /* Message event handlers end */
+
     return (
         <Card square className={classes.footerContainer} style={{ display: "flex", width: "100%", minHeight: "10%", position: "absolute", bottom: 0, backgroundColor: "yellow" }}>
             <Grid container justifyContent="center" alignItems="center">
@@ -71,7 +74,7 @@ const RoomFooter = ({ sendMessage, newMessage, setNewMessage, showEmojis, setSho
                     id="img-uploader"
                     multiple
                     type="file"
-                    onChange={handleUploadClick}
+                    onChange={handleSendFile}
                 />
                 <label htmlFor="img-uploader">
                     <IconButton component="span" className={classes.icon}>

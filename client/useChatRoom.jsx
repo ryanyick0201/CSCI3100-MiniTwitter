@@ -55,10 +55,11 @@ const useChatRoom = (msgSender, msgRecipient) => {
     };
   }, []);
 
-  const sendMessage = (messageBody) => {
+  const sendMessage = (messageBody, isFile = false) => {
     socketRef.current.emit(NEW_MESSAGE_EVENT, {
       sender: msgSender,
       recipient: msgRecipient,
+      isFile: isFile,
       message: messageBody,
       sendTime: new Date()
     });
