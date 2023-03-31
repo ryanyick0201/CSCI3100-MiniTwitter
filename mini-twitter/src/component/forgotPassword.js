@@ -1,26 +1,107 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { TextField, Button, FormControl, Typography, Box } from '@material-ui/core';
 import { UseStyles } from './CssFormat';
+import { emailValidator, optValidator } from './Validator';
+import Cookies from 'js-cookie';
 
 function ForgotPassword() {
   const classes = UseStyles();
+  const navigate  = useNavigate();
   const [email, setEmail] = useState('');
   const [otp, setOTP] = useState('');
+  const [buttonText, setButtonText] = useState('Send me OTP');
+  const [isResendEnable, setIsResendEnable] = useState(false);
+  const [isSubmitEnable, setIsSubmitEnable] = useState(false);
+  const [countdown, setCountdown] = useState(null);
+
+  useEffect(() => {
+    let interval;
+    if (isResendEnable) {
+      interval = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isResendEnable]);
+
+  useEffect(() => {
+    if (countdown === 0) {
+      setIsResendEnable(false);
+      setButtonText('Send me OTP');
+    }
+  }, [countdown]);
 
   const handleSendOTP = (event) => {
     event.preventDefault();
     console.log('Send OTP button clicked');
     
-    
+    //Email validation
+    let emailValidateResult = emailValidator(email);
+    if (emailValidateResult !== "") {
+      alert(emailValidateResult);
+      return null;
+    } else {     //If ok, call api with email to send 
+      let api_url = '';
+      fetch(
+        api_url,
+        {
+          method: 'GET',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({email}),
+        }
+      )
+      .then((res) => {
+        if (res.ok) {
+          // Store email in cookie
+          Cookies.set('forgotPasswordEmailCookie', email);
+          // Enable OTP Submit button
+          setIsSubmitEnable(false);
+        } else {
+          //Alert user
+          alert(res.text);
+        }
+      })
+      .catch((err)=> alert(err) );
+      
+      //Change Button text to Resend and only can click resend button each 60 second
+      setIsResendEnable(true);
+      setButtonText('Resend');
+      setCountdown(60);
+    }
   }
 
   const handleSubmitOTP = (event) => {
     event.preventDefault();
-    event.preventDefault();
-    console.log('Form submitted');
-    console.log('OTP:', otp);
-
+    console.log('Enter handleSubmitOTP');
+    let otpValidateResult = optValidator(otp);
+    if (otpValidateResult !== '') {
+      alert(otpValidateResult);
+    } else {
+      let api_url = '';
+      const userEmail = Cookies.get('forgotPasswordEmailCookie'); 
+      fetch(
+        api_url,
+        {
+          method: 'GET',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({userEmail, otp}),
+        }
+      )
+      .then((res) => {
+        if (res.ok) {
+          // Store email in cookie
+          navigate('/');
+        } else {
+          //Alert user
+          alert(res.text);
+        }
+      })
+      .catch((err)=> alert(err) );
+      console.log('Form submitted');
+    }
   }
   
   const handleEmailChange = (event) => {
@@ -28,7 +109,10 @@ function ForgotPassword() {
   };
 
   const handleOtpChange = (event) => {
-    setOTP(event.target.value);
+    const input = event.target.value.replace(/\D/g, '');
+    if (input.length <= 6) {
+      setOTP(input);
+    }
   };
 
   return (
@@ -57,8 +141,8 @@ function ForgotPassword() {
               />
             </Box>
             <Box className={classes.form_button_grp}>
-              <Button variant="contained" color="primary" onClick={handleSendOTP} classes={{ root: classes.button }}>
-                Send me OTP
+              <Button variant="contained" color="primary" disabled={isResendEnable} onClick={handleSendOTP} classes={{ root: classes.button }}>
+                {buttonText} {countdown !== null && countdown !== 0 && `(${countdown}s)`}
               </Button>
             </Box>
             <Box mt={2} className={classes.form_item}>
@@ -71,11 +155,12 @@ function ForgotPassword() {
                 value={otp}
                 onChange={handleOtpChange}
                 margin="dense"
+                inputProps={{ maxLength: 6, pattern: '[0-9]*' }}
                 fullWidth
               />
             </Box>
             <Box className={classes.form_button_grp}>
-              <Button type="submit" variant="contained" color="primary" classes={{ root: classes.button }}>
+              <Button variant="contained" color="primary" disabled={isSubmitEnable} onClick={handleSubmitOTP} type="submit" classes={{ root: classes.button }}>
                 Submit
               </Button>
             </Box>

@@ -7,19 +7,29 @@ export const emailValidator = email => {
     return "";
   };
 
+  export const optValidator = otp => {
+    if (!otp) { //invalid
+      return 'OTP is required';
+    } else if (/^\d{6}$/.test(otp)) { //valid
+      return '';
+    } else { //invalid
+      return 'The lenght of OTP should be 6 and only 0-9 digit is allowed.';
+    }
+  }
+
   export const usernameValidator = username => {
     if (!username) {
       return "Username is required";
     } else if (username.includes("admin")) {
         return "Username cannot include 'admin'";
       } else if (username.length < 4 || username.length > 16) {
-        return "Length of Username length should be between 4 to 16";
+        return "Length of Username should be between 4 to 16";
       } 
     return "";
   };
   
   export const passwordValidator = password => {
-    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,16}$/;
+    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,16}$/;
     if (!password) {
         return "Password is required";
     } else if (!regex.test(password)) {

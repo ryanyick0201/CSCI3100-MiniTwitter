@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate  } from 'react-router-dom';
 import { TextField, Button, Typography, FormControl, Box} from '@material-ui/core';
 import { UseStyles } from './CssFormat';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
 import {
   usernameValidator,
   passwordValidator,
@@ -33,7 +33,7 @@ function Login() {
     if (username === 'admin' && password === 'admin') {
       console.log('Login as Admin');
       mode = 'admin';
-      login_Url = login_Url + '/loginOut/adminLogin';
+      login_Url = login_Url + '/loginOut/adminLogin'; //change it if needed
     } else {
         console.log('Login as User');
         let userValidateResult = usernameValidator(username);
@@ -80,7 +80,7 @@ function Login() {
 
   return (
     <div className={classes.root}>
-      <div className={classes.formContainer} style={{padding:'150px 150px 150px 150px'}}>
+      <div className={classes.formContainer} style={{padding:'120px 120px 120px 120px'}}>
       <Box m={2} p={2} border={1} borderColor="grey.400">
         <Typography variant="h6" className={classes.loginDesc}>
           Welcome back
