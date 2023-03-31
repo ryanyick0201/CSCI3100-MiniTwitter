@@ -1,5 +1,7 @@
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 import moment from 'moment';
+//import { Blob } from 'buffer'
 
 const useStyles = makeStyles({
     ol: {
@@ -26,6 +28,20 @@ const useStyles = makeStyles({
     }
 });
 
+const Image = ({ fileName, blob }) => {
+    const [imgSrc, setImgSrc] = useState("");
+
+    useEffect(() => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+            setImgSrc(reader.result);
+        }
+    }, [blob]);
+    return (
+        <div><img style={{ width: 150, height: "auto" }} src={imgSrc} alt={fileName} /></div>
+    );
+}
 
 const MsgBubble = ({ msgList }) => {
     const classes = useStyles();
@@ -37,7 +53,11 @@ const MsgBubble = ({ msgList }) => {
                     key={i}
                     className={classes.message + " " + (msg.isSender ? classes.sender : classes.guest)}
                 >
-                    <div>{msg.message}</div>
+                    {
+                        (msg.isImg &&
+                            <Image fileName={msg.message.fileName} blob={new Blob([msg.message.file], { type: msg.message.mimeType })} />
+                        ) || <div>{msg.message}</div>
+                    }
                     <div style={{ border: "3px solid #73AD21", textAlign: "right", fontSize: "80%", fontStyle: "italic" }}>{moment(msg.sendTime).format("MMM Do, YYYY HH:mm")} </div>
                 </li>
             ))}

@@ -32,15 +32,16 @@ const RoomFooter = ({ sendMessage, newMessage, setNewMessage, showEmojis, setSho
     /* File uploader */
     const handleSendFile = (e) => {
         const files = e.target.files;
-        console.log(files);
         for (let file of files) {
             let msgObj = {
                 file: file,
                 mimeType: file.type,
                 fileName: file.name
             };
+            console.log(msgObj);
             sendMessage(msgObj, true);
         }
+        e.target.value = null;
     }
     /* File uploader end */
 

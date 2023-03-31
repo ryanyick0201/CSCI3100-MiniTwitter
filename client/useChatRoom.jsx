@@ -9,6 +9,7 @@ const getMsgHistory = (msgSender, msgRecipient) => {
   let serverRes = [{
     sender: msgSender,
     recipient: msgRecipient,
+    isImg: false,
     message: "getMsgHistory functioning for" + msgRecipient,
     sendTime: new Date(2018, 11, 24, 25, 33, 30, 0)
   }]
@@ -55,12 +56,12 @@ const useChatRoom = (msgSender, msgRecipient) => {
     };
   }, []);
 
-  const sendMessage = (messageBody, isFile = false) => {
+  const sendMessage = (messageBody, isImg = false) => {
     socketRef.current.emit(NEW_MESSAGE_EVENT, {
       sender: msgSender,
       recipient: msgRecipient,
-      isFile: isFile,
-      message: messageBody,
+      isImg: isImg,
+      message: messageBody, // if (isImg) message = {file, mimeType, fileName} else message is String
       sendTime: new Date()
     });
   };
