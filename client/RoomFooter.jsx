@@ -38,7 +38,6 @@ const RoomFooter = ({ sendMessage, newMessage, setNewMessage, showEmojis, setSho
                 mimeType: file.type,
                 fileName: file.name
             };
-            console.log(msgObj);
             sendMessage(msgObj, true);
         }
         e.target.value = null;
