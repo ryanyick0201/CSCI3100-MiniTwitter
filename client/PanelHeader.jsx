@@ -10,16 +10,13 @@ const PanelHeader = ({ sender }) => {
         <Card square style={{ height: "10%" }}>
             <Grid container justifyContent="center" alignItems="center">
                 <CardHeader
-                    avatar={
-                        <Avatar alt={sender} src="/" />
-                    }
+                    avatar={<Avatar alt={sender} src="/" />}
                     title={sender}
-                    action={
-                        <IconButton aria-label="compose" onClick={handleCompose}>
-                            <RateReviewIcon color="warning" />
-                        </IconButton>
-                    }
                 />
+
+                <IconButton aria-label="compose" onClick={handleCompose}>
+                    <RateReviewIcon color="warning" />
+                </IconButton>
             </Grid>
         </Card>
     )

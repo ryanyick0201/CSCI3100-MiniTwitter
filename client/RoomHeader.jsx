@@ -5,9 +5,7 @@ const RoomHeader = ({ recipient }) => {
         <Card square style={{ backgroundColor: "green", height: "10%" }}>
             <Grid container justifyContent="center" alignItems="center">
                 <CardHeader
-                    avatar={
-                        <Avatar alt={recipient} src="" />
-                    }
+                    avatar={<Avatar alt={recipient} src="" />}
                     title={recipient}
                 />
             </Grid>
