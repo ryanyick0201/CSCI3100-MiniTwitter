@@ -5,14 +5,16 @@ const NEW_MESSAGE_EVENT = "new-message-event";
 const SOCKET_SERVER_URL = "http://localhost:3030";
 
 const getMsgHistory = (msgSender, msgRecipient) => {
-  if (msgRecipient == 'Placeholder0')
-    return ([{
-      sender: msgSender,
-      recipient: msgRecipient,
-      message: "getMsgHistory functioning",
-      sendTime: new Date(2018, 11, 24, 10, 33, 30, 0)
-    }])
-  else return [];
+  let serverRes = [{
+    sender: msgSender,
+    recipient: msgRecipient,
+    message: "getMsgHistory functioning for" + msgRecipient,
+    sendTime: new Date(2018, 11, 24, 10, 33, 30, 0)
+  }]
+  serverRes.forEach((item) => {
+    item.isSender = (item.sender == msgSender);
+  })
+  return serverRes
 }
 
 
@@ -23,7 +25,7 @@ const useChatRoom = (msgSender, msgRecipient) => {
     setMessages(() => getMsgHistory(msgSender, msgRecipient));
   }, [msgRecipient])
 
-
+  console.log(messages);
   const socketRef = useRef();
   useEffect(() => {
     socketRef.current = socketIOClient(SOCKET_SERVER_URL);
