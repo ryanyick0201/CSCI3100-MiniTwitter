@@ -24,19 +24,19 @@ const getRecipientList = () => {
 }
 
 
-const Panel = ({ setRoomName }) => {
+const Panel = ({ sender, setRecipient }) => {
     const classes = useStyles();
 
     const [recipients, setRecipients] = useState(getRecipientList());
 
     return (
         <Card square className={classes.paper}>
-            <PanelHeader sender="MeMeMeMeMeMeMeMe" />
+            <PanelHeader sender={sender} />
             <div className={classes.recipientContainer}>
                 {recipients.map((recipient, i) => (
                     <CardActionArea key={recipient}
                         onClick={(e) => {
-                            setRoomName(e.target.innerText);
+                            setRecipient(e.target.innerText);
                         }}>
                         <CardHeader
                             avatar={<Avatar alt={recipient} src="" />}

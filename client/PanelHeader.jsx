@@ -15,7 +15,7 @@ const PanelHeader = ({ sender }) => {
                     }
                     title={sender}
                     action={
-                        <IconButton aria-label="compose">
+                        <IconButton aria-label="compose" onClick={handleCompose}>
                             <RateReviewIcon color="warning" />
                         </IconButton>
                     }

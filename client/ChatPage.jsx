@@ -21,12 +21,12 @@ const useStyles = makeStyles({
 
 const ChatPage = () => {
     const classes = useStyles();
-    const [roomName, setRoomName] = useState("");
+    const [recipient, setRecipient] = useState("");
 
     return (
         <div className={classes.pageContainer}>
-            <Panel setRoomName={setRoomName} />
-            <Room roomName={roomName} />
+            <Panel sender="Me" setRecipient={setRecipient} />
+            <Room recipient={recipient} />
         </div>
     )
 }

@@ -26,11 +26,11 @@ const useStyles = makeStyles({
   }
 });
 
-const Room = ({ roomName }) => {
+const Room = ({ recipient }) => {
   const classes = useStyles();
 
   // Hooks for sending messages
-  const { messages, sendMessage } = useChatRoom("Me", roomName);
+  const { messages, sendMessage } = useChatRoom("Me", recipient);
   const [newMessage, setNewMessage] = useState("");
 
   // Scroll to bottom automatically on new message received
@@ -59,7 +59,7 @@ const Room = ({ roomName }) => {
   return (
     <Paper elevation={8} className={classes.paper}>
 
-      <RoomHeader roomName={roomName} />
+      <RoomHeader recipient={recipient} />
 
       <div className={classes.messageContainer}>
         <MsgBubble msgList={messages} />

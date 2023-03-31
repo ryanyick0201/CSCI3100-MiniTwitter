@@ -9,27 +9,37 @@ const getMsgHistory = (msgSender, msgRecipient) => {
     sender: msgSender,
     recipient: msgRecipient,
     message: "getMsgHistory functioning for" + msgRecipient,
-    sendTime: new Date(2018, 11, 24, 10, 33, 30, 0)
+    sendTime: new Date(2018, 11, 24, 25, 33, 30, 0)
   }]
   serverRes.forEach((item) => {
     item["isSender"] = (item.sender == msgSender);
   })
-  return serverRes
+  return serverRes;
 }
 
+const nameRoomBetween = (msgSender, msgRecipient) => {
+  const participant = [msgSender, msgRecipient].sort();
+  return participant.join("");
+};
 
 const useChatRoom = (msgSender, msgRecipient) => {
+  const socketRef = useRef();
+  socketRef.current = socketIOClient(SOCKET_SERVER_URL);
+
   const [messages, setMessages] = useState([]);
+
+  // Fetch Msg History whenever switch to a new room
+  // change to be an on connection successful event? Not sure if possible
   useEffect(() => {
     console.log(msgSender, msgRecipient);
+    // Join chat room, emit a string of roomName to server(written by Raymond)
+    socketRef.current.emit("joinRoom", nameRoomBetween(msgSender, msgRecipient))
     setMessages(() => getMsgHistory(msgSender, msgRecipient));
   }, [msgRecipient])
 
-  console.log(messages);
-  const socketRef = useRef();
-  useEffect(() => {
-    socketRef.current = socketIOClient(SOCKET_SERVER_URL);
 
+  useEffect(() => {
+    // Receive message
     socketRef.current.on(NEW_MESSAGE_EVENT, (message) => {
       const incomingMessage = {
         ...message,
