@@ -1,0 +1,27 @@
+Socket event
+--------------------
+Notes:  All FE socket events are in the useXXX.jsx files,
+        Expect BE to maintain an array of online users and their corresponding socket Id
+        const NEW_MESSAGE_EVENT = "newMessageEvent"
+        
+additional Ref: (Sending realtime notification) https://youtu.be/7vVqMR96T5o?t=2870
+
+Event sequence:
+// When a user (sender) open the chatroom with another user (recipient)
+Client -> Server: emit("joinRoom", [msgSender, msgRecipient])
+/* then Server should emit another event to pass the chat history between the two to client */
+
+// When sender sends message
+Client -> Server: emit(NEW_MESSAGE_EVENT, {
+      sender: msgSender,
+      recipient: msgRecipient,
+      isImg: isImg,
+      message: messageBody, // if (isImg): message = {file, mimeType, fileName} else message is String
+      sendTime: new Date()
+    });
+/* Server sets maxHttpBufferSize to accommodate larger files (default: 1MB) */
+/* then Server should emit(NEW_MESSAGE_EVENT, msgObj) to the room, where msgObj := the message object sent to the server
+   write the msgObj to DB,
+   emit("getNotification", panelList) to the each user in the room, each user should have its unique list
+      where panelList := the list on the LHS panel of Whatsapp/ Signal
+*/
