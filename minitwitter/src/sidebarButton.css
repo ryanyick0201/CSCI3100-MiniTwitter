@@ -1,0 +1,16 @@
+.button{
+    display: flex;
+    align-items: cover;
+    border-radius: 40px;
+  }
+  .button:hover{
+    background-color: #f4f6f7;
+    color: #e77524;    
+  }
+  .button > h2{    
+    font-size: 20px;    
+  }
+
+  .button > .MuiSvgIcon-root {
+    padding: 20px;
+  }
