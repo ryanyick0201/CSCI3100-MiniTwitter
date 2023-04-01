@@ -35,7 +35,7 @@ const ChatPage = ({ sender }) => {
 
     return (
         <div className={classes.pageContainer}>
-            <Panel sender={sender} setRecipient={setRecipient} socket={socket} />
+            <Panel sender={sender} recipient={recipient} setRecipient={setRecipient} socket={socket} />
             <Room sender={sender} recipient={recipient} socket={socket} />
         </div>
     )

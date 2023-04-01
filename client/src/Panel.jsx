@@ -17,14 +17,14 @@ const useStyles = makeStyles({
 }
 )
 
-const Panel = ({ sender, setRecipient, socket }) => {
+const Panel = ({ sender, recipient, setRecipient, socket }) => {
     const classes = useStyles();
 
     const { nameList } = usePanel(sender, socket);
 
     return (
         <Card square className={classes.panelContainer}>
-            <PanelHeader sender={sender} />
+            <PanelHeader sender={sender} recipient={recipient} setRecipient={setRecipient} />
             <div className={classes.recipientContainer}>
                 {nameList.map((name, i) => (
                     <CardActionArea key={name}
