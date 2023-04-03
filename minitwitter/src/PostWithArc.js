@@ -81,7 +81,7 @@ const Post = ({ post }) => {
     </Card>
 
     <div>
-        <Button  size="small" color="primary">
+        <Button  size="small" style={{backgroundColor: 'orange'}}>
           archive
         </Button>
     </div>

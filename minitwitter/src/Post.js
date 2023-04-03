@@ -13,6 +13,9 @@ const Post = ({ post }) => {
   const [disliked, setDisliked] = React.useState(false);
   const [likes, setLikes] = React.useState(post.likes);
   const [dislikes, setDislikes] = React.useState(post.dislikes);
+  
+
+
 
   const handleLike = () => {
     if (liked) {

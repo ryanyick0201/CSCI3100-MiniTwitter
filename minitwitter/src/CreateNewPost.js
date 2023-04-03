@@ -64,7 +64,7 @@ const CreateNewPost = ({ username, avatar }) => {
       </div>
 
       <div className="submit">
-      <Button component={Link} to="/" onClick={handleSubmit}>Submit</Button>
+      <Button component={Link} to="/home" onClick={handleSubmit} style={{backgroundColor: 'orange'}}>Submit</Button>
       </div>
     </div>
   );

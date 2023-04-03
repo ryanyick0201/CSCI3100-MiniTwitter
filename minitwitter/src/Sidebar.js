@@ -3,10 +3,11 @@ import SidebarButton from "./SidebarButton";
 
 import HomeIcon from "@material-ui/icons/Home";
 import SearchIcon from "@material-ui/icons/Search";
-import NotificationsNoneIcon from "@material-ui/icons/NotificationsNone";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import ListAltIcon from "@material-ui/icons/ListAlt";
-import PermIdentityIcon from "@material-ui/icons/PermIdentity";
+import PeopleIcon from '@material-ui/icons/People';
+import ChatIcon from '@material-ui/icons/Chat';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 
 
@@ -16,12 +17,12 @@ function Sidebar(){
   return(
     <div className="sidebar">
         <SidebarButton text="Home" Icon={HomeIcon} to="/" />
-        <SidebarButton text="Profile" Icon={PermIdentityIcon} to="/profile" />
-        <SidebarButton text="Followers" Icon={NotificationsNoneIcon} to="/followers" />
-        <SidebarButton text="Chat" Icon={MailOutlineIcon} to="/chat" />
+        <SidebarButton text="Profile" Icon={AccountCircleIcon} to="/my profile" />
+        <SidebarButton text="Followers" Icon={PeopleIcon} to="/followers" />
+        <SidebarButton text="Chat" Icon={ChatIcon} to="/chat" />
         <SidebarButton text="Search" Icon={SearchIcon} to="/search" />
-        <SidebarButton text="Recommendation" Icon={ListAltIcon} to="/recommendation" />
-        <SidebarButton text="Sign out" Icon={PermIdentityIcon} to="/sign out" />
+        <SidebarButton text="Recommendation" Icon={ThumbUpIcon} to="/recommendation" />
+        <SidebarButton text="Sign out" Icon={ExitToAppIcon} to="/out" />
   
     </div>
   );

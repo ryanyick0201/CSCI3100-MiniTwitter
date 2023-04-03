@@ -6,6 +6,10 @@ import CreateNewPost from './CreateNewPost'
 import FollowerPage from './FollowerPage'
 import ProfilePage from './ProfilePage'
 import EditProfile from './EditProfile'
+import SearchPage from './SearchPage'
+import RecommendationPage from './RecommendationPage'
+import OtherProfilePage from './OtherProfilePage'
+import AdminPage from './AdminPage'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -94,7 +98,7 @@ function App(){
   return (
     <Router>
       <div>
-        <Sidebar />
+      <Sidebar />        
         <Routes>
           <Route
             path="/"
@@ -121,7 +125,7 @@ function App(){
         </Routes>
         <Routes>
           <Route
-            path="/profile"
+            path="/my profile"
             element={<ProfilePage posts={posts} />}
           />
         </Routes>
@@ -129,6 +133,30 @@ function App(){
           <Route
             path="/profileedit"
             element={<EditProfile />}
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/search"
+            element={<SearchPage />}
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/recommendation"
+            element={<RecommendationPage posts={posts} />}
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/other profile"
+            element={<OtherProfilePage posts={posts} />}
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/admin"
+            element={<AdminPage />}
           />
         </Routes>
       </div>

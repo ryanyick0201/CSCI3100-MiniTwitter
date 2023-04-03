@@ -4,7 +4,7 @@
     border-radius: 40px;
   }
   .button:hover{
-    background-color: #f4f6f7;
+    background-color: #cecbca;
     color: #e77524;    
   }
   .button > h2{    
@@ -13,4 +13,8 @@
 
   .button > .MuiSvgIcon-root {
     padding: 20px;
+  }
+
+  a {
+    color: orange;
   }

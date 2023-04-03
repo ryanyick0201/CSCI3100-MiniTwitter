@@ -99,7 +99,7 @@ const PostWithBox = ({ post }) => {
         minRows={4}
         fullWidth
       />      
-    <Button onClick={handleSubmit}>Submit</Button>
+    <Button style={{backgroundColor: 'orange'}} onClick={handleSubmit}>Submit</Button>
     </div>
     
 

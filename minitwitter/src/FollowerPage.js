@@ -21,8 +21,8 @@ function FollowerPage({ followers, following, followRequests }) {
                 <h4>{request.name}</h4>                
               </CardContent>
               <CardActions style={{ display: 'flex', justifyContent: 'space-between', marginLeft: 'auto' }}>
-                <Button size="small">Accept</Button>
-                <Button size="small">Decline</Button>
+                <Button style={{backgroundColor: 'orange'}} size="small">Accept</Button>
+                <Button style={{backgroundColor: 'orange'}} size="small">Decline</Button>
               </CardActions>
             </Card>
           ))
@@ -35,8 +35,8 @@ function FollowerPage({ followers, following, followRequests }) {
                   <h4>{request.name}</h4>                  
                 </CardContent>
                 <CardActions style={{ display: 'flex', justifyContent: 'space-between', marginLeft: 'auto' }}>
-                  <Button size="small">Accept</Button>
-                  <Button size="small">Decline</Button>
+                  <Button style={{backgroundColor: 'orange'}} size="small">Accept</Button>
+                  <Button style={{backgroundColor: 'orange'}} size="small">Decline</Button>
                 </CardActions>
               </Card>
             ))}
@@ -45,7 +45,7 @@ function FollowerPage({ followers, following, followRequests }) {
                 
                 <div style={{ height: 16 }} />
                 
-                <Button variant="outlined" onClick={() => setShowAllRequests(true)}>
+                <Button style={{backgroundColor: 'orange'}} variant="outlined" onClick={() => setShowAllRequests(true)}>
                   View More
                 </Button>
               </>
@@ -63,7 +63,7 @@ function FollowerPage({ followers, following, followRequests }) {
               <h4>{follower.name}</h4>              
             </CardContent>            
             <CardActions style={{ marginLeft: 'auto' }}>
-              <Button size="small">Remove</Button>
+              <Button style={{backgroundColor: 'orange'}} size="small">Remove</Button>
             </CardActions>
           </Card>
         ))}
@@ -78,7 +78,7 @@ function FollowerPage({ followers, following, followRequests }) {
               <h4>{followee.name}</h4>              
             </CardContent>
             <CardActions style={{ marginLeft: 'auto' }}>
-              <Button size="small">Remove</Button>
+              <Button style={{backgroundColor: 'orange'}} size="small">Remove</Button>
             </CardActions>
           </Card>
         ))}
