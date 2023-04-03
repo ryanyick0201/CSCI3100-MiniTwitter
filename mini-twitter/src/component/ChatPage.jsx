@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
 import { io } from "socket.io-client";
 
-import Room from "./Room";
-import Panel from "./Panel";
+import Room from "./chatComponent/Room";
+import Panel from "./chatComponent/Panel";
 
 const SOCKET_SERVER_URL = "http://localhost:3030";
 
