@@ -21,8 +21,7 @@ router.use(sessions({
 var session;
 
 router.post('/login', async (req, res) => {
-    if (req.body.username.includes("admin"))
-        x = await login(req.body.username, req.body.password);
+    x = await login(req.body.username, req.body.password);
 
     if (JSON.parse(x).message === 'Login succeeded.'){
         session = req.session;
