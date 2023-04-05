@@ -12,7 +12,7 @@ async function login(username, password){
         else
             var rows = await query(`SELECT * FROM USER WHERE username = ?`, [username]);
             
-        if (username === rows[0].username){
+        if (rows.length > 0 && username === rows[0].username){
             if (bcrypt.compareSync(password, rows[0].password))
                 if (rows[0].hasVerified)
                     return `{"message": "Login succeeded."}`;
