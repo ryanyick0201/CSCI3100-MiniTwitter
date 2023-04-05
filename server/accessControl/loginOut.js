@@ -7,8 +7,11 @@ async function login(username, password){
             throw `{"message": "Field(s) missing."}`;
         }
 
-        var rows = await query(`SELECT * FROM USER WHERE username = ?`, [username]);
-        
+        if (username.includes("admin"))
+            var rows = await query(`SELECT * FROM ADMIN WHERE adminname = ?`, [username]);
+        else
+            var rows = await query(`SELECT * FROM USER WHERE username = ?`, [username]);
+            
         if (username === rows[0].username){
             if (bcrypt.compareSync(password, rows[0].password))
                 if (rows[0].hasVerified)
