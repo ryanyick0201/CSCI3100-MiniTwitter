@@ -26,3 +26,213 @@ Step 3: write codes on server.js to integrate the module into the server
 
 // This video gives you lots of hints: https://www.youtube.com/watch?v=jD7FnbI76Hg&ab_channel=TraversyMedia
 // Check the description box for the GitHub code too. You'll know more about how it works (and copy half of the code).
+
+// calling libraries
+
+
+const express = require("express");
+const app = express();
+const router = express.Router();
+const bodyParser = require('body-parser');
+router.use(bodyParser.json());
+
+
+const cors = require("cors");
+const http = require("http");
+const socketIO = require("socket.io");
+const{query} = require('../database')
+const {searchUserByUsername} = require('../user/user');
+const{findRoom, addRoom} = require('./room.js')
+
+
+const PORT = 3030;
+const NEW_MESSAGE_EVENT = "newMessageEvent";
+
+const server = http.createServer(app);
+const io = socketIO(server, {
+  cors: true,
+  origins: ["localhost:3000"]
+});
+
+app.use(cors());
+
+io.on('connection', async (socket) => {
+    console.log('a user connected');
+    let socketRoomId = -1;
+    let userIdPair = [];
+
+    socket.on('joinRoom0', () => {
+        console.log('user clicked joinRoom0');
+        socket.join('0');
+    });
+
+    socket.on('sendTestToRoom0', () => {
+        console.log('user pressed sendTestToRoom0');
+        io.to('0').emit('chat message', 'this is a test message to room0');
+        // io.to('0').emit('to console', 'asdfasdf');
+
+    });
+
+    socket.on('joinRoom', async(usernamePair) => {
+        console.log('joinRoom event triggered', usernamePair);
+        console.log(`${usernamePair[0]} want to open a room with ${usernamePair[1]}`);
+        
+        // find userid of the pair
+        userIdPair = await findUserIdPair(usernamePair);
+        console.log(userIdPair);
+        
+        // find room number, if not exist, open enw
+        socketRoomId = findRoom(userIdPair);
+        if(socketRoomId == '-1'){
+            socketRoomId = addRoom(userIdPair);
+        }
+        console.log('socketRoomId is', socketRoomId);
+
+        // join the room
+        await socket.join(socketRoomId);
+
+        // testing code after joining the room
+        // for unknown reason, sending to room requires me to call io object directly
+        // if use original socket inside the joinroom callback, it does not work
+        // socket.emit('chat message', 'this is emit message after join room, emit not room');
+        // socket.in(socketRoomId).emit('chat message', 'this is emit message after join room, emit in room');
+        // io.to(socketRoomId).emit('chat message', 'this is emit message after join room, emit to room');
+
+        // fetch chat history
+        fetchChat(userIdPair).then(result => {
+        console.log("chat history succesfully retreived");
+        io.to(socket.id).emit('chat message', `this is emit message after ${socket.id} join retrieving chat history`);
+        io.to(socket.id).emit('to console', result);
+        });
+    });
+
+    // handle client sending message
+    socket.on(NEW_MESSAGE_EVENT, (data) => {
+        console.log("receive msg from client:" + data['message']);
+
+        // send to other client in the room
+        io.in(socketRoomId).emit(NEW_MESSAGE_EVENT, data);
+
+        // write to the database
+        if(!data['isImg']){
+            writeChatToDb(data['message'], userIdPair )
+        }
+    });
+
+
+    socket.on('chat message', (msg) => {
+        console.log('message: ' + msg);
+        io.to('0').emit('chat message', msg);
+    });
+
+    socket.on('disconnect', () => {
+        // socket.leave(socketRoomId);
+        console.log('user disconnected');
+    });
+});
+  
+server.listen(PORT, () => {
+  console.log(`listening on *:${PORT}`);
+  
+});
+
+
+async function findUserIdPair(usernamePair){
+    try{
+        var id1 = await searchUserByUsername(usernamePair[0], "true");
+        var id2 = await searchUserByUsername(usernamePair[1], "true");
+        id1 = JSON.parse(id1).result[0].userId;
+        id2 = JSON.parse(id2).result[0].userId;
+        const userIdPair = [id1, id2];
+        // console.log(userIdPair);
+        return userIdPair;
+    } catch {
+        console.log('findUserIdPair failed,  db error.');
+        return `{"message": "findUserIdPair failed. db error."}`;
+    }
+}
+
+async function fetchChat(userIdPair){
+    // console.log("this is start of fetchChat, at this point userIdPair is ");
+    // console.log(userIdPair);
+    // fetch userId
+    // console.log('starting to fetch userids');
+    // let userIds = await findUserIdPair(usernamePair);
+    // console.log('userIds are', userIds)
+    // fetch chat
+    try{
+        let rows = await query(
+            `SELECT *
+            FROM Message m
+            WHERE (m.sender = ${userIdPair[0]} and m.receiver = ${userIdPair[1]}) OR (m.sender = ${userIdPair[1]} and m.receiver = ${userIdPair[0]}) 
+            ORDER BY sendTime ASC;`);
+        console.log('Retrieve chats success');
+        return rows;
+    } catch {
+        console.log("Retrieve chats failed. DB error");     
+    }
+} 
+
+
+async function writeChatToDb(messageContent, userIdPair){
+    
+    try{
+        const now = new Date();
+        const formattedTime = now.toISOString().replace('T', ' ').slice(0, -5);
+    
+        let x = await query(`INSERT INTO Message (message, sendTime, sender, receiver, isFile)
+        VALUES (?, ?, ?, ?, ?)`, [messageContent, formattedTime, userIdPair[0], userIdPair[1], false]);
+
+        console.log("write chat to db success");
+        return `{"message": "Create a tweet success"}`;
+    } catch {
+        return `{"message": "write chat to db failed. db error."}`;
+    }
+};
+
+  
+
+
+// server.listen(PORT, () => {
+//   console.log(`listening on *:${PORT}`);
+  
+// });
+
+
+router.get('/', async (req, res) => {
+    res.send("this is chat!");   
+});
+
+router.get('/chatTables',  async (req, res) => {
+    const username = req.query.username || '';
+    let resultString = `The chatTables of ${username} is:`;
+    
+    // fetch userId
+    var id = await searchUserByUsername(username, "true");
+    id = JSON.parse(id).result[0].userId;
+    console.log(`the id found is ${id}`);
+    // fetch follower and following
+    try{
+        let chattable = await query(`(SELECT f.followee as chattable
+            FROM Follow f  
+            WHERE f.follower = ${id} AND status = 'Accepted')
+            UNION
+            (SELECT f.follower as chattable
+            FROM Follow f  
+            WHERE f.followee = ${id} AND status = 'Accepted')
+            ORDER BY chattable ASC;`);
+        console.log(chattable);
+        chattable = chattable.map(obj => obj.chattable);
+        console.log("chattable is", chattable) ;
+        chattable.forEach(user => {
+            resultString = resultString + '\n'  + user;
+        });
+        res.send(resultString);
+    }  
+    catch{ 
+        console.log("Retrieve chattable failed. DB error when getting chattable")
+    }
+});
+
+
+module.exports = router;
