@@ -33,15 +33,15 @@ BE /server
             {
                 message: 'testing msg1',
                 sendTime: 2023-03-18T18:00:00.000Z,
-                sender: 1,
-                receiver: 2,
+                sender: 'user1',
+                receiver: 'user2',
                 isFile: 0
             },
             {
                 message: 'testing msg2',
                 sendTime: 2023-03-18T18:00:01.000Z,
-                sender: 2,
-                receiver: 1,
+                sender: 'user2',
+                receiver: 'user1',
                 isFile: 0
             }
         ]

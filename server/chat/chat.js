@@ -57,6 +57,7 @@ io.on("connection", async (socket) => {
   console.log(`a user connected, the socket.id is ${socket.id}`);
   let socketRoomId = -1;
   let userIdPair = [];
+  let usernameIdDict = {};
 
   // debugging event
   socket.on("joinRoom0", () => {
@@ -80,7 +81,12 @@ io.on("connection", async (socket) => {
 
     // find userid of the pair
     userIdPair = await findUserIdPair(usernamePair);
-    console.log(userIdPair);
+    userIdPair.forEach((id, i) => {
+      usernameIdDict[id] = usernamePair[i];
+    }); // note that userId key coerced to string
+
+    console.log("userIdPair", userIdPair);
+    console.log("usernameIdDict", usernameIdDict);
 
     // find room number, if not exist, open enw
     socketRoomId = findRoom(userIdPair);
@@ -102,12 +108,25 @@ io.on("connection", async (socket) => {
     // fetch chat history
     fetchChat(userIdPair).then((result) => {
       console.log("chat history succesfully retreived");
-      console.log(result);
+      // console.log(result);
       io.to(socket.id).emit(
         "chat message",
         `this is emit message after ${socket.id} join retrieving chat history`
       );
-      io.to(socket.id).emit("chatHistory", result);
+
+      const emitObj = [];
+      for (chatObj of result) {
+        console.log(chatObj);
+        chatObj = {
+          ...chatObj,
+          sender: usernameIdDict[String(chatObj["sender"])],
+          receiver: usernameIdDict[String(chatObj["receiver"])],
+        };
+        emitObj.push(chatObj);
+      }
+
+      console.log("the parsed emitObj is", emitObj);
+      // io.to(socket.id).emit("chatHistory", emitObj);
     });
   });
 
