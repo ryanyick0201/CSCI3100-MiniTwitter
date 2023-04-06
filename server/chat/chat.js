@@ -117,7 +117,7 @@ io.on("connection", async (socket) => {
       // convert sender from userId to username
       const emitObj = [];
       for (chatObj of result) {
-        console.log(chatObj);
+        // console.log(chatObj);
         chatObj = {
           ...chatObj,
           sender: usernameIdDict[String(chatObj["sender"])],
