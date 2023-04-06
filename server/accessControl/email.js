@@ -19,3 +19,5 @@ Step 4: un-comment accessControl/route.js to test your function out
 PS. Remember to use try-catch block(s) to handle the errors. Otherwise, the server will crash.
 PSS. Check other functions for the formats
 */
+
+const { setOTP, verifyOTP, deleteOTP } = require("./otp");
