@@ -114,6 +114,7 @@ io.on("connection", async (socket) => {
         `this is emit message after ${socket.id} join retrieving chat history`
       );
 
+      // convert sender from userId to username
       const emitObj = [];
       for (chatObj of result) {
         console.log(chatObj);
@@ -125,8 +126,8 @@ io.on("connection", async (socket) => {
         emitObj.push(chatObj);
       }
 
-      console.log("the parsed emitObj is", emitObj);
-      // io.to(socket.id).emit("chatHistory", emitObj);
+      // console.log("the parsed emitObj is", emitObj);
+      io.to(socket.id).emit("chatHistory", emitObj);
     });
   });
 
