@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 
 async function login(username, password){
     try{
-        console.log(username);
-        console.log(password);
+        //console.log(username);
+        //console.log(password);
         if (!username || !password){
             throw `{"message": "Field(s) missing."}`;
         }
