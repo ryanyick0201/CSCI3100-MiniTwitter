@@ -4,11 +4,23 @@ import { Avatar, Button } from '@material-ui/core';
 import './profilePage.css'
 import PostWithArc from './PostWithArc'
 import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  settingButton: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    fontWeight: 'bold', 
+    color: 'white',
+    margin: 'auto 0 auto auto',
+  },
+});
 
 
 
 function ProfilePage({posts}) {
-  
+  const classes = useStyles();
 
   return (
     <div >
@@ -23,11 +35,11 @@ function ProfilePage({posts}) {
         <p>this is user's bio.</p>
         </div>
 
-        <div className="editbutton">
-        <Button variant="contained" style={{backgroundColor: 'orange'}} component={Link} to="/profileedit">
+
+        <Button variant="contained" className={classes.settingButton} component={Link} to="/profileedit">
             Edit Profile/setting
         </Button>
-        </div>
+
       </div>
 
 

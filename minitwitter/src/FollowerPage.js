@@ -28,7 +28,7 @@ function FollowerPage({ followers, following, followRequests }) {
           ))
         ) : (
           <>
-            {followRequests.slice(0, 3).map((request) => (
+            {followRequests.slice(0, 1).map((request) => (
               <Card key={request.id} style={{ display: 'flex', alignItems: 'center' }}>
                 <Avatar alt="user avatar" src="/path/to/avatar.jpg" />
                 <CardContent>

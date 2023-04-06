@@ -3,8 +3,24 @@ import { Avatar, Button, TextField, MenuItem, Select } from '@material-ui/core';
 import './createNewPost.css'
 import UploadButton from './UploadButton'
 import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  submitButton: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    height: '50px',
+    width: '100px',
+    fontWeight: 'bold', 
+    color: 'white',
+    margin: '40px auto 60px 300px',
+  },
+});
 
 const CreateNewPost = ({ username, avatar }) => {
+  const classes = useStyles();
+
   const [postContent, setPostContent] = React.useState('');
   const [hashtag, setHashtag] = React.useState('');
   const [media, setMedia] = React.useState(null);
@@ -64,7 +80,7 @@ const CreateNewPost = ({ username, avatar }) => {
       </div>
 
       <div className="submit">
-      <Button component={Link} to="/home" onClick={handleSubmit} style={{backgroundColor: 'orange'}}>Submit</Button>
+      <Button component={Link} to="/home" onClick={handleSubmit} className={classes.submitButton}>Submit</Button>
       </div>
     </div>
   );

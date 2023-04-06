@@ -2,9 +2,22 @@ import React from 'react';
 import { Avatar, Button, TextField, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import './editProfile.css'
 import UploadButtonIma from './UploadButtonIma';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  submitButton: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    fontWeight: 'bold', 
+    color: 'white',
+    margin: '20px auto 20px 600px',
+  },
+});
 
 
 const EditProfile = () => {
+  const classes = useStyles();
   const [value, setValue] = React.useState('1');
 
   const handleChange = (event) => {
@@ -41,9 +54,9 @@ const EditProfile = () => {
         </RadioGroup>
       </div>
 
-      <div className="but-container">
-      <Button style={{backgroundColor: 'orange'}} variant="contained">submit</Button>
-      </div>
+
+      <Button className={classes.submitButton} variant="contained">submit</Button>
+
       
     </div>
   );

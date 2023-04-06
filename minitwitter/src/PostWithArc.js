@@ -7,8 +7,22 @@ import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import RepeatIcon from '@material-ui/icons/Repeat';
 import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  archiveButton: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    fontWeight: 'bold', 
+    color: 'white',
+    margin: 'auto 0 auto auto',
+  },
+});
 
 const Post = ({ post }) => {
+  const classes = useStyles();
+
   const [liked, setLiked] = React.useState(false);
   const [disliked, setDisliked] = React.useState(false);
   const [likes, setLikes] = React.useState(post.likes);
@@ -81,7 +95,7 @@ const Post = ({ post }) => {
     </Card>
 
     <div>
-        <Button  size="small" style={{backgroundColor: 'orange'}}>
+        <Button  size="small" className={classes.archiveButton}>
           archive
         </Button>
     </div>

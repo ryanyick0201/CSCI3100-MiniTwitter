@@ -6,12 +6,27 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import RepeatIcon from '@material-ui/icons/Repeat';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  submitButton: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    height: '46px',
+    width: '100px',
+    fontWeight: 'bold', 
+    color: 'white',
+  },
+});
 
 
 
 
 
 const PostWithBox = ({ post }) => {
+  const classes = useStyles();
+
   const [liked, setLiked] = React.useState(false);
   const [disliked, setDisliked] = React.useState(false);
   const [likes, setLikes] = React.useState(post.likes);
@@ -99,7 +114,7 @@ const PostWithBox = ({ post }) => {
         minRows={4}
         fullWidth
       />      
-    <Button style={{backgroundColor: 'orange'}} onClick={handleSubmit}>Submit</Button>
+    <Button className={classes.submitButton} onClick={handleSubmit}>Submit</Button>
     </div>
     
 
