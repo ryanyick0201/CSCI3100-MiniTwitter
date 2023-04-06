@@ -6,6 +6,7 @@ import { UseStyles } from './CssFormat';
 import {
   usernameValidator,
   passwordValidator,
+  usernameloginValidator,
 } from "./Validator";
 
 function Login() {
@@ -32,12 +33,22 @@ function Login() {
     let hashedPassword = "";
     let login_Url = 'http://'+ window.location.hostname + ':3000/login';
     // change this
-    if (username === 'admin' && password === 'admin') {
-      console.log('Login as Admin');
-      mode = 'admin';
+    if (username.includes('admin')) {
+      let userValidateResult = usernameloginValidator(username);
+      let pwdValidateResult = passwordValidator(password);
+      let ValidateResult = userValidateResult + pwdValidateResult;
+      if (ValidateResult !== "") {
+        alert(ValidateResult);
+        return null;
+      }
+        else{
+          console.log('Login as Admin');
+          mode = 'admin';
+        }
+      
     } else {
         console.log('Login as User');
-        let userValidateResult = usernameValidator(username);
+        let userValidateResult = usernameloginValidator(username);
         let pwdValidateResult = passwordValidator(password);
         let ValidateResult = userValidateResult + pwdValidateResult;
         if (ValidateResult !== "") {
@@ -49,7 +60,7 @@ function Login() {
           //hashedPassword = await bcrypt.hash(password, 10); // hash password
         }
     }
-    let ok = false;
+
     const postBody = {
       username: username,
       password: password

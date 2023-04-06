@@ -17,13 +17,22 @@ export const emailValidator = email => {
     }
   }
 
+  export const usernameloginValidator = username => {
+    if (!username) {
+      return "Username is required.\n";
+    } else if (username.length < 4 || username.length > 16) {
+        return "Length of Username should be between 4 to 16.\n";
+      } 
+    return "";
+  };
+  
   export const usernameValidator = username => {
     if (!username) {
-      return "Username is required";
+      return "Username is required.\n";
     } else if (username.includes("admin")) {
-        return "Username cannot include 'admin'";
+        return "Username cannot include 'admin'.\n";
       } else if (username.length < 4 || username.length > 16) {
-        return "Length of Username should be between 4 to 16";
+        return "Length of Username should be between 4 to 16.\n";
       } 
     return "";
   };
@@ -31,9 +40,9 @@ export const emailValidator = email => {
   export const passwordValidator = password => {
     const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,16}$/;
     if (!password) {
-        return "Password is required";
+        return "Password is required.\n";
     } else if (!regex.test(password)) {
-        return "Password should include at least 1 uppercase, 1 lowercase, 1 number and length should be between 8 to 16, and not include any symbols";
+        return "Password should include at least 1 uppercase, 1 lowercase, 1 number and length should be between 8 to 16, and not include any symbols.\n";
     }
         return "";
   };
