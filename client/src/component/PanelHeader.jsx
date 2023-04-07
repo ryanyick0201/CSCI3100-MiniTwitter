@@ -12,8 +12,21 @@ import { Autocomplete, TextField, Snackbar, Alert } from "@mui/material/";
 
 import RateReviewIcon from "@mui/icons-material/RateReview";
 
-const fetchChattableList = (sender) => {
-  // to be replaced by API
+const fetchChattableList = async (sender) => {
+  console.log("enter fetchChattableList")
+
+  const url = 'http://' + window.location.hostname + ':3000/chat/chatTables?q=' + sender;
+  const res = await fetch(url, { mode: 'cors' });
+
+  console.log("finish fetch, now parse res to json")
+
+  const data = await res.json();
+
+  console.log("finished parsing, data is", data);
+
+  return data;
+
+  /* dummy data for testing, to be replaced by API
   return [
     sender,
     "The Shawshank Redemption",
@@ -24,6 +37,7 @@ const fetchChattableList = (sender) => {
     "Schindler's List",
     "Pulp Fiction",
   ];
+  */
 };
 
 const PanelHeader = ({ sender, recipient, setRecipient }) => {

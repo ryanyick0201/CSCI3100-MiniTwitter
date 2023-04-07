@@ -29,6 +29,7 @@ const ChatPage = ({ sender }) => {
 
   const [socket, setSocket] = useState(io(SOCKET_SERVER_URL));
 
+
   return (
     <div className={classes.pageContainer}>
       <Panel
