@@ -28,7 +28,7 @@ function FollowerPage({ followers, following, followRequests }) {
   return (
     <div className="list">
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <h2>Follow Requests</h2>
+        <h2>Requests</h2>
         {followRequests.slice(0, showAllRequests ? followRequests.length : 2).map((request) => (
           <Card key={request.id} style={{ display: 'flex', alignItems: 'center' }}>
             <Avatar alt="user avatar" src="/path/to/avatar.jpg" className={classes.Avatar}/>
@@ -52,7 +52,7 @@ function FollowerPage({ followers, following, followRequests }) {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <h2>Followers</h2>
+        <h2>Your followers</h2>
         {followers.map((follower) => (
           <Card key={follower.id} style={{ display: 'flex', alignItems: 'center' }}>
             <Avatar alt="user avatar" src="/path/to/avatar.jpg" className={classes.Avatar}/>
@@ -67,7 +67,7 @@ function FollowerPage({ followers, following, followRequests }) {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <h2>Following</h2>
+        <h2>You are following</h2>
         {following.map((followee) => (
           <Card key={followee.id} style={{ display: 'flex', alignItems: 'center' }}>
             <Avatar alt="user avatar" src="/path/to/avatar.jpg" className={classes.Avatar}/>
