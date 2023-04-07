@@ -9,7 +9,7 @@ const useStyles = makeStyles({
   newPostButton: {
     textTransform: 'none',
     backgroundColor: '#F47458',
-    borderRadius: '25px',
+    borderRadius: '50px',
     height: '50px',
     width: '50px',
     fontWeight: 'bold', 

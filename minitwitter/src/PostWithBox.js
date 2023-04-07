@@ -13,8 +13,6 @@ const useStyles = makeStyles({
     textTransform: 'none',
     backgroundColor: '#F47458',
     borderRadius: '25px',
-    height: '46px',
-    width: '100px',
     fontWeight: 'bold', 
     color: 'white',
   },
@@ -70,13 +68,13 @@ const PostWithBox = ({ post }) => {
       <CardHeader
         avatar={<Avatar src={post.user.avatar} />}
         title={post.user.username}
-        subheader={new Date(post.timestamp).toLocaleString()}
+        subheader={new Date(post.timestamp).toLocaleString('en-US')}
       />
       {post.image && <CardMedia image={post.image} />}
       <CardContent>
         <Typography variant="body1">{post.content}</Typography>
         {post.hashtags.map(hashtag => (
-          <Button key={hashtag} size="small" color="primary">
+          <Button key={hashtag} size="small" color="primary" style={{textTransform: 'none'}}>
             #{hashtag}
           </Button>
         ))}

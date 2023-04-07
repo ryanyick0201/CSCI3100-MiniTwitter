@@ -54,15 +54,15 @@ function App(){
   const comments = [
     {
       id: 1,
-      username: '用戶1',
+      username: 'user3',
       avatar: 'https://example.com/avatar1.jpg',
-      content: '這是一條評論。',
+      content: 'This is a comment.',
     },
     {
       id: 2,
-      username: '用戶2',
+      username: 'user4',
       avatar: 'https://example.com/avatar2.jpg',
-      content: '這是另一條評論。',
+      content: 'This is a comment.',
     },
   ];
 
@@ -114,7 +114,7 @@ function App(){
         <Routes>
           <Route
             path="/createNewPost"
-            element={<CreateNewPost username="me" avatar={posts[0].user.avatar} />}
+            element={<CreateNewPost username="user" avatar={posts[0].user.avatar} />}
           />
         </Routes>
         <Routes>

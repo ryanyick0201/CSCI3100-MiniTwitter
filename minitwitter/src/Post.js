@@ -48,13 +48,13 @@ const Post = ({ post }) => {
       <CardHeader
         avatar={<Avatar src={post.user.avatar} />}
         title={post.user.username}
-        subheader={new Date(post.timestamp).toLocaleString()}
+        subheader={new Date(post.timestamp).toLocaleString('en-US')}
       />
       {post.image && <CardMedia image={post.image} />}
       <CardContent>
         <Typography variant="body1">{post.content}</Typography>
         {post.hashtags.map(hashtag => (
-          <Button key={hashtag} size="small" color="primary">
+          <Button key={hashtag} size="small" color="primary" style={{textTransform: 'none'}}>
             #{hashtag}
           </Button>
         ))}
@@ -76,7 +76,7 @@ const Post = ({ post }) => {
           <RepeatIcon />
         </IconButton>
         <Typography variant="caption">{post.retweets}</Typography>
-        <Button component={Link} to={`/post`} size="small" color="primary">
+        <Button component={Link} to={`/post`} size="small" color="primary" style={{textTransform: 'none'}}>
           Show this thread
         </Button>
       </CardActions>

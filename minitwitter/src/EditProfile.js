@@ -55,7 +55,7 @@ const EditProfile = () => {
       </div>
 
 
-      <Button className={classes.submitButton} variant="contained">submit</Button>
+      <Button className={classes.submitButton} variant="contained">save</Button>
 
       
     </div>

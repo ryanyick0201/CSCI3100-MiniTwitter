@@ -4,23 +4,15 @@
     align-items: center;
 }
 
-.nameBio {
-    
+.nameAndBio {
     display: flex;
     flex-direction: column;
     text-align: flex-start;
     margin: auto auto auto 50px;
 }
 
-.mi {
-    margin: 30px auto 20px 400px;
-  }
-
 .pos {
-    
-    margin: 30px auto 20px 400px;
-    padding: 20px;
-    
+    margin: 40px 120px 20px 400px;
 }
 
 .pos .MuiCard-root {

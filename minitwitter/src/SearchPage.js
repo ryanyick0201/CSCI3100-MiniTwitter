@@ -3,6 +3,7 @@ import { Avatar, Button, TextField, Typography, Card, CardContent } from '@mater
 import { makeStyles } from '@material-ui/core/styles';
 
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   searchInput: {
+    flexGrow: 1,
     marginRight: theme.spacing(5),
   },
   usersContainer: {
@@ -27,12 +29,46 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-start',
     margin: theme.spacing(2),
+    '&:hover': {
+      background: 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))',
+    },
   },
-  
+  searchButton: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    fontWeight: 'bold', 
+    color: 'white',
+  },
+  viewMoreButton: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    fontWeight: 'bold', 
+    color: 'white',
+    width: '100%',
+  },
+  recomUsersContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: theme.spacing(4),
+  },
+  recomUser: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: theme.spacing(10),
+    padding: '5px',
+    '&:hover': {
+      background: 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))',
+    },
+  },
 }));
 
 function SearchPage() {
   const classes = useStyles();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [recommendedUsers, setRecommendedUsers] = useState([
@@ -57,6 +93,14 @@ function SearchPage() {
     setShowAllResults(true);
   };
 
+  const navigate = useNavigate();
+
+  const handleUserClick = () => {
+    navigate('/other profile');
+  };
+
+  
+
   return (
     <div className={classes.root}>
     <Card>
@@ -69,44 +113,31 @@ function SearchPage() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <Button variant="contained" style={{backgroundColor: 'orange'}} onClick={handleSearch}>
+      <Button variant="text" className={classes.searchButton} onClick={handleSearch}>
         Search
       </Button>
     </div>
 
-    {searchResults.length > 0 && (
       <div className={classes.usersContainer}>
-        {searchResults.map((user) => (
-          <Button component={Link} to={'/other profile'}>
-          <div className={classes.user} key={user.name}>
-            <Avatar className={classes.avatar} src={user.avatar} alt={`${user.name} avatar`} />
-            <Typography variant="subtitle1" className={classes.userName}>
-              {user.name}
-            </Typography>
-          </div>
-          </Button>
+        {searchResults.slice(0, showAllResults ? searchResults.length : 2).map((user) => (
+
+            <div className={classes.user} key={user.name} onClick={handleUserClick}>
+              <Avatar className={classes.avatar} src={user.avatar} alt={`${user.name} avatar`} />
+              <Typography variant="subtitle1" className={classes.userName}>
+                {user.name}
+              </Typography>
+            </div>
+
         ))}
       </div>
-    )}
-    {showAllResults && (
-      <div className={classes.usersContainer}>
-        {recommendedUsers.map((user) => (
-          <Button component={Link} to={'/other profile'}>
-          <div className={classes.user} key={user.name}>
-            <Avatar className={classes.avatar} src={user.avatar} alt={`${user.name} avatar`} />
-            <Typography variant="subtitle1" className={classes.userName}>
-              {user.name}
-            </Typography>
-          </div>
+      {searchResults.length > 2 && !showAllResults && (
+        <div>
+          <div style={{ height: 16 }}/>
+          <Button className={classes.viewMoreButton} onClick={handleShowAllResults}>
+            Click to view more
           </Button>
-        ))}
-      </div>
-    )}
-    {!showAllResults && (
-      <Button variant="contained" style={{backgroundColor: 'orange'}} onClick={handleShowAllResults}>
-        Click to view more
-      </Button>
-    )}
+        </div>
+      )}
     </CardContent>
     </Card>
 
@@ -114,23 +145,19 @@ function SearchPage() {
 
 
      <Card className={classes.card}>
-     <CardContent>
-     <Typography variant="h6">You may want to follow these users:</Typography>
-     <div className={classes.usersContainer}>
-      {recommendedUsers.map((user) => (
-        
-        <Button component={Link} to={'/other profile'}>
-        <div className={classes.user} key={user.name}>
-          <Avatar src={user.avatar} alt={`${user.name} avatar`} />
-          <Typography variant="subtitle1" className={classes.userName}>
-            {user.name}
-          </Typography>
-        </div>
-        </Button>
-        
-      ))}
-     </div>
-     </CardContent>
+      <CardContent>
+      <Typography variant="h6">You may want to follow these users:</Typography>
+      <div className={classes.recomUsersContainer}>
+        {recommendedUsers.map((user) => (
+          <div className={classes.recomUser} key={user.name} onClick={handleUserClick}>
+            <Avatar src={user.avatar} alt={`${user.name} avatar`} />
+            <Typography variant="subtitle1" className={classes.userName}>
+              {user.name}
+            </Typography>
+          </div>
+        ))}
+      </div>
+      </CardContent>
      </Card>
 
     </div>

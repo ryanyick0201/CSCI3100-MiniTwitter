@@ -16,7 +16,6 @@ const useStyles = makeStyles({
     borderRadius: '25px',
     fontWeight: 'bold', 
     color: 'white',
-    margin: 'auto 0 auto auto',
   },
 });
 
@@ -55,50 +54,50 @@ const Post = ({ post }) => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', textalign: 'flex-start' }}>
-    <Card>
-      <CardHeader
-        avatar={<Avatar src={post.user.avatar} />}
-        title={post.user.username}
-        subheader={new Date(post.timestamp).toLocaleString()}
-      />
-      {post.image && <CardMedia image={post.image} />}
-      <CardContent>
-        <Typography variant="body1">{post.content}</Typography>
-        {post.hashtags.map(hashtag => (
-          <Button key={hashtag} size="small" color="primary">
-            #{hashtag}
+    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+      <Card style={{flex: '1'}}>
+        <CardHeader
+          avatar={<Avatar src={post.user.avatar} />}
+          title={post.user.username}
+          subheader={new Date(post.timestamp).toLocaleString('en-US')}
+        />
+        {post.image && <CardMedia image={post.image} />}
+        <CardContent>
+          <Typography variant="body1">{post.content}</Typography>
+          {post.hashtags.map(hashtag => (
+            <Button key={hashtag} size="small" color="primary" style={{textTransform: 'none'}}>
+              #{hashtag}
+            </Button>
+          ))}
+        </CardContent>
+        <CardActions>
+          <IconButton onClick={handleLike}>
+            {liked ? <FavoriteIcon color="secondary" /> : <FavoriteBorderIcon />}
+          </IconButton>
+          <Typography variant="caption">{likes}</Typography>
+          <IconButton onClick={handleDislike}>
+            {disliked ? <ThumbDownIcon color="primary" /> : <ThumbDownAltOutlinedIcon />}
+          </IconButton>
+          <Typography variant="caption">{dislikes}</Typography>
+          <IconButton component={Link} to={`/post`}>
+            <ChatBubbleOutlineIcon />
+          </IconButton>
+          <Typography variant="caption">{post.comments}</Typography>
+          <IconButton>
+            <RepeatIcon />
+          </IconButton>
+          <Typography variant="caption">{post.retweets}</Typography>
+          <Button component={Link} to={`/post`} size="small" color="primary" style={{textTransform: 'none'}}>
+            Show this thread
           </Button>
-        ))}
-      </CardContent>
-      <CardActions>
-        <IconButton onClick={handleLike}>
-          {liked ? <FavoriteIcon color="secondary" /> : <FavoriteBorderIcon />}
-        </IconButton>
-        <Typography variant="caption">{likes}</Typography>
-        <IconButton onClick={handleDislike}>
-          {disliked ? <ThumbDownIcon color="primary" /> : <ThumbDownAltOutlinedIcon />}
-        </IconButton>
-        <Typography variant="caption">{dislikes}</Typography>
-        <IconButton component={Link} to={`/post`}>
-          <ChatBubbleOutlineIcon />
-        </IconButton>
-        <Typography variant="caption">{post.comments}</Typography>
-        <IconButton>
-          <RepeatIcon />
-        </IconButton>
-        <Typography variant="caption">{post.retweets}</Typography>
-        <Button component={Link} to={`/post`} size="small" color="primary">
-          Show this thread
-        </Button>
-      </CardActions>
-    </Card>
+        </CardActions>
+      </Card>
 
-    <div>
-        <Button  size="small" className={classes.archiveButton}>
-          archive
-        </Button>
-    </div>
+
+      <Button  className={classes.archiveButton}>
+        archive
+      </Button>
+
 
 
     </div>        

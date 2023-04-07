@@ -4,11 +4,23 @@ import { Avatar, Button } from '@material-ui/core';
 
 import Post from './Post'
 import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  Button: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    fontWeight: 'bold', 
+    color: 'white',
+  },
+});
+
 
 
 
 function OtherProfilePage({posts}) {
-  
+  const classes = useStyles();
 
   return (
     <div >
@@ -24,7 +36,7 @@ function OtherProfilePage({posts}) {
         </div>
 
         <div className="editbutton">
-        <Button variant="contained" style={{backgroundColor: 'orange'}} >
+        <Button className={classes.Button} >
             follow
         </Button>
         </div>

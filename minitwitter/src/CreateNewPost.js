@@ -47,11 +47,13 @@ const CreateNewPost = ({ username, avatar }) => {
       <h2>Create new post</h2>
 
       <div className="nameAndAvatar">
-      <p>{username}</p>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
       <Avatar src={avatar} alt={username} />
+      <p>{username}</p>
+      </div>  
       </div>
 
-      <div className="text-field">
+
       <TextField
         label="Post content"
         variant="outlined"
@@ -61,7 +63,6 @@ const CreateNewPost = ({ username, avatar }) => {
         value={postContent}
         onChange={handlePostContentChange}
       />
-      </div>
 
       <div className="select">
       <span>hashtags: </span>&nbsp;  
@@ -79,9 +80,9 @@ const CreateNewPost = ({ username, avatar }) => {
       <UploadButton onChange={handleMediaChange}/>
       </div>
 
-      <div className="submit">
+
       <Button component={Link} to="/home" onClick={handleSubmit} className={classes.submitButton}>Submit</Button>
-      </div>
+
     </div>
   );
 };
