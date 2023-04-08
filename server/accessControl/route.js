@@ -77,24 +77,18 @@ router.get("/getSessionUsername", async (req, res) => {
   }
 });
 
-router.delete("/deleteOTP", async (req, res) => {
-  setTimeout(async () => {
-    x = await deleteOTP(req.body.username);
-    console.log(x);
-    res.send(x);
-  }, 300000);
-});
-
-/*
-router.post('/sendEmail', async (req, res) => {
-    x = await sendEmail(req.body.username);
-    res.send(x);
-});
-*/
+// router.delete("/deleteOTP", async (req, res) => {
+//   setTimeout(async () => {
+//     x = await deleteOTP(req.body.username);
+//     console.log(x);
+//     res.send(x);
+//   }, 300000);
+// });
 
 router.get("/sendEmail", async (req, res) => {
-  x = await sendEmail(req.query.username || "");
-  res.send(x);
+    x = await sendEmail(req.query.username || "");
+    console.log(x);
+    res.send(x);
 });
 
 module.exports = router;

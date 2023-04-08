@@ -20,7 +20,7 @@ PS. Remember to use try-catch block(s) to handle the errors. Otherwise, the serv
 PSS. Check other functions for the formats
 */
 
-const { setOTP, verifyOTP, deleteOTP } = require("./otp");
+const { setOTP} = require("./otp");
 const nodemailer = require("nodemailer");
 const { query } = require("../database");
 
@@ -39,8 +39,8 @@ const emailGenerator = (toEmail, otp) => {
     from: "csci3100.group.b8@zohomail.com",
     to: `${toEmail}`,
     subject: "OTP from Minitwitter",
-    text: `Your one time password is: ${otp} The password will expire in 5 minutes`,
-    html: `Your one time password is: ${otp} The password will expire at 5 minutes`,
+    text: `Your one time password is: ${otp}.`,
+    html: `Your one time password is: ${otp}.`,
   };
 };
 
@@ -54,7 +54,7 @@ const emailGenerator = (toEmail, otp) => {
 //   });
 
 async function sendEmail(username) {
-  if (username == "") return { message: "username empty." };
+  if (username == "") return `{"message": "username empty."}`;
 
   let otp = "";
   let toEmail = "";
@@ -62,7 +62,7 @@ async function sendEmail(username) {
   try {
     await setOTP(username);
   } catch (err) {
-    return { message: "Set OTP error." };
+    return `{"message": "Set OTP error."}`;
   }
 
   try {
@@ -71,7 +71,7 @@ async function sendEmail(username) {
     );
     otp = row[0].otp;
   } catch (err) {
-    return { message: "Get OTP db error." };
+    return `{"message": "Get OTP db error."}`;
   }
 
   try {
@@ -79,8 +79,10 @@ async function sendEmail(username) {
       `SELECT email FROM User WHERE username = '${username}'`
     );
     toEmail = row[0]["email"];
-  } catch (err) {
-    return { message: "Fetching receipient email db error." };
+  }
+  catch (err)
+  {
+    return `{"message": "Fetching receipient email db error."}`;
   }
 
   // const expiryTime = 'asdf';
@@ -93,14 +95,14 @@ async function sendEmail(username) {
         return `{"message": "Send email error."}`;
       } else {
         console.log(
-          `Email sent to: ?, OTP is ?, user is ?, server  response is ?`,
-          [toEmail, otp, username, info.response]
-        );
+          `Email sent to: ${toEmail}, OTP is ${otp}, user is ${username}, server response is "${info.response}"`);
       }
     });
     return `{"message": "Email sent."}`;
-  } catch (err) {
-    return { message: "Send email error." };
+  }
+  catch (err)
+  {
+    return `{"message": "Send email error."}`;
   }
 }
 
@@ -119,4 +121,4 @@ async function sendEmail(username) {
 //     return `{"message": "Email sent."}`;
 // }
 
-module.exports = { sendEmail };
+module.exports = {sendEmail};
