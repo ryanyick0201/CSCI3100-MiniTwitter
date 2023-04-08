@@ -217,8 +217,12 @@ async function fetchChat(userIdPair) {
 
 async function writeChatToDb(messageContent, userIdPair) {
   try {
+    // referenced hhttps://stackoverflow.com/questions/12413243/javascript-date-format-like-iso-but-local
     const now = new Date();
-    const formattedTime = now.toISOString().replace("T", " ").slice(0, -5);
+    let offsetToUTC = now.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
+    let nowWithOffset = now - offsetToUTC;
+    const newNow = new Date(nowWithOffset);
+    const formattedTime = newNow.toISOString().replace("T", " ").slice(0, -5);
 
     let x = await query(
       `INSERT INTO Message (message, sendTime, sender, receiver, isImg)
