@@ -10,16 +10,19 @@ router.use(bodyParser.urlencoded({extended: false}));
 
 router.get('/searchUser', async (req, res) => {
     x = await searchUserByUsername(req.query.username, req.query.exactMatch);
+    console.log(x);
     res.send(x);   
 });
 
 router.post('/createUser', async (req, res) => {
     let x = await createUser(req.body.username, req.body.password, req.body.email, req.body.hasVerified);
+    console.log(x);
     res.send(x);   
 });
 
 router.post('/deleteUser', async (req, res) => {
     let x = await deleteUser(req.body.username);
+    console.log(x);
     res.send(x);   
 });
 
@@ -33,6 +36,7 @@ router.post('/updateUser', async (req, res) => {
     var hasVerified = (req.body.hasVerified) ? req.body.hasVerified : null;        
 
     let x = await updateUser(oldUsername, newUsername, password, personalBio, privacySetting, hasVerified);
+    console.log(x);
     res.send(x);
 });
 
@@ -40,6 +44,7 @@ router.get('/searchFollow', async (req, res) => {
     if (! ((req.query.follower || req.query.followee) && req.query.status))
         throw `{"message": "Field(s) missing."}`
     let x = await searchFollow(req.query.follower, req.query.followee, req.query.status);
+    console.log(x);
     res.send(x);
 });
 
@@ -53,8 +58,10 @@ router.post('/followUser', async (req, res) => {
             status = null;
 
         let x = await followUser(req.body.follower, req.body.followee, status);
+        console.log(x);
         res.send(x);
     } else {
+        console.log(x);
         res.send(`{"message": "Follow/unfollow a user failed. Field(s) missing."}`);
     }
 });
