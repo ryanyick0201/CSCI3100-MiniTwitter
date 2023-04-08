@@ -56,7 +56,7 @@
     </style>
   </head>
   <body>
-    <h1>user2 to user1</h1>
+    <h1>user1 to user2</h1>
     <ul id="messages"></ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
@@ -70,6 +70,8 @@
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
       var socket = io("http://localhost:3030");
+      var SENDER = "user1";
+      var RECEIPIENT = "user2";
 
       var messages = document.getElementById("messages");
       var form = document.getElementById("form");
@@ -80,8 +82,8 @@
         if (input.value) {
           socket.emit("chat message", input.value);
           socket.emit(NEW_MESSAGE_EVENT, {
-            sender: "user2",
-            recipient: "user1",
+            sender: SENDER,
+            recipient: RECEIPIENT,
             isImg: false,
             message: input.value,
             sendTime: new Date(),
@@ -91,29 +93,10 @@
         }
       });
 
-      // adopted from FE
-      function sendTestMsgObj() {
-        socket.emit(NEW_MESSAGE_EVENT, {
-          sender: "user2",
-          recipient: "user1",
-          isImg: false,
-          message: "this is the tesing message body", // if (isImg) message = {file, mimeType, fileName} else message is String
-          sendTime: new Date(),
-        });
-        console.log("sendTestMsgObj pressed");
-      }
-
       function joinRoom() {
-        socket.emit("joinRoom", ["user2", "user1"]);
+        socket.emit("joinRoom", [SENDER, RECEIPIENT]);
       }
       joinRoom();
-
-      socket.on("chat message", function (msg) {
-        var item = document.createElement("li");
-        item.textContent = msg;
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
 
       socket.on("to console", (obj) => {
         console.log("received obj from server", obj);
@@ -125,11 +108,17 @@
 
       socket.on("chattedUser", (obj) => {
         console.log("received chattedUser from server", obj);
+        // console.log(obj[0], obj[1]);
       });
 
       socket.on(NEW_MESSAGE_EVENT, (data) => {
         console.log("receive msg from server,");
         console.log(data);
+
+        var item = document.createElement("li");
+        item.textContent = JSON.stringify(data);
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
       });
     </script>
   </body>

@@ -221,7 +221,7 @@ async function writeChatToDb(messageContent, userIdPair) {
     const formattedTime = now.toISOString().replace("T", " ").slice(0, -5);
 
     let x = await query(
-      `INSERT INTO Message (message, sendTime, sender, receiver, isFile)
+      `INSERT INTO Message (message, sendTime, sender, receiver, isImg)
         VALUES (?, ?, ?, ?, ?)`,
       [messageContent, formattedTime, userIdPair[0], userIdPair[1], false]
     );
@@ -229,6 +229,8 @@ async function writeChatToDb(messageContent, userIdPair) {
     console.log("write chat to db success");
     return `{"message": "Create a tweet success"}`;
   } catch {
+    console.log("write chat to db failed. db error.");
+
     return `{"message": "write chat to db failed. db error."}`;
   }
 }

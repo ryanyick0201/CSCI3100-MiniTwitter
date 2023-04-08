@@ -22,6 +22,8 @@ BE /server
         3) join the client to the room
         4) server fetch chat record from database
         5) server fire a 'chatHistory' event to the client socket, with obj of chat history (see below)
+        6) fetch chatted users of the sender and receiver of that event and emit 'chattedUser' to each of the user
+
 
         From server to client: not expected to happen
     
@@ -55,7 +57,8 @@ BE /server
             1) console.log("receive msg from client:" + data['message']);
             2) emit the msg obj to the room
             3) write the chat to the database, using data['message'] and the userIdPair obtained when joinRoom
-            4) fetch chatted user and emit 'chattedUser' (see below)
+            4) fetch chatted users of the sender and receiver of that event and emit 'chattedUser' to each of the user
+
 
         From server to client:
         sent with data obj
@@ -64,11 +67,10 @@ BE /server
     'chattedUser'
         From server to client:
         sent with chattedUser object
-        e.g.
-            {
-                'user1': ['user2', 'user3'],
-                'user2': ['user1', 'user3']
-            }
+        users are sorted in reverse chronological order
+        i.e. most recently chatted user first
+        e.g. ['user2', 'user3']
+
 
 
 

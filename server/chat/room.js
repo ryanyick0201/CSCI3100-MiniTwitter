@@ -80,9 +80,9 @@ function addRoom(userIdPair) {
   } else {
     const sortedUserIdPair = [userIdPair[1], userIdPair[0]];
   }
-
+  roomId = (rooms.push(userIdPair) - 1).toString();
   console.log("now room is", rooms);
-  return (rooms.push(userIdPair) - 1).toString();
+  return roomId;
 }
 
 module.exports = {
