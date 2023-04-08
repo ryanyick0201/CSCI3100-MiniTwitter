@@ -11,7 +11,7 @@ async function searchTweetByMultiple(username, tweetContent, category){
 
     try{
         let rows = await query(`
-        SELECT u.username, t.tweetId, t.tweetContent, t.postTime, t.category, t.category,
+        SELECT u.username, t.tweetId, t.tweetContent, t.postTime, t.category, t.category, t.image, t.video,
         COUNT(CASE WHEN l.status = 'like' THEN 1 END) AS likes,
         COUNT(CASE WHEN l.status = 'dislike' THEN 1 END) AS dislikes,
         (select COUNT(*) commentId from tweetComment c where c.tweetId = t.tweetId group by tweetId) AS comment,
@@ -40,7 +40,7 @@ async function searchTweetByTweetId(tweetId){
 }
 */
 
-async function createTweet(username, tweetContent, category){
+async function createTweet(username, tweetContent, category, image, video){
     try{
         var id = await searchUserByUsername(username, "true");
         id = JSON.parse(id).result[0].userId;
@@ -53,8 +53,8 @@ async function createTweet(username, tweetContent, category){
         const now = new Date();
         const formattedTime = now.toISOString().replace('T', ' ').slice(0, -5);
     
-        let x = await query(`INSERT INTO Tweet (creator, tweetContent, postTime, category)
-        VALUES (?, ?, ?, ?)`, [id, tweetContent, formattedTime, category]);
+        let x = await query(`INSERT INTO Tweet (creator, tweetContent, postTime, category, image, video)
+        VALUES (?, ?, ?, ?, ?, ?)`, [id, tweetContent, formattedTime, category, image, video]);
 
         return `{"message": "Create a tweet success"}`;
     } catch {

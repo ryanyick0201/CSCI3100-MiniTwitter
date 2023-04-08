@@ -4,11 +4,11 @@ const bcrypt = require("bcrypt");
 async function searchUserByUsername(username, exactMatch){
     try{
         if (username && exactMatch === "true"){
-            var rows = await query(`SELECT userId, username, personalBio, privacySetting FROM User WHERE username = "${username}";`);
+            var rows = await query(`SELECT userId, username, personalBio, privacySetting, profilePic FROM User WHERE username = "${username}";`);
         } else if (username){
-            var rows = await query(`SELECT userId, username, personalBio, privacySetting FROM User WHERE username LIKE "%${username}%";`);
+            var rows = await query(`SELECT userId, username, personalBio, privacySetting, profilePic FROM User WHERE username LIKE "%${username}%";`);
         } else{
-            var rows = await query(`SELECT userId, username, personalBio, privacySetting FROM User;`);
+            var rows = await query(`SELECT userId, username, personalBio, privacySetting, profilePic FROM User;`);
         }
         return `{"message": "Retrieve succeeded", "result": ${JSON.stringify(rows)}}`
     } catch {
@@ -94,5 +94,5 @@ async function updateUser(oldUsername, newUsername, password, personalBio, priva
         return `{"message": "DB arises an error."}`;
     }
 }
- 
+
 module.exports = {searchUserByUsername, createUser, deleteUser, updateUser};
