@@ -125,23 +125,29 @@ io.on("connection", async (socket) => {
         };
         emitObj.push(chatObj);
       }
-
-      // console.log("the parsed emitObj is", emitObj);
+      // emit to the client
+      console.log("the parsed emitObj is", emitObj);
       io.to(socket.id).emit("chatHistory", emitObj);
     });
-  });
 
-  // handle client sending message
-  socket.on(NEW_MESSAGE_EVENT, (data) => {
-    console.log("receive msg from client:" + data["message"]);
+    // fetch and send chattedUserLists (chatted User of both user)
+    sendChattedUsers(userIdPair, usernamePair, socketRoomId, io);
 
-    // send to other client in the room
-    io.in(socketRoomId).emit(NEW_MESSAGE_EVENT, data);
+    // start handling client sending message after join room
+    socket.on(NEW_MESSAGE_EVENT, (data) => {
+      console.log("receive msg from client:" + data["message"]);
 
-    // write to the database
-    if (!data["isImg"]) {
-      writeChatToDb(data["message"], userIdPair);
-    }
+      // send to other client in the room
+      io.in(socketRoomId).emit(NEW_MESSAGE_EVENT, data);
+
+      // write to the database
+      if (!data["isImg"]) {
+        writeChatToDb(data["message"], userIdPair);
+      }
+
+      // fetch and send chattedUserLists (chatted User of both user)
+      sendChattedUsers(userIdPair, usernamePair, socketRoomId, io);
+    });
   });
 
   // debugging event
@@ -213,6 +219,51 @@ async function writeChatToDb(messageContent, userIdPair) {
   } catch {
     return `{"message": "write chat to db failed. db error."}`;
   }
+}
+
+async function getChattedUser(userId) {
+  try {
+    let chattedUser = await query(`(SELECT DISTINCT m.receiver as chattedUser
+            FROM Message m
+            WHERE m.sender = ${userId})
+            UNION 
+            (SELECT DISTINCT m.sender as chattedUser
+            FROM Message m
+            WHERE m.receiver = ${userId})`);
+
+    console.log("chattedUser is", chattedUser);
+    chattedUser = chattedUser.map((obj) => obj.chattedUser);
+    const chattedUserList = [];
+    for (const userId of chattedUser) {
+      // console.log(userId);
+      const username = await query(
+        `SELECT u.username FROM User u WHERE u.userId = ${userId}`
+      );
+      // console.log(username);
+      chattedUserList.push(username[0]["username"]);
+    }
+    return chattedUserList;
+  } catch {
+    console.log("Retrieve chatted failed. DB error when getting chattable");
+    return ["Retrieve chatted failed. DB error when getting chattable"];
+  }
+}
+
+async function sendChattedUsers(
+  userIdPair,
+  usernamePair,
+  socketRoomId,
+  bigIOsocket
+) {
+  // fetch chatted user
+  let chattedUserList0 = await getChattedUser(userIdPair[0]);
+  let chattedUserList1 = await getChattedUser(userIdPair[1]);
+  const chattedUserLists = {
+    [usernamePair[0]]: chattedUserList0,
+    [usernamePair[1]]: chattedUserList1,
+  };
+  // send chatted user
+  bigIOsocket.to(socketRoomId).emit("chattedUser", chattedUserLists);
 }
 
 router.get("/", async (req, res) => {

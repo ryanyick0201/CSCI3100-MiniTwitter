@@ -35,14 +35,14 @@ BE /server
                 sendTime: 2023-03-18T18:00:00.000Z,
                 sender: 'user1',
                 receiver: 'user2',
-                isFile: 0
+                isImg: 0
             },
             {
                 message: 'testing msg2',
                 sendTime: 2023-03-18T18:00:01.000Z,
                 sender: 'user2',
                 receiver: 'user1',
-                isFile: 0
+                isImg: 0
             }
         ]
         From server to client: not expected to happen
@@ -55,11 +55,20 @@ BE /server
             1) console.log("receive msg from client:" + data['message']);
             2) emit the msg obj to the room
             3) write the chat to the database, using data['message'] and the userIdPair obtained when joinRoom
+            4) fetch chatted user and emit 'chattedUser' (see below)
 
         From server to client:
         sent with data obj
         item 2 in client to server
 
+    'chattedUser'
+        From server to client:
+        sent with chattedUser object
+        e.g.
+            {
+                'user1': ['user2', 'user3'],
+                'user2': ['user1', 'user3']
+            }
 
 
 

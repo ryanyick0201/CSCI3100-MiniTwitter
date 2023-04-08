@@ -85,7 +85,7 @@ CREATE TABLE Message (
     sendTime DATETIME NOT NULL,
     sender INT NOT NULL,
     receiver INT NOT NULL,
-    isFile BOOLEAN NOT NULL,
+    isImg BOOLEAN NOT NULL,
     PRIMARY KEY (message, sendTime, sender, receiver),
     FOREIGN KEY (sender) REFERENCES User(userId) ON DELETE CASCADE,
     FOREIGN KEY (receiver) REFERENCES User(userId) ON DELETE CASCADE
@@ -205,7 +205,7 @@ VALUES
 (6, 1, 'Pending')
 ;
 
-INSERT INTO Message (message, sendTime, sender, receiver, isFile)
+INSERT INTO Message (message, sendTime, sender, receiver, isImg)
 VALUES
 ('testing msg1', '2023-03-19 02:00:00', 1, 2, false),
 ('testing msg1a', '2023-03-19 02:00:00', 1, 3, false),

@@ -4,6 +4,8 @@ const rooms = [
   [3, 4],
 ];
 
+const roomSocketDict = {};
+
 // function sortUsername(usernameArr){
 //     if (usernameArr[0] > usernameArr[1]){
 //         let tmpstring = '';
