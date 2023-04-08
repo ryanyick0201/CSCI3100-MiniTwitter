@@ -106,16 +106,11 @@ VALUES
 
 INSERT INTO Admin (adminname, password, sessionId)
 VALUES
-('admin1', 'password1', null),
-('admin2', 'password2', null),
-('admin3', 'password3', null),
-('admin4', 'password4', null),
-('admin5', 'password5', null),
-('admin6', 'password6', null),
-('admin7', 'password7', null),
-('admin8', 'password8', null),
-('admin9', 'password9', null),
-('admin10', 'password10', null);
+('admin1', '$2b$10$4rGkFFaTPpfsjjNSdia3aeeCeWmaxmQGGPRAGREPm/v8VBVcaWZrK', null),
+('admin2', '$2b$10$JEwLHaVzN5dkw2TnKONIIuTZX.5Az10igR.18k/gi7YUOeZVVtgPS', null),
+('admin3', '$2b$10$PJ8LzyRVxdgeE6urKWDWDelU9go98Wcqjwq637o17e5mJEFPQ3F..', null),
+('admin4', '$2b$10$PFUj3JqpMO9caBDU6zuJqOqettqGIQaccD6CEB8KlW6zRkWyMmHQu', null),
+('admin5', '$2b$10$FDZiWD/kqiYWvp1CI3gTZe0RXOnUcEmRddxq3dtlrz3MTwEUZXxIm', null);
 
 INSERT INTO TweetCategory (category)
 VALUES 

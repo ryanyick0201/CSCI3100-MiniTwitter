@@ -86,9 +86,48 @@ router.get("/getSessionUsername", async (req, res) => {
 // });
 
 router.get("/sendEmail", async (req, res) => {
-    x = await sendEmail(req.query.username || "");
+  x = await sendEmail(req.query.username || "");
+  console.log(x);
+  res.send(x);
+});
+
+router.post("/verifyOTP", async (req, res) => {
+  x = await verifyOTP(req.body.username, req.body.otp);
+  console.log(x);
+  res.send(x);
+});
+
+router.get("/getSessionUsername", async (req, res) => {
+  try {
+    console.log(
+      `{"message": "Retrieve username success.", "result": ${JSON.stringify(
+        session.username
+      )}}`
+    );
+    res.send(
+      `{"message": "Retrieve username success.", "result": ${JSON.stringify(
+        session.username
+      )}}`
+    );
+  } catch {
+    console.log(`{"message": "Retrieve username failed. Server error."}`);
+    res.send(`{"message": "Retrieve username failed. Server error."}`);
+  }
+});
+
+router.delete("/deleteOTP", async (req, res) => {
+  setTimeout(async () => {
+    x = await deleteOTP(req.body.username);
     console.log(x);
     res.send(x);
+  }, 300000);
 });
+
+/*
+router.post('/sendEmail', async (req, res) => {
+    x = await sendEmail(req.body.username);
+    res.send(x);
+});
+*/
 
 module.exports = router;
