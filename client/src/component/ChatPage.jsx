@@ -22,16 +22,21 @@ const useStyles = makeStyles({
   },
 });
 
-const ChatPage = ({ sender, recipient }) => {
+const ChatPage = ({ sender }) => {
   const classes = useStyles();
-  // const [recipient, setRecipient] = useState("");
+  const [recipient, setRecipient] = useState("");
   console.log(`sender is ${sender}`);
 
   const [socket, setSocket] = useState(io(SOCKET_SERVER_URL));
 
   return (
     <div className={classes.pageContainer}>
-      <Panel sender={sender} recipient={recipient} socket={socket} />
+      <Panel
+        sender={sender}
+        recipient={recipient}
+        setRecipient={setRecipient}
+        socket={socket}
+      />
       <Room sender={sender} recipient={recipient} socket={socket} />
     </div>
   );

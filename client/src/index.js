@@ -2,11 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import ChatPage from "./ChatPage.jsx";
+import ChatPage from "./component/ChatPage.jsx";
 
 ReactDOM.render(
   <React.StrictMode>
-    <ChatPage sender="user1" recipient="user2" />
+    <ChatPage sender="user1" />
   </React.StrictMode>,
   document.getElementById("root")
 );
