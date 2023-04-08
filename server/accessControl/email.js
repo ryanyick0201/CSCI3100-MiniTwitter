@@ -39,8 +39,8 @@ const emailGenerator = (toEmail, otp) => {
     from: "csci3100.group.b8@zohomail.com",
     to: `${toEmail}`,
     subject: "OTP from Minitwitter",
-    text: `Your one time password is: ${otp} The password will expire in 5 minutes`,
-    html: `Your one time password is: ${otp} The password will expire at 5 minutes`,
+    text: `Your one time password is: ${otp}.`,
+    html: `Your one time password is: ${otp}.`,
   };
 };
 
