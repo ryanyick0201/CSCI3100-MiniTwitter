@@ -40,7 +40,13 @@ const http = require("http");
 const socketIO = require("socket.io");
 const { query } = require("../database");
 const { searchUserByUsername } = require("../user/user");
-const { findRoom, addRoom } = require("./room.js");
+const {
+  findRoom,
+  addRoom,
+  addUsernameSocketDict,
+  deleteUsernameSocketDict,
+  getUsernameSocketDict,
+} = require("./room.js");
 
 const PORT = 3030;
 const NEW_MESSAGE_EVENT = "newMessageEvent";
@@ -58,6 +64,7 @@ io.on("connection", async (socket) => {
   let socketRoomId = -1;
   let userIdPair = [];
   let usernameIdDict = {};
+  let socketUsernamePair = [];
 
   // debugging event
   socket.on("joinRoom0", () => {
@@ -73,6 +80,7 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("joinRoom", async (usernamePair) => {
+    socketUsernamePair = usernamePair;
     console.log(`this is the socket.id that emitted 'joinroom' ${socket.id}`);
     console.log("joinRoom event triggered", usernamePair);
     console.log(
@@ -87,6 +95,8 @@ io.on("connection", async (socket) => {
 
     console.log("userIdPair", userIdPair);
     console.log("usernameIdDict", usernameIdDict);
+
+    addUsernameSocketDict(usernamePair[0], socket.id);
 
     // find room number, if not exist, open enw
     socketRoomId = findRoom(userIdPair);
@@ -131,7 +141,7 @@ io.on("connection", async (socket) => {
     });
 
     // fetch and send chattedUserLists (chatted User of both user)
-    sendChattedUsers(userIdPair, usernamePair, socketRoomId, io);
+    sendChattedUsers(userIdPair, usernamePair, io);
 
     // start handling client sending message after join room
     socket.on(NEW_MESSAGE_EVENT, (data) => {
@@ -146,7 +156,8 @@ io.on("connection", async (socket) => {
       }
 
       // fetch and send chattedUserLists (chatted User of both user)
-      sendChattedUsers(userIdPair, usernamePair, socketRoomId, io);
+      // call getChattedUser inside, and send 'chattedUser'
+      sendChattedUsers(userIdPair, usernamePair, io);
     });
   });
 
@@ -159,6 +170,7 @@ io.on("connection", async (socket) => {
   socket.on("disconnect", () => {
     // socket.leave(socketRoomId);
     console.log("user disconnected");
+    deleteUsernameSocketDict(socketUsernamePair[0], socket.id);
   });
 });
 
@@ -223,16 +235,23 @@ async function writeChatToDb(messageContent, userIdPair) {
 
 async function getChattedUser(userId) {
   try {
-    let chattedUser = await query(`(SELECT DISTINCT m.receiver as chattedUser
-            FROM Message m
-            WHERE m.sender = ${userId})
-            UNION 
-            (SELECT DISTINCT m.sender as chattedUser
-            FROM Message m
-            WHERE m.receiver = ${userId})`);
+    let chattedUser = await query(`
+      SELECT chatteduser 
+      FROM
+        ((SELECT max(sendTime) AS sendtime, sender AS chatteduser
+        FROM message
+        WHERE receiver = ${userId}
+        GROUP BY sender, receiver)
+        UNION
+        (SELECT max(sendTime), receiver AS chatteduser
+        FROM message
+        WHERE sender = ${userId}
+        GROUP BY sender, receiver)) AS combinedTable
+      GROUP BY chatteduser
+      ORDER BY max(sendtime) DESC `);
 
-    console.log("chattedUser is", chattedUser);
-    chattedUser = chattedUser.map((obj) => obj.chattedUser);
+    // console.log("chattedUser is", chattedUser);
+    chattedUser = chattedUser.map((obj) => obj.chatteduser);
     const chattedUserList = [];
     for (const userId of chattedUser) {
       // console.log(userId);
@@ -249,21 +268,22 @@ async function getChattedUser(userId) {
   }
 }
 
-async function sendChattedUsers(
-  userIdPair,
-  usernamePair,
-  socketRoomId,
-  bigIOsocket
-) {
+async function sendChattedUsers(userIdPair, usernamePair, bigIOsocket) {
   // fetch chatted user
   let chattedUserList0 = await getChattedUser(userIdPair[0]);
+  // console.log('chattedUserList0', chattedUserList0);
   let chattedUserList1 = await getChattedUser(userIdPair[1]);
-  const chattedUserLists = {
-    [usernamePair[0]]: chattedUserList0,
-    [usernamePair[1]]: chattedUserList1,
-  };
-  // send chatted user
-  bigIOsocket.to(socketRoomId).emit("chattedUser", chattedUserLists);
+  // console.log('chattedUserList1', chattedUserList1);
+
+  let user0SocketList = getUsernameSocketDict(usernamePair[0]);
+  let user1SocketList = getUsernameSocketDict(usernamePair[1]);
+
+  for (const socketID of user0SocketList) {
+    bigIOsocket.to(socketID).emit("chattedUser", chattedUserList0);
+  }
+  for (const socketID of user1SocketList) {
+    bigIOsocket.to(socketID).emit("chattedUser", chattedUserList1);
+  }
 }
 
 router.get("/", async (req, res) => {

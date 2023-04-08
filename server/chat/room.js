@@ -4,7 +4,7 @@ const rooms = [
   [3, 4],
 ];
 
-const roomSocketDict = {};
+let usernameSocketDict = {};
 
 // function sortUsername(usernameArr){
 //     if (usernameArr[0] > usernameArr[1]){
@@ -15,6 +15,42 @@ const roomSocketDict = {};
 //     }
 //     return usernameArr;
 // }
+
+function addUsernameSocketDict(username, socketID) {
+  let array = [];
+  if (usernameSocketDict.hasOwnProperty(username)) {
+    array = usernameSocketDict[username];
+  }
+  array.push(socketID);
+  usernameSocketDict[username] = array;
+  console.log(`added user ${username}: ${socketID}`);
+  console.log(`usernameSocketDict is`);
+  console.log(usernameSocketDict);
+}
+
+function deleteUsernameSocketDict(username, socketID) {
+  let array = [];
+  if (usernameSocketDict.hasOwnProperty(username)) {
+    array = usernameSocketDict[username];
+  }
+  const index = array.indexOf(socketID);
+  if (index > -1) {
+    // only splice array when item is found
+    array.splice(index, 1); // 2nd parameter means remove one item only
+  }
+  usernameSocketDict[username] = array;
+  console.log(`deleted user ${username}: ${socketID}`);
+  console.log(`usernameSocketDict is`);
+  console.log(usernameSocketDict);
+}
+
+function getUsernameSocketDict(username) {
+  let array = [];
+  if (usernameSocketDict.hasOwnProperty(username)) {
+    array = usernameSocketDict[username];
+  }
+  return array;
+}
 
 // see if room exist or not
 function findRoom(userIdPair) {
@@ -52,4 +88,7 @@ function addRoom(userIdPair) {
 module.exports = {
   findRoom,
   addRoom,
+  addUsernameSocketDict,
+  deleteUsernameSocketDict,
+  getUsernameSocketDict,
 };
