@@ -30,4 +30,5 @@ app.use('/tweet', tweetRouter);
 const acRouter = require('./accessControl/route');
 app.use('/', acRouter);
 
-
+const chatRouter = require("./chat/chat");
+app.use("/chat", chatRouter);
