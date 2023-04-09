@@ -6,6 +6,7 @@ import Room from "./chatComponent/Room";
 import Panel from "./chatComponent/Panel";
 
 const SOCKET_SERVER_URL = "http://" + window.location.hostname + ":3030";
+const socket = io(SOCKET_SERVER_URL);
 
 const useStyles = makeStyles({
   pageContainer: {
@@ -26,8 +27,7 @@ const ChatPage = ({ sender }) => {
   const classes = useStyles();
   const [recipient, setRecipient] = useState("");
   console.log(`sender is ${sender}`);
-
-  const [socket, setSocket] = useState(io(SOCKET_SERVER_URL));
+  console.log("socket", socket);
 
   return (
     <div className={classes.pageContainer}>
