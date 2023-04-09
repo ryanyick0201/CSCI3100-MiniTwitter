@@ -72,15 +72,17 @@ const Room = ({ sender, recipient, socket }) => {
         </div>
         <div ref={messageRef}></div>
       </div>
-      <RoomFooter
-        sendMessage={sendMessage}
-        newMessage={newMessage}
-        setNewMessage={setNewMessage}
-        showEmojis={showEmojis}
-        setShowEmojis={setShowEmojis}
-        cursorPos={cursorPos}
-        inputRef={inputRef}
-      />
+      {recipient && (
+        <RoomFooter
+          sendMessage={sendMessage}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          showEmojis={showEmojis}
+          setShowEmojis={setShowEmojis}
+          cursorPos={cursorPos}
+          inputRef={inputRef}
+        />
+      )}
     </Paper>
   );
 };

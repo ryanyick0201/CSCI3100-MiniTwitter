@@ -2,23 +2,6 @@ import { useEffect, useState } from "react";
 
 const NEW_MESSAGE_EVENT = "newMessageEvent";
 
-const getMsgHistory = (msgSender, msgRecipient) => {
-  // to be replaced by API
-  let serverRes = [
-    {
-      sender: msgSender,
-      recipient: msgRecipient,
-      isImg: false,
-      message: "getMsgHistory functioning for" + msgRecipient,
-      sendTime: new Date(2018, 11, 22, 25, 33, 30, 0),
-    },
-  ];
-  serverRes.forEach((item) => {
-    item["isSender"] = item.sender == msgSender;
-  });
-  return serverRes;
-};
-
 const useChatRoom = (msgSender, msgRecipient, socket) => {
   const [messages, setMessages] = useState([]);
 
@@ -27,30 +10,39 @@ const useChatRoom = (msgSender, msgRecipient, socket) => {
     console.log(
       `join Room and fetch history between "${msgSender}" and "${msgRecipient}"`
     );
+    console.log(`socket id of "${msgSender}"(sender) is`, socket.id);
+
     // Join chat room, emit the two parties in an array to server
     // *** To be replaced by socket.on event
     socket.emit("joinRoom", [msgSender, msgRecipient]);
-    setMessages(() => getMsgHistory(msgSender, msgRecipient));
+    socket.emit("reqChatted", msgSender);
+    socket.on("chatHistory", (res) => {
+      res.forEach((item) => {
+        item["isSender"] = item.sender == msgSender;
+      });
+      setMessages(res);
+    });
   }, [msgRecipient]);
 
   useEffect(() => {
     // Receive message
     socket.on(NEW_MESSAGE_EVENT, (message) => {
+      console.log("received", message);
       const incomingMessage = {
         ...message,
         isSender: message.sender === msgSender,
       };
       setMessages((messages) => [...messages, incomingMessage]);
     });
-    /*
+
     return () => {
+      socket.off(NEW_MESSAGE_EVENT);
       socket.disconnect();
     };
-    */
   }, []);
 
   const sendMessage = (messageBody, isImg = false) => {
-    console.log("sending msg");
+    console.log("sending msg, time now is", new Date());
     socket.emit(NEW_MESSAGE_EVENT, {
       sender: msgSender,
       recipient: msgRecipient,

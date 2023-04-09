@@ -21,23 +21,20 @@ const useStyles = makeStyles({
   },
 });
 
-const Panel = ({ sender, recipient, setRecipient, socket }) => {
+const Panel = ({ sender, setRecipient, socket }) => {
   const classes = useStyles();
 
   const { nameList } = usePanel(sender, socket);
 
   return (
     <Card square className={classes.panelContainer}>
-      <PanelHeader
-        sender={sender}
-        recipient={recipient}
-        setRecipient={setRecipient}
-      />
+      <PanelHeader sender={sender} setRecipient={setRecipient} />
       <div className={classes.recipientContainer}>
         {nameList.map((name, i) => (
           <CardActionArea
             key={name}
             onClick={(e) => {
+              socket.emit("leaveRoom");
               setRecipient(e.target.innerText);
             }}
           >

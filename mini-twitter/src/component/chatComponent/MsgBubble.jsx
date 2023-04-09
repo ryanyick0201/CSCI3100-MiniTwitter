@@ -69,13 +69,12 @@ const MsgBubble = ({ msgList }) => {
           )) || <div>{msg.message}</div>}
           <div
             style={{
-              border: "3px solid #73AD21",
               textAlign: "right",
-              fontSize: "80%",
+              fontSize: "50%",
               fontStyle: "italic",
             }}
           >
-            {moment(msg.sendTime).format("MMM Do, YYYY HH:mm")}{" "}
+            {moment(msg.sendTime).format("MMM Do, YYYY HH:mm")}
           </div>
         </li>
       ))}
