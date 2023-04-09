@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core";
 import moment from "moment";
 //import { Blob } from 'buffer'
 
-moment().locale("hk");
 const useStyles = makeStyles({
   ol: {
     paddingInlineEnd: "40px",
@@ -70,7 +69,6 @@ const MsgBubble = ({ msgList }) => {
           )) || <div>{msg.message}</div>}
           <div
             style={{
-              border: "3px solid #73AD21",
               textAlign: "right",
               fontSize: "50%",
               fontStyle: "italic",
