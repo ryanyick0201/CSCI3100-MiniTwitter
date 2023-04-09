@@ -29,6 +29,7 @@ Step 3: write codes on server.js to integrate the module into the server
 
 // calling libraries
 
+
 const express = require("express");
 const app = express();
 const router = express.Router();
@@ -37,6 +38,7 @@ router.use(bodyParser.json());
 
 const cors = require("cors");
 const http = require("http");
+const crypto = require('crypto') // for randcomized image name
 const socketIO = require("socket.io");
 const { query } = require("../database");
 const { searchUserByUsername } = require("../user/user");
@@ -47,6 +49,8 @@ const {
   deleteUsernameSocketDict,
   getUsernameSocketDict,
 } = require("./room.js");
+const {uploadFile, deleteFile, getObjectSignedUrl} = require('../multimedia/image');
+
 
 const PORT = 3030;
 const NEW_MESSAGE_EVENT = "newMessageEvent";
@@ -55,6 +59,7 @@ const server = http.createServer(app);
 const io = socketIO(server, {
   cors: true,
   origins: ["localhost:3000"],
+  maxHttpBufferSize: 1e9
 });
 
 app.use(cors());
@@ -116,22 +121,24 @@ io.on("connection", async (socket) => {
     // io.to(socketRoomId).emit('chat message', 'this is emit message after join room, emit to room');
 
     // fetch chat history
-    fetchChat(userIdPair).then((result) => {
+    fetchChat(userIdPair).then(async (result) => {
       console.log("chat history succesfully retreived");
       // console.log(result);
-      io.to(socket.id).emit(
-        "chat message",
-        `this is emit message after ${socket.id} join retrieving chat history`
-      );
+      // io.to(socket.id).emit("chat message",`this is emit message after ${socket.id} join retrieving chat history`);
 
-      // convert sender from userId to username
+      // convert sender from userId to username & add imgUrl
       const emitObj = [];
       for (chatObj of result) {
+        let url = "";
+        if (chatObj.isImg){
+          url = await getObjectSignedUrl(chatObj.fileName);
+        }
         // console.log(chatObj);
         chatObj = {
           ...chatObj,
           sender: usernameIdDict[String(chatObj["sender"])],
           receiver: usernameIdDict[String(chatObj["receiver"])],
+          imgUrl: url
         };
         emitObj.push(chatObj);
       }
@@ -144,21 +151,63 @@ io.on("connection", async (socket) => {
     sendChattedUsers(userIdPair, usernamePair, io);
 
     // start handling client sending message after join room
-    socket.on(NEW_MESSAGE_EVENT, (data) => {
-      console.log("receive msg from client:" + data["message"]);
+    socket.on(NEW_MESSAGE_EVENT, async (data) => {
+      console.log("receive msg from client, isImg" + data["isImg"]);
 
-      // send to other client in the room
-      io.in(socketRoomId).emit(NEW_MESSAGE_EVENT, data);
-
-      // write to the database
-      if (!data["isImg"]) {
+      if(!data.isImg){
+        console.log("receive !isImg msg from client:" + data["message"]);
+        // send to other client in the room
+        io.in(socketRoomId).emit(NEW_MESSAGE_EVENT, data);
+        // write to the database
         writeChatToDb(data["message"], userIdPair);
       }
+      
+      else{ // msg isImg
+      // genereate random name
+      let randomName = crypto.randomBytes(32).toString('hex');
+
+      console.log('received isImg msg from client');
+      console.log(data.message.file);
+      console.log(data.message.mimeType);
+      console.log(randomName);
+      const x = await uploadFile(data.message.file, randomName, data.message.mimeType);   
+      console.log(x);
+
+      const writeChatToDbReturnObj = await writeChatToDb(randomName, userIdPair, randomName, data.message.mimeType);
+      const url = await getObjectSignedUrl(randomName);
+      
+      const dataToRoom = {
+        sender: data.sender,
+        recipient: data.recipient,
+        isImg: true,
+        sendTime: data.sendTime,
+        imgUrl: url 
+      }      
+      io.in(socketRoomId).emit(NEW_MESSAGE_EVENT, dataToRoom);
+    }
+
 
       // fetch and send chattedUserLists (chatted User of both user)
       // call getChattedUser inside, and send 'chattedUser'
       sendChattedUsers(userIdPair, usernamePair, io);
     });
+
+    // development event
+    socket.on('imageTest', async (data) =>{
+      // genereate random name
+      let randomName = crypto.randomBytes(32).toString('hex');
+      let fileName = randomName;
+      
+      console.log('received imageTest event');
+      console.log(data.message.file);
+      console.log(data.message.mimeType);
+      console.log(fileName);
+      const x = await uploadFile(data.message.file, fileName, data.message.mimeType);   
+      console.log(x);
+      const url = await getObjectSignedUrl(fileName);
+      console.log(url);
+    })
+
   });
 
   // debugging event
@@ -215,7 +264,7 @@ async function fetchChat(userIdPair) {
   }
 }
 
-async function writeChatToDb(messageContent, userIdPair) {
+async function writeChatToDb(messageContent, userIdPair, fileName=null, mimeType=null) {
   try {
     // referenced hhttps://stackoverflow.com/questions/12413243/javascript-date-format-like-iso-but-local
     const now = new Date();
@@ -224,17 +273,25 @@ async function writeChatToDb(messageContent, userIdPair) {
     const newNow = new Date(nowWithOffset);
     const formattedTime = newNow.toISOString().replace("T", " ").slice(0, -5);
 
+    if (fileName == null || mimeType == null){
     let x = await query(
-      `INSERT INTO Message (message, sendTime, sender, receiver, isImg)
-        VALUES (?, ?, ?, ?, ?)`,
-      [messageContent, formattedTime, userIdPair[0], userIdPair[1], false]
-    );
+      `INSERT INTO Message (message, sendTime, sender, receiver, isImg, fileName, mimeType)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [messageContent, formattedTime, userIdPair[0], userIdPair[1], true, null, null]
+    );} 
+    
+    else{
+      let x = await query(
+        `INSERT INTO Message (message, sendTime, sender, receiver, isImg, fileName, mimeType)
+          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [messageContent, formattedTime, userIdPair[0], userIdPair[1], false, fileName, mimeType]
+      );
+    }
 
     console.log("write chat to db success");
-    return `{"message": "Create a tweet success"}`;
+    return `{"message": "Write chat to db success"}`;
   } catch {
     console.log("write chat to db failed. db error.");
-
     return `{"message": "write chat to db failed. db error."}`;
   }
 }

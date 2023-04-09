@@ -9,6 +9,7 @@ CREATE TABLE User (
     hasVerified BOOLEAN NOT NULL,
     email VARCHAR(100),
     personalBio VARCHAR(200),
+    profilePic VARCHAR(255),
     privacySetting ENUM('public', 'follower', 'private') DEFAULT 'public',
     otp VARCHAR(50)
   );
@@ -34,6 +35,8 @@ CREATE TABLE Tweet (
     postTime DATETIME NOT NULL,
     category VARCHAR(50),
     archived ENUM('archived'),
+    video VARCHAR(255),
+    image VARCHAR(255),
     FOREIGN KEY (creator) REFERENCES User(userId) ON DELETE CASCADE,
     FOREIGN KEY (category) REFERENCES TweetCategory(category)
   );
@@ -79,7 +82,6 @@ CREATE TABLE Follow (
     FOREIGN KEY (followee) REFERENCES User(userId) ON DELETE CASCADE
   );
 
-
 CREATE TABLE Message (
     message VARCHAR(500) NOT NULL,
     sendTime DATETIME NOT NULL,
@@ -91,18 +93,19 @@ CREATE TABLE Message (
     FOREIGN KEY (receiver) REFERENCES User(userId) ON DELETE CASCADE
   );
 
+
 INSERT INTO User (username, password, email, hasVerified, personalBio, privacySetting, otp)
 VALUES 
-('user1', '$2b$10$oybdKhG2ObjFjK7Khn1l..ixNc6/sv63gjuFJJ8w8RIvCx6CebXLq', 'user1@example.com', TRUE, NULL, 'public', NULL),
-('user2', '$2b$10$sDB80/9hrkgRE.lAyUkaSu.QUCCdhan2TRU8krrl.yVmxpBZpcYGG', 'user2@example.com', TRUE, NULL, 'public', NULL),
-('user3', '$2b$10$amD9Y/o5wVsw.BqNdihyhOhs4APUrJwnXIBy0uXumDHHvxTbJduXG', 'user3@example.com', TRUE, NULL, 'public', NULL),
-('user4', '$2b$10$n.UTF3C6J50u0wsS07BlQOpb9M40Gwdc0/MnWVx0PqupcoanZvPqq', 'user4@example.com', TRUE, NULL, 'public', NULL),
-('user5', '$2b$10$ZtHTKlLGmE4bQIBg.vdnUO6e9yN8hdoMFeNco5XjCwwK26nqosiAG', 'user5@example.com', TRUE, NULL, 'public', NULL),
-('user6', '$2b$10$SK9bEa6ANqKwphlBKuN7rOrgHa2ESgm6ykXKyfKEQwObrUfX29ncm', 'user6@example.com', FALSE, NULL, 'public', NULL),
-('user7', '$2b$10$wtkTFlWz8O.b7IJ0ue6kD.gegskMYVJwTzF07nkqVGuizmu8Y8ibG', 'user7@example.com', FALSE, NULL, 'public', NULL),
-('user8', '$2b$10$AvbbezeESY25/qahhXF/POpEKuKUvmxDQrIU5aWG1WoFxB6bovO0q', 'user8@example.com', FALSE, NULL, 'public', NULL),
-('user9', '$2b$10$f2mISfMiIrfi/aBvjTPF.eCt96/Dl2zKF8vAtjuqrecJgApDVtupe', 'user9@example.com', FALSE, NULL, 'public', NULL),
-('user10', '$2b$10$7UVDWCjukFCIDraUgDljZuwrp7tBRAN6KU33z0u9EFlb6zhP4TIY6', 'user10@example.com', FALSE, NULL, 'public', NULL);
+('user1', '$2b$10$4rGkFFaTPpfsjjNSdia3aeeCeWmaxmQGGPRAGREPm/v8VBVcaWZrK', 'user1@gmail.com', TRUE, NULL, 'public', NULL),
+('user2', '$2b$10$JEwLHaVzN5dkw2TnKONIIuTZX.5Az10igR.18k/gi7YUOeZVVtgPS', 'user2@gmail.com', TRUE, NULL, 'public', NULL),
+('user3', '$2b$10$PJ8LzyRVxdgeE6urKWDWDelU9go98Wcqjwq637o17e5mJEFPQ3F..', 'user3@gmail.com', TRUE, NULL, 'public', NULL),
+('user4', '$2b$10$PFUj3JqpMO9caBDU6zuJqOqettqGIQaccD6CEB8KlW6zRkWyMmHQu', 'user4@gmail.com', TRUE, NULL, 'public', NULL),
+('user5', '$2b$10$FDZiWD/kqiYWvp1CI3gTZe0RXOnUcEmRddxq3dtlrz3MTwEUZXxIm', 'user5@gmail.com', TRUE, NULL, 'public', NULL),
+('user6', '$2b$10$.YYlFAYTWulxCqt8erhA6.2Pe8dzwujuzlR277Nxb1neSL674At3a', 'user6@gmail.com', FALSE, NULL, 'public', NULL),
+('user7', '$2b$10$sOfqF45NXlND4UuluzXsBOLRyx5a.MimOymIkMCr.qaU76W/RPFXS', 'user7@gmail.com', FALSE, NULL, 'public', NULL),
+('user8', '$2b$10$CAwMFQze3.rqZuivjFzoDuOHOKIJhrbIT.9kHnX6m9NxLKbb54XNy', 'user8@gmail.com', FALSE, NULL, 'public', NULL),
+('user9', '$2b$10$TBjuiX12JE5JIcChdigype3Ny4xjot7rwVuar8up9PVsB3W4Wq0sW', 'user9@gmail.com', FALSE, NULL, 'public', NULL),
+('user10', '$2b$10$jQeOl/VlldmojnAfbMGv1ONxj1aa.XcTqdMG4pFyK0J9nl7O8kcNu', 'user10@gmail.com', FALSE, NULL, 'public', NULL);
 
 INSERT INTO Admin (adminname, password, sessionId)
 VALUES
@@ -194,7 +197,7 @@ VALUES
 (5, 6, 'Pending'),
 (8, 3, 'Accepted'),
 (10, 2, 'Pending'),
--- below added on wed for testing chattable functionality
+-- below added for testing chattable functionality
 (1, 4, 'Accepted'),
 (1, 5, 'Accepted'),
 (6, 1, 'Pending')
