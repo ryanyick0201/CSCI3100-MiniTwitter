@@ -70,6 +70,10 @@ io.on("connection", async (socket) => {
 
 
   socket.on("joinRoom", async (usernamePair) => {
+    if(usernamePair[1]==""){
+      console.log("recipient empty, now return");
+      return;
+    }
     if(IN_ROOM_FLAG){
       console.log("already in room, now return");
       return;
