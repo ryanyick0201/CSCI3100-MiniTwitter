@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TextField, Button, FormControl, Typography, Box } from '@material-ui/core';
 import { UseStyles } from './CssFormat';
-import { emailValidator, optValidator } from './Validator';
-import Cookies from 'js-cookie';
+import { usernameValidator, optValidator } from './Validator';
 
 function ForgotPassword() {
   const classes = UseStyles();
   const navigate  = useNavigate();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [otp, setOTP] = useState('');
   const [buttonText, setButtonText] = useState('Send me OTP');
   const [isResendEnable, setIsResendEnable] = useState(false);
@@ -32,45 +31,53 @@ function ForgotPassword() {
     }
   }, [countdown]);
 
-  const handleSendOTP = (event) => {
-    event.preventDefault();
-    console.log('Send OTP button clicked');
+  const sendEmail = () => {
+    console.log('Send email');
     
     //Email validation
-    let emailValidateResult = emailValidator(email);
-    if (emailValidateResult !== "") {
-      alert(emailValidateResult);
-      return null;
-    } else {     //If ok, call api with email to send 
-      let api_url ='http://'+ window.location.hostname + ':3000/setOTP';
+    if (username) {     //If ok, call api with email to send 
+      const api_url = 'http://'+ window.location.hostname + ':3000/sendEmail?';
+      const api_with_params = `${api_url}username=${username}`;
+      console.log('Calling API: ',api_with_params);
       fetch(
-        api_url,
+        api_with_params,
         {
-          method: 'POST',
+          method: 'GET',
           mode: 'cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({email}),
         }
       )
-      .then((res) => {
-        if (res.ok) {
-          // Store email in cookie
-          Cookies.set('forgotPasswordEmailCookie', email);
+      .then(response => response.json())
+      .then((data) => {
+        if (data.message === "Email sent.") {
+          alert("OTP is sended to your email account. ");
           // Enable OTP Submit button
           setIsSubmitEnable(false);
         } else {
           //Alert user
-          alert(res.text);
+          alert(data.message);
+          setIsResendEnable(true);
+          setButtonText('Resend');
+          setCountdown(60);
         }
       })
       .catch((err)=> alert(err) );
       
-      //Change Button text to Resend and only can click resend button each 60 second
-      setIsResendEnable(true);
-      setButtonText('Resend');
-      setCountdown(60);
-    }
+     }
   }
+
+  const handleSendOTP = (event) => {
+    event.preventDefault();
+    console.log('Send OTP button clicked');
+    
+    // username validation
+    let usernameValidateResult = usernameValidator(username);
+    if (usernameValidateResult !== "") {
+      alert(usernameValidateResult);
+      return null;
+    } else {     //If ok, call api with email to send 
+      sendEmail();
+    }
+    }
 
   const handleSubmitOTP = (event) => {
     event.preventDefault();
@@ -80,19 +87,22 @@ function ForgotPassword() {
       alert(otpValidateResult);
     } else {
       let api_url ='http://'+ window.location.hostname + ':3000/verifyOTP';
-      const userEmail = Cookies.get('forgotPasswordEmailCookie'); 
+      const postBody = {
+        username: username,
+        otp: otp
+      };
       fetch(
         api_url,
         {
-          method: 'GET',
+          method: 'POST',
           mode: 'cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({userEmail, otp}),
+          body: JSON.stringify(postBody),
         }
       )
       .then((res) => {
         if (res.ok) {
-          // Store email in cookie
+          // ##TODO Route to usermain page
           navigate('/');
         } else {
           //Alert user
@@ -104,8 +114,8 @@ function ForgotPassword() {
     }
   }
   
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
   };
 
   const handleOtpChange = (event) => {
@@ -123,20 +133,20 @@ function ForgotPassword() {
             Trouble with logging in?
           </Typography>
           <Typography variant="body1" className={classes.formDescription}>
-            Enter your email address and we'll send you an OTP, <br></br>
+            Enter your username and we'll send you an OTP, <br></br>
                 you can change your password after login.
           </Typography>
           <FormControl onSubmit={handleSubmitOTP} className={classes.form}>
             <Box mt={2} className={classes.form_item}>
               <Typography variant="h6">
-                Please fill in your email
+                Please fill in your username
               </Typography>
               <TextField
-                label="Email"
+                label="Username"
                 variant="outlined"
                 className={classes.inputField}
-                value={email}
-                onChange={handleEmailChange}
+                value={username}
+                onChange={handleUsernameChange}
                 margin="dense"
                 fullWidth
               />
