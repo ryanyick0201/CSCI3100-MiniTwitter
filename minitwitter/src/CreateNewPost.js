@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Avatar, Button, TextField, MenuItem, Select } from '@material-ui/core';
 import './createNewPost.css'
 import UploadButton from './UploadButton'
-import { Link } from 'react-router-dom';
+
 import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -17,14 +17,27 @@ const useStyles = makeStyles({
     color: 'white',
     margin: '40px auto 60px 300px',
   },
+  returnButton: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    fontWeight: 'bold', 
+    color: 'white',
+    position: 'fixed',
+    margin: 'auto auto auto 300px',
+  },
 });
 
-const CreateNewPost = ({ username, avatar }) => {
+
+const myUsername = sessionStorage.getItem('username');
+
+
+const CreateNewPost = () => {
   const classes = useStyles();
 
-  const [postContent, setPostContent] = React.useState('');
-  const [hashtag, setHashtag] = React.useState('');
-  const [media, setMedia] = React.useState(null);
+  const [postContent, setPostContent] = useState('');
+  const [hashtag, setHashtag] = useState('');
+  const [media, setMedia] = useState(null);
 
   const handlePostContentChange = (event) => {
     setPostContent(event.target.value);
@@ -43,7 +56,7 @@ const CreateNewPost = ({ username, avatar }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = {
-      username: "user1",
+      username: myUsername,
       tweetContent: postContent,
       category: hashtag,
     };
@@ -63,14 +76,18 @@ const CreateNewPost = ({ username, avatar }) => {
 
 
   return (
+    <div>
+      <Button  onClick={() => navigate(-1)} size="large" className={classes.returnButton}>
+          Return
+      </Button>
     <div className="newpost">
       
       <h2>Create new post</h2>
 
       <div className="nameAndAvatar">
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-      <Avatar src={avatar} alt={username} />
-      <p>{username}</p>
+      <Avatar src alt={myUsername} />
+      <p>{myUsername}</p>
       </div>  
       </div>
 
@@ -107,6 +124,7 @@ const CreateNewPost = ({ username, avatar }) => {
 
       <Button onClick={handleSubmit} className={classes.submitButton}>Submit</Button>
 
+    </div>
     </div>
   );
 };

@@ -30,7 +30,7 @@ const UploadButtonIma = ({ onChange }) => {
         style={{ display: 'none' }}
         accept="image/*"
       />
-      <Button className={classes.uploadButton} onClick={handleClick}>select from computer</Button>
+      <Button className={classes.uploadButton} onClick={handleClick}>Change profile picture</Button>
     </>
   );
 };

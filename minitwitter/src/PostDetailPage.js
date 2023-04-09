@@ -11,8 +11,6 @@ const useStyles = makeStyles({
     textTransform: 'none',
     backgroundColor: '#F47458',
     borderRadius: '25px',
-    height: '46px',
-    width: '100px',
     fontWeight: 'bold', 
     color: 'white',
     position: 'fixed',
@@ -32,7 +30,7 @@ const PostDetailPage = () => {
   const location = useLocation();
   const tweetId = location.state?.tweetId;
 
-  console.log(tweetId);
+
 
   useEffect(() => {
     const fetchPosts = async () => {

@@ -161,7 +161,7 @@ const PostWithBox = ({ post, AddComment }) => {
         variant="outlined"
         value={comment}
         onChange={e => setComment(e.target.value)}
-        placeholder="leave your comment"
+        label="leave your comment"
         multiline
         minRows={4}
         fullWidth

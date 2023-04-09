@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardActions, Button, Avatar } from '@material-ui/core';
 import './followerPage.css'
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,11 +17,36 @@ const useStyles = makeStyles({
   }
 });
 
-
+const myUsername = sessionStorage.getItem('username');
 
 
 function FollowerPage({ followers, following, followRequests }) {
   const classes = useStyles();
+
+  /* const [requests, setRequests] = useState({});
+  const [followers, setFollowers] = useState({});
+  const [followees, setFollowees] = useState({});
+
+  useEffect(() => {
+    const fetchRequessts = async () => {
+      const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&status=Pending`);
+      const data = await response.json();
+      setRequests(data);
+    };
+    const fetchFollowees = async () => {
+      const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&status=Accepted`);
+      const data = await response.json();
+      setFollowees(data);
+    };
+    const fetchFollowers = async () => {
+      const response = await fetch(`http://localhost:2000/user/searchFollow?followee=${myUsername}&status=Accepted`);
+      const data = await response.json();
+      setFollowers(data);
+    };
+    fetchRequessts();
+    fetchFollowees();
+    fetchFollowers();
+  }, []); */
 
   const [showAllRequests, setShowAllRequests] = useState(false);
 

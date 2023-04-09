@@ -17,6 +17,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
 function App(){
+  sessionStorage.setItem('username', 'user1');
+
   const posts = [
     {
       userId: 1,
@@ -93,13 +95,13 @@ function App(){
         <Routes>
           <Route
             path="/post"
-            element={<PostDetailPage  />}
+            element={<PostDetailPage/>}
           />
         </Routes>
         <Routes>
           <Route
             path="/createNewPost"
-            element={<CreateNewPost username="user"  />}
+            element={<CreateNewPost/>}
           />
         </Routes>
         <Routes>
@@ -111,7 +113,7 @@ function App(){
         <Routes>
           <Route
             path="/my profile"
-            element={<ProfilePage posts={posts} />}
+            element={<ProfilePage />}
           />
         </Routes>
         <Routes>

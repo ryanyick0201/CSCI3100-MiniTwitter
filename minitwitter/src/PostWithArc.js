@@ -103,6 +103,9 @@ const Post = ({ post }) => {
   const handleUserClick = (post) => {
     navigate('/other profile', {state: { username: post.username }});
   };
+  const handleTweetClick = (post) => {
+    navigate('/post', {state: { tweetId: post.tweetId }});
+  };
 
   return (
     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
@@ -137,7 +140,7 @@ const Post = ({ post }) => {
           <RepeatIcon />
         </IconButton>
         <Typography variant="caption">{post.retweet}</Typography>
-        <Button component={Link} to={`/post`} size="small" color="primary" style={{textTransform: 'none'}}>
+        <Button onClick={() => handleTweetClick(post)} size="small" color="primary" style={{textTransform: 'none'}}>
           Show this thread
         </Button>
       </CardActions>

@@ -22,7 +22,7 @@ function Sidebar(){
         <SidebarButton text="Chat" Icon={ChatIcon} to="/chat" />
         <SidebarButton text="Search" Icon={SearchIcon} to="/search" />
         <SidebarButton text="Recommendation" Icon={ThumbUpIcon} to="/recommendation" />
-        <SidebarButton text="Sign out" Icon={ExitToAppIcon} to="/out" />
+        <SidebarButton text="Sign out" Icon={ExitToAppIcon} to="/o" />
   
     </div>
   );

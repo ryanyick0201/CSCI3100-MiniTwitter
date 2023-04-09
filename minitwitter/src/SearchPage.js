@@ -147,7 +147,7 @@ function SearchPage() {
       <div className={classes.recomUsersContainer}>
         {recommendedUsers.map((user) => (
           <div className={classes.recomUser} key={user.name} onClick={handleUserClick}>
-            <Avatar src={user.avatar} alt={`${user.name} avatar`} />
+            <Avatar src alt />
             <Typography variant="subtitle1" className={classes.userName}>
               {user.name}
             </Typography>
