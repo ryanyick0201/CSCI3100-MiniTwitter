@@ -59,6 +59,8 @@
     <h1>choose room, then select photo, the photo will be uploaded once selected</h1>
     <button id="joinRoom12" onclick="joinRoom12()">joinRoom12</button>
     <button id="joinRoom13" onclick="joinRoom13()">joinRoom13</button>
+    <button id="joinRoom23" onclick="joinRoom23()">joinRoom23</button>
+
     <button id="leaveRoom" onclick="leaveRoom()">leaveRoom</button>
 
     <label for="fileChoose">Choose a picture:</label>
@@ -109,6 +111,12 @@
       function joinRoom13(){
         socket.emit('joinRoom', ['user1', 'user3']);
         SENDER = 'user1';
+        RECEIPIENT = 'user3';
+      };
+
+      function joinRoom23(){
+        socket.emit('joinRoom', ['user2', 'user3']);
+        SENDER = 'user2';
         RECEIPIENT = 'user3';
       };
 
