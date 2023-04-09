@@ -12,11 +12,20 @@ BE /server
     
     socket events:
     
+    'reqChatted'
+        From client to server
+        sent with username
+        Response by server:
+        1) fetch chatted of that username
+        2) emit 'chattedUser' back to that socket with array of chatted user (same as below)
+
+    
     'joinRoom' 
         From client to server:
         sent with usernamePair (['sender', 'receiver'])
 
         Response by server:
+        0) update all global variables and inRoomFlag
         1) find the userId of the usernamePair
         2) see if a room currently exist between the users, open room if not
         3) join the client to the room
@@ -70,9 +79,23 @@ BE /server
         users are sorted in reverse chronological order
         i.e. most recently chatted user first
         e.g. ['user2', 'user3']
+    
+    'leaveRoom'
+        From client to server:
+        sent without any param
+        Response by server:
+            1) update inRoomFlag
+            2) remove socket from socketroom
+            3) clean all global variable
 
-
-
+    'disconnect'
+        From client to server (when socket closed e.g. close browser)
+        sent without any param
+        Response by server:
+            if still inRoomFlag,
+            1) update inRoomFlag
+            2) remove socket from socketroom
+            3) clean all global variable
 
     get routes:
 
