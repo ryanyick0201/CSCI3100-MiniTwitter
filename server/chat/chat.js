@@ -66,78 +66,82 @@ app.use(cors());
 
 io.on("connection", async (socket) => {
   console.log(`a user connected, the socket.id is ${socket.id}`);
-  let socketRoomId = -1;
-  let userIdPair = [];
-  let usernameIdDict = {};
-  let socketUsernamePair = [];
+  let SOCKET_ROOM_ID = -1;
+  let USER_ID_PAIR = [];            // format: [ 1, 2 ]
+  let USERNAME_ID_DICT = {};        // format: [ '1': 'user1, '2': 'user2']
+  // let SOCKET_USERNAME_PAIR = [];
+  let USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
+  let IN_ROOM_FLAG = false;
 
-  // debugging event
-  socket.on("joinRoom0", () => {
-    console.log("user clicked joinRoom0");
-    socket.join("0");
-  });
 
-  // debugging event
-  socket.on("sendTestToRoom0", () => {
-    console.log("user pressed sendTestToRoom0");
-    io.to("0").emit("chat message", "this is a test message to room0");
-    // io.to('0').emit('to console', 'asdfasdf');
+  socket.on("reqChatted", async (username) => {
+    var id = await searchUserByUsername(username, "true");
+    id = JSON.parse(id).result[0].userId;
+    let chattedUserList = await getChattedUser(id);
+    io.to(socket.id).emit("chattedUser", chattedUserList);
   });
 
   socket.on("joinRoom", async (usernamePair) => {
-    socketUsernamePair = usernamePair;
+    if(usernamePair[1]==""){
+      console.log("recipient empty, now return");
+      return;
+    }
+    if(IN_ROOM_FLAG){
+      console.log("already in room, now return");
+      return;
+    }
+
+    IN_ROOM_FLAG = true;
+    USERNAME_PAIR = usernamePair;
+    // SOCKET_USERNAME_PAIR = usernamePair;
     console.log(`this is the socket.id that emitted 'joinroom' ${socket.id}`);
     console.log("joinRoom event triggered", usernamePair);
     console.log(
-      `${usernamePair[0]} want to open a room with ${usernamePair[1]}`
+      `${USERNAME_PAIR[0]} want to open a room with ${USERNAME_PAIR[1]}`
     );
 
     // find userid of the pair
-    userIdPair = await findUserIdPair(usernamePair);
-    userIdPair.forEach((id, i) => {
-      usernameIdDict[id] = usernamePair[i];
+    USER_ID_PAIR = await findUserIdPair(USERNAME_PAIR);
+    USER_ID_PAIR.forEach((id, i) => {
+      USERNAME_ID_DICT[id] = USERNAME_PAIR[i];
     }); // note that userId key coerced to string
 
-    console.log("userIdPair", userIdPair);
-    console.log("usernameIdDict", usernameIdDict);
+    console.log("userIdPair", USER_ID_PAIR);
+    console.log("usernameIdDict", USERNAME_ID_DICT);
 
-    addUsernameSocketDict(usernamePair[0], socket.id);
+    addUsernameSocketDict(USERNAME_PAIR[0], socket.id);
 
     // find room number, if not exist, open enw
-    socketRoomId = findRoom(userIdPair);
-    if (socketRoomId == "-1") {
-      socketRoomId = addRoom(userIdPair);
+    SOCKET_ROOM_ID = findRoom(USER_ID_PAIR);
+    if (SOCKET_ROOM_ID == "-1") {
+      SOCKET_ROOM_ID = addRoom(USER_ID_PAIR);
     }
-    console.log("socketRoomId is", socketRoomId);
+    console.log("socketRoomId is", SOCKET_ROOM_ID);
 
     // join the room
-    await socket.join(socketRoomId);
-
-    // testing code after joining the room
-    // for unknown reason, sending to room requires me to call io object directly
-    // if use original socket inside the joinroom callback, it does not work
-    // socket.emit('chat message', 'this is emit message after join room, emit not room');
-    // socket.in(socketRoomId).emit('chat message', 'this is emit message after join room, emit in room');
-    // io.to(socketRoomId).emit('chat message', 'this is emit message after join room, emit to room');
+    socket.join(SOCKET_ROOM_ID);
 
     // fetch chat history
-    fetchChat(userIdPair).then(async (result) => {
+    let result = await fetchChat(USER_ID_PAIR);
       console.log("chat history succesfully retreived");
       // console.log(result);
       // io.to(socket.id).emit("chat message",`this is emit message after ${socket.id} join retrieving chat history`);
 
-      // convert sender from userId to username & add imgUrl
+      // convert sender from userId to username & add imgUrl & convert sendTime back to UTC+8
+      // note that the sendTime received is a Date object?????
+
       const emitObj = [];
       for (chatObj of result) {
         let url = "";
         if (chatObj.isImg){
           url = await getObjectSignedUrl(chatObj.fileName);
         }
-        // console.log(chatObj);
+
         chatObj = {
           ...chatObj,
-          sender: usernameIdDict[String(chatObj["sender"])],
-          receiver: usernameIdDict[String(chatObj["receiver"])],
+          sender: USERNAME_ID_DICT[String(chatObj["sender"])],
+          receiver: USERNAME_ID_DICT[String(chatObj["receiver"])],
+          sendTime: parseDateToUTC8(chatObj.sendTime),
           imgUrl: url
         };
         emitObj.push(chatObj);
@@ -145,82 +149,114 @@ io.on("connection", async (socket) => {
       // emit to the client
       console.log("the parsed emitObj is", emitObj);
       io.to(socket.id).emit("chatHistory", emitObj);
-    });
 
     // fetch and send chattedUserLists (chatted User of both user)
-    sendChattedUsers(userIdPair, usernamePair, io);
+    sendChattedUsers(USER_ID_PAIR, USERNAME_PAIR, io);
 
     // start handling client sending message after join room
-    socket.on(NEW_MESSAGE_EVENT, async (data) => {
-      console.log("receive msg from client, isImg" + data["isImg"]);
 
-      if(!data.isImg){
-        console.log("receive !isImg msg from client:" + data["message"]);
-        // send to other client in the room
-        io.in(socketRoomId).emit(NEW_MESSAGE_EVENT, data);
-        // write to the database
-        writeChatToDb(data["message"], userIdPair);
-      }
-      
-      else{ // msg isImg
-      // genereate random name
-      let randomName = crypto.randomBytes(32).toString('hex');
+    console.log("reached line166");
 
-      console.log('received isImg msg from client');
-      console.log(data.message.file);
-      console.log(data.message.mimeType);
-      console.log(randomName);
-      const x = await uploadFile(data.message.file, randomName, data.message.mimeType);   
-      console.log(x);
-
-      const writeChatToDbReturnObj = await writeChatToDb(randomName, userIdPair, randomName, data.message.mimeType);
-      const url = await getObjectSignedUrl(randomName);
-      
-      const dataToRoom = {
-        sender: data.sender,
-        recipient: data.recipient,
-        isImg: true,
-        sendTime: data.sendTime,
-        imgUrl: url 
-      }      
-      io.in(socketRoomId).emit(NEW_MESSAGE_EVENT, dataToRoom);
+    if(!IN_ROOM_FLAG) {
+      console.log('reaching return statement of joinroom callback');
+      return;
     }
 
-
-      // fetch and send chattedUserLists (chatted User of both user)
-      // call getChattedUser inside, and send 'chattedUser'
-      sendChattedUsers(userIdPair, usernamePair, io);
-    });
-
-    // development event
-    socket.on('imageTest', async (data) =>{
-      // genereate random name
-      let randomName = crypto.randomBytes(32).toString('hex');
-      let fileName = randomName;
-      
-      console.log('received imageTest event');
-      console.log(data.message.file);
-      console.log(data.message.mimeType);
-      console.log(fileName);
-      const x = await uploadFile(data.message.file, fileName, data.message.mimeType);   
-      console.log(x);
-      const url = await getObjectSignedUrl(fileName);
-      console.log(url);
-    })
-
-    
   });
+  
+  socket.on(NEW_MESSAGE_EVENT, async (data) => {
+    if(!IN_ROOM_FLAG){
+      console.log("inRoomFlag false, but receive msg from client:" + data["message"]);
+      return;
+    }
+    
+    console.log("receive msg from client, isImg" + data["isImg"]);
+
+    if(!data.isImg){
+      console.log("receive !isImg msg from client:" + data["message"]);
+      
+      // send to other client in the room
+      io.in(SOCKET_ROOM_ID).emit(NEW_MESSAGE_EVENT, data);
+      // write to the database
+      writeChatToDb(data["message"], USER_ID_PAIR);
+    }
+    
+    else{ // msg isImg
+    // genereate random name
+    let randomName = crypto.randomBytes(32).toString('hex');
+
+    console.log('received isImg msg from client');
+    console.log(data.message.file);
+    console.log(data.message.mimeType);
+    console.log(randomName);
+    const x = await uploadFile(data.message.file, randomName, data.message.mimeType);   
+    console.log(x);
+
+    const writeChatToDbReturnObj = await writeChatToDb(randomName, USER_ID_PAIR, randomName, data.message.mimeType);
+    const url = await getObjectSignedUrl(randomName);
+    
+
+    const dataToRoom = {
+      sender: data.sender,
+      recipient: data.recipient,
+      isImg: true,
+      sendTime: data.sendTime,
+      imgUrl: url 
+    }      
+    io.in(SOCKET_ROOM_ID).emit(NEW_MESSAGE_EVENT, dataToRoom);
+  }
+
+
+    // fetch and send chattedUserLists (chatted User of both user)
+    // call getChattedUser inside, and send 'chattedUser'
+    sendChattedUsers(USER_ID_PAIR, USERNAME_PAIR, io);
+  });
+
+  socket.on("leaveRoom", () => {
+    console.log("leaveRoom event received");
+    console.log(`inRoomFlag is ${IN_ROOM_FLAG}`);
+
+    if(IN_ROOM_FLAG){
+      socket.leave(SOCKET_ROOM_ID);
+      console.log(`removed socket ${socket.id} from ${SOCKET_ROOM_ID}`);
+      deleteUsernameSocketDict(USERNAME_PAIR[0], socket.id);
+      // resetting all 'global varaibles'
+      SOCKET_ROOM_ID = -1;
+      USER_ID_PAIR = [];            // format: [ 1, 2 ]
+      USERNAME_ID_DICT = {};        // format: [ '1': 'user1, '2': 'user2']
+      // let SOCKET_USERNAME_PAIR = [];
+      USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
+      IN_ROOM_FLAG = false;
+    
+    }
+    IN_ROOM_FLAG = false;
+    console.log(`setting inRoomFlag to ${IN_ROOM_FLAG}`);
+    return;
+  });
+
 
   // debugging event
-  socket.on("chat message", (msg) => {
-    console.log("message: " + msg);
-    io.to("0").emit("chat message", msg);
+  socket.on("test", () => {
+    console.log("test received");
+    return;
   });
 
+
   socket.on("disconnect", () => {
-    // socket.leave(socketRoomId);
-    console.log(`socket disconnected ${socket.id}`);
-    deleteUsernameSocketDict(socketUsernamePair[0], socket.id);
+    if(IN_ROOM_FLAG){
+      console.log("socket disconnected without leaving room");
+
+      socket.leave(SOCKET_ROOM_ID);
+      deleteUsernameSocketDict(USERNAME_PAIR[0], socket.id);
+      // resetting all 'global varaibles'
+      SOCKET_ROOM_ID = -1;
+      USER_ID_PAIR = [];            // format: [ 1, 2 ]
+      USERNAME_ID_DICT = {};        // format: [ '1': 'user1, '2': 'user2']
+      // let SOCKET_USERNAME_PAIR = [];
+      USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
+      IN_ROOM_FLAG = false;
+    }
+    console.log("user disconnected");
   });
 });
 
@@ -244,12 +280,7 @@ async function findUserIdPair(usernamePair) {
 }
 
 async function fetchChat(userIdPair) {
-  // console.log("this is start of fetchChat, at this point userIdPair is ");
-  // console.log(userIdPair);
-  // fetch userId
-  // console.log('starting to fetch userids');
-  // let userIds = await findUserIdPair(usernamePair);
-  // console.log('userIds are', userIds)
+
   // fetch chat
   try {
     let rows = await query(
@@ -265,14 +296,25 @@ async function fetchChat(userIdPair) {
   }
 }
 
+function parseDateToUTC8 (dateObject){
+    // referenced hhttps://stackoverflow.com/questions/12413243/javascript-date-format-like-iso-but-local
+    let offsetToUTC = dateObject.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
+    let nowWithOffset = dateObject - offsetToUTC;
+    const newNow = new Date(nowWithOffset);
+    const formattedTime = newNow.toISOString().replace("T", " ").slice(0, -5);
+  return formattedTime;
+}
+
 async function writeChatToDb(messageContent, userIdPair, fileName=null, mimeType=null) {
   try {
     // referenced hhttps://stackoverflow.com/questions/12413243/javascript-date-format-like-iso-but-local
     const now = new Date();
-    let offsetToUTC = now.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
-    let nowWithOffset = now - offsetToUTC;
-    const newNow = new Date(nowWithOffset);
-    const formattedTime = newNow.toISOString().replace("T", " ").slice(0, -5);
+    // let offsetToUTC = now.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
+    // let nowWithOffset = now - offsetToUTC;
+    // const newNow = new Date(nowWithOffset);
+    // const formattedTime = newNow.toISOString().replace("T", " ").slice(0, -5);
+    const formattedTime = parseDateToUTC8(now);
+
 
     if (fileName == null || mimeType == null){
     let x = await query(
