@@ -15,6 +15,7 @@ const useChatRoom = (msgSender, msgRecipient, socket) => {
     // Join chat room, emit the two parties in an array to server
     // *** To be replaced by socket.on event
     socket.emit("joinRoom", [msgSender, msgRecipient]);
+    socket.emit("reqChatted", msgSender);
     socket.on("chatHistory", (res) => {
       res.forEach((item) => {
         item["isSender"] = item.sender == msgSender;
