@@ -208,6 +208,7 @@ io.on("connection", async (socket) => {
       console.log(url);
     })
 
+    
   });
 
   // debugging event
@@ -218,7 +219,7 @@ io.on("connection", async (socket) => {
 
   socket.on("disconnect", () => {
     // socket.leave(socketRoomId);
-    console.log("user disconnected");
+    console.log(`socket disconnected ${socket.id}`);
     deleteUsernameSocketDict(socketUsernamePair[0], socket.id);
   });
 });
@@ -277,14 +278,14 @@ async function writeChatToDb(messageContent, userIdPair, fileName=null, mimeType
     let x = await query(
       `INSERT INTO Message (message, sendTime, sender, receiver, isImg, fileName, mimeType)
         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [messageContent, formattedTime, userIdPair[0], userIdPair[1], true, null, null]
+      [messageContent, formattedTime, userIdPair[0], userIdPair[1], false, null, null]
     );} 
     
     else{
       let x = await query(
         `INSERT INTO Message (message, sendTime, sender, receiver, isImg, fileName, mimeType)
           VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [messageContent, formattedTime, userIdPair[0], userIdPair[1], false, fileName, mimeType]
+        [messageContent, formattedTime, userIdPair[0], userIdPair[1], true, fileName, mimeType]
       );
     }
 
