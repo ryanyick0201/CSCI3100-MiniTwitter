@@ -34,6 +34,7 @@ const Panel = ({ sender, setRecipient, socket }) => {
           <CardActionArea
             key={name}
             onClick={(e) => {
+              socket.emit("leaveRoom");
               setRecipient(e.target.innerText);
             }}
           >
