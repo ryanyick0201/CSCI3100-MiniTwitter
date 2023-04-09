@@ -26,7 +26,7 @@ const usePanel = (sender, socket) => {
     socket.on("chattedUser", (obj) => {
       setNameList(obj); // Rely on BE to give updated list
     });
-  }, [socket]);
+  }, []);
 
   return { nameList };
 };

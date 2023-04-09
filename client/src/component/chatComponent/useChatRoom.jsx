@@ -35,6 +35,7 @@ const useChatRoom = (msgSender, msgRecipient, socket) => {
     });
 
     return () => {
+      socket.off(NEW_MESSAGE_EVENT);
       socket.disconnect();
     };
   }, []);

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
 import { io } from "socket.io-client";
 
-import Room from "./Room";
-import Panel from "./Panel";
+import Room from "./chatComponent/Room";
+import Panel from "./chatComponent/Panel";
 
-const SOCKET_SERVER_URL = "http://localhost:3030";
+const SOCKET_SERVER_URL = "http://" + window.location.hostname + ":3030";
 
 const useStyles = makeStyles({
   pageContainer: {
@@ -31,12 +31,7 @@ const ChatPage = ({ sender }) => {
 
   return (
     <div className={classes.pageContainer}>
-      <Panel
-        sender={sender}
-        recipient={recipient}
-        setRecipient={setRecipient}
-        socket={socket}
-      />
+      <Panel sender={sender} setRecipient={setRecipient} socket={socket} />
       <Room sender={sender} recipient={recipient} socket={socket} />
     </div>
   );
