@@ -21,7 +21,12 @@ function addUsernameSocketDict(username, socketID) {
   if (usernameSocketDict.hasOwnProperty(username)) {
     array = usernameSocketDict[username];
   }
-  array.push(socketID);
+  const index = array.indexOf(socketID);
+  if (index == -1) {
+    // only push the socket into the array when item is not found
+    array.push(socketID);  
+  }
+
   usernameSocketDict[username] = array;
   console.log(`added user ${username}: ${socketID}`);
   console.log(`usernameSocketDict is`);

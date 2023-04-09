@@ -61,26 +61,23 @@ app.use(cors());
 
 io.on("connection", async (socket) => {
   console.log(`a user connected, the socket.id is ${socket.id}`);
-  let socketRoomId = -1;
-  let userIdPair = [];
-  let usernameIdDict = {};
-  let socketUsernamePair = [];
+  let SOCKET_ROOM_ID = -1;
+  let USER_ID_PAIR = [];            // format: [ 1, 2 ]
+  let USERNAME_ID_DICT = {};        // format: [ '1': 'user1, '2': 'user2']
+  // let SOCKET_USERNAME_PAIR = [];
+  let USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
+  let IN_ROOM_FLAG = false;
 
-  // debugging event
-  socket.on("joinRoom0", () => {
-    console.log("user clicked joinRoom0");
-    socket.join("0");
-  });
-
-  // debugging event
-  socket.on("sendTestToRoom0", () => {
-    console.log("user pressed sendTestToRoom0");
-    io.to("0").emit("chat message", "this is a test message to room0");
-    // io.to('0').emit('to console', 'asdfasdf');
-  });
 
   socket.on("joinRoom", async (usernamePair) => {
-    socketUsernamePair = usernamePair;
+    if(IN_ROOM_FLAG){
+      console.log("already in room, now return");
+      return;
+    }
+
+    IN_ROOM_FLAG = true;
+    USERNAME_PAIR = usernamePair;
+    // SOCKET_USERNAME_PAIR = usernamePair;
     console.log(`this is the socket.id that emitted 'joinroom' ${socket.id}`);
     console.log("joinRoom event triggered", usernamePair);
     console.log(
@@ -88,89 +85,126 @@ io.on("connection", async (socket) => {
     );
 
     // find userid of the pair
-    userIdPair = await findUserIdPair(usernamePair);
-    userIdPair.forEach((id, i) => {
-      usernameIdDict[id] = usernamePair[i];
+    USER_ID_PAIR = await findUserIdPair(usernamePair);
+    USER_ID_PAIR.forEach((id, i) => {
+      USERNAME_ID_DICT[id] = usernamePair[i];
     }); // note that userId key coerced to string
 
-    console.log("userIdPair", userIdPair);
-    console.log("usernameIdDict", usernameIdDict);
+    console.log("userIdPair", USER_ID_PAIR);
+    console.log("usernameIdDict", USERNAME_ID_DICT);
 
     addUsernameSocketDict(usernamePair[0], socket.id);
 
     // find room number, if not exist, open enw
-    socketRoomId = findRoom(userIdPair);
-    if (socketRoomId == "-1") {
-      socketRoomId = addRoom(userIdPair);
+    SOCKET_ROOM_ID = findRoom(USER_ID_PAIR);
+    if (SOCKET_ROOM_ID == "-1") {
+      SOCKET_ROOM_ID = addRoom(USER_ID_PAIR);
     }
-    console.log("socketRoomId is", socketRoomId);
+    console.log("socketRoomId is", SOCKET_ROOM_ID);
 
     // join the room
-    await socket.join(socketRoomId);
-
-    // testing code after joining the room
-    // for unknown reason, sending to room requires me to call io object directly
-    // if use original socket inside the joinroom callback, it does not work
-    // socket.emit('chat message', 'this is emit message after join room, emit not room');
-    // socket.in(socketRoomId).emit('chat message', 'this is emit message after join room, emit in room');
-    // io.to(socketRoomId).emit('chat message', 'this is emit message after join room, emit to room');
+    socket.join(SOCKET_ROOM_ID);
 
     // fetch chat history
-    fetchChat(userIdPair).then((result) => {
-      console.log("chat history succesfully retreived");
-      // console.log(result);
-      io.to(socket.id).emit(
-        "chat message",
-        `this is emit message after ${socket.id} join retrieving chat history`
-      );
+    let result = await fetchChat(USER_ID_PAIR);
+    console.log("chat history succesfully retreived");
+    // console.log(result);
+    // io.to(socket.id).emit(        "chat message",        `this is emit message after ${socket.id} join retrieving chat history`);
 
-      // convert sender from userId to username
-      const emitObj = [];
-      for (chatObj of result) {
-        // console.log(chatObj);
-        chatObj = {
-          ...chatObj,
-          sender: usernameIdDict[String(chatObj["sender"])],
-          receiver: usernameIdDict[String(chatObj["receiver"])],
-        };
-        emitObj.push(chatObj);
-      }
-      // emit to the client
-      console.log("the parsed emitObj is", emitObj);
-      io.to(socket.id).emit("chatHistory", emitObj);
-    });
+    // convert sender from userId to username
+    const emitObj = [];
+    for (chatObj of result) {
+      // console.log(chatObj);
+      chatObj = {
+        ...chatObj,
+        sender: USERNAME_ID_DICT[String(chatObj["sender"])],
+        receiver: USERNAME_ID_DICT[String(chatObj["receiver"])],
+      };
+      emitObj.push(chatObj);
+    }
+    // emit to the client
+    console.log("the parsed emitObj is", emitObj);
+    io.to(socket.id).emit("chatHistory", emitObj);
 
     // fetch and send chattedUserLists (chatted User of both user)
-    sendChattedUsers(userIdPair, usernamePair, io);
+    sendChattedUsers(USER_ID_PAIR, USERNAME_PAIR, io);
 
     // start handling client sending message after join room
-    socket.on(NEW_MESSAGE_EVENT, (data) => {
-      console.log("receive msg from client:" + data["message"]);
+    
+    console.log("reached line166");
 
+    if(!IN_ROOM_FLAG) {
+      console.log('reaching return statement of joinroom callback');
+      return;
+    }
+
+  });
+
+  socket.on(NEW_MESSAGE_EVENT, (data) => {
+    if(IN_ROOM_FLAG){
+      console.log("receive msg from client:" + data["message"]);
       // send to other client in the room
-      io.in(socketRoomId).emit(NEW_MESSAGE_EVENT, data);
+      io.in(SOCKET_ROOM_ID).emit(NEW_MESSAGE_EVENT, data);
 
       // write to the database
       if (!data["isImg"]) {
-        writeChatToDb(data["message"], userIdPair);
+        writeChatToDb(data["message"], USER_ID_PAIR);
       }
 
       // fetch and send chattedUserLists (chatted User of both user)
       // call getChattedUser inside, and send 'chattedUser'
-      sendChattedUsers(userIdPair, usernamePair, io);
-    });
+      sendChattedUsers(USER_ID_PAIR, USERNAME_PAIR, io);
+    }
+    else{
+      console.log("inRoomFlag false, but receive msg from client:" + data["message"]);
+    }
   });
+
+  socket.on("leaveRoom", () => {
+    console.log("leaveRoom event received");
+    console.log(`inRoomFlag is ${IN_ROOM_FLAG}`);
+
+    if(IN_ROOM_FLAG){
+      // resetting all 'global varaibles'
+      SOCKET_ROOM_ID = -1;
+      USER_ID_PAIR = [];            // format: [ 1, 2 ]
+      USERNAME_ID_DICT = {};        // format: [ '1': 'user1, '2': 'user2']
+      // let SOCKET_USERNAME_PAIR = [];
+      USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
+      IN_ROOM_FLAG = false;
+
+      socket.leave(SOCKET_ROOM_ID);
+      console.log(`removed socket ${socket.id} from ${SOCKET_ROOM_ID}`);
+      deleteUsernameSocketDict(USERNAME_PAIR[0], socket.id);
+    }
+    IN_ROOM_FLAG = false;
+    console.log(`setting inRoomFlag to ${IN_ROOM_FLAG}`);
+    return;
+  });
+
 
   // debugging event
-  socket.on("chat message", (msg) => {
-    console.log("message: " + msg);
-    io.to("0").emit("chat message", msg);
+  socket.on("test", () => {
+    console.log("test received");
+    return;
   });
+  
 
   socket.on("disconnect", () => {
-    // socket.leave(socketRoomId);
+    if(IN_ROOM_FLAG){
+      console.log("socket disconnected without leaving room");
+
+      socket.leave(SOCKET_ROOM_ID);
+      deleteUsernameSocketDict(USERNAME_PAIR[0], socket.id);
+      // resetting all 'global varaibles'
+      SOCKET_ROOM_ID = -1;
+      USER_ID_PAIR = [];            // format: [ 1, 2 ]
+      USERNAME_ID_DICT = {};        // format: [ '1': 'user1, '2': 'user2']
+      // let SOCKET_USERNAME_PAIR = [];
+      USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
+      IN_ROOM_FLAG = false;
+    }
     console.log("user disconnected");
-    deleteUsernameSocketDict(socketUsernamePair[0], socket.id);
   });
 });
 
