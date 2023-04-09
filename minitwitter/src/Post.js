@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState }from 'react';
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Typography } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
@@ -9,11 +9,12 @@ import RepeatIcon from '@material-ui/icons/Repeat';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
+
 const Post = ({ post }) => {
-  const [liked, setLiked] = React.useState(false);
-  const [disliked, setDisliked] = React.useState(false);
-  const [likes, setLikes] = React.useState(post.likes);
-  const [dislikes, setDislikes] = React.useState(post.dislikes);
+  const [liked, setLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
+  const [likes, setLikes] = useState(post.likes);
+  const [dislikes, setDislikes] = useState(post.dislikes);
   
 
 
@@ -29,7 +30,30 @@ const Post = ({ post }) => {
       setDisliked(false);
       setDislikes(dislikes - 1);
     }
+
+    const data = {
+      username: post.username,
+      tweetId: post.tweetId,
+      status: liked ? null : 'like',
+    };
+  
+    fetch('http://localhost:2000/tweet/likeTweet', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   };
+
+
 
   const handleDislike = () => {
     if (disliked) {
@@ -42,6 +66,27 @@ const Post = ({ post }) => {
       setLiked(false);
       setLikes(likes - 1);
     }
+
+    const data = {
+      username: post.username,
+      tweetId: post.tweetId,
+      status: disliked ? null : 'dislike',
+    };
+  
+    fetch('http://localhost:2000/tweet/likeTweet', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   };
 
   const navigate = useNavigate();
@@ -61,7 +106,7 @@ const Post = ({ post }) => {
         subheader={new Date(post.postTime).toLocaleString('en-US')}
         onClick={() => handleUserClick(post)}
       />
-      {/*post.image && <CardMedia image={post.image} />*/}
+      {/*post.image && <CardMedia image />*/}
       <CardContent>
         <Typography variant="body1">{post.tweetContent}</Typography>
           <Button size="small" color="primary" style={{textTransform: 'none'}}>
@@ -72,11 +117,11 @@ const Post = ({ post }) => {
         <IconButton onClick={handleLike}>
           {liked ? <FavoriteIcon color="secondary" /> : <FavoriteBorderIcon />}
         </IconButton>
-        <Typography variant="caption">{post.likes}</Typography>
+        <Typography variant="caption">{likes}</Typography>
         <IconButton onClick={handleDislike}>
           {disliked ? <ThumbDownIcon color="primary" /> : <ThumbDownAltOutlinedIcon />}
         </IconButton>
-        <Typography variant="caption">{post.dislikes}</Typography>
+        <Typography variant="caption">{dislikes}</Typography>
         <IconButton onClick={() => handleTweetClick(post)}>
           <ChatBubbleOutlineIcon />
         </IconButton>

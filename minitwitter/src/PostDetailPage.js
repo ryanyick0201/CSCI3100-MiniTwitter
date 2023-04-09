@@ -67,6 +67,33 @@ const PostDetailPage = () => {
   const navigate = useNavigate();
 
 
+  const handleAddComment = (comment) => {
+    const data = {
+      userId: 1,
+      tweetId: post.tweetId,
+      commentContent: comment,
+    };
+
+    fetch('http://localhost:2000/tweet/commentTweet', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(() => {
+      fetch(`http://localhost:2000/tweet/searchCommentByTweetId?tweetId=${tweetId}`)
+      .then(response => response.json())
+      .then(data => {
+        setComments(data);
+      })
+      .catch(error => console.log(error));
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  };
 
 
   return (
@@ -78,7 +105,7 @@ const PostDetailPage = () => {
       
       
       <div className="post">      
-        <PostWithBox key={post.tweetId} post={post} />      
+        <PostWithBox key={post.tweetId} post={post} AddComment={handleAddComment}/>      
       </div>
 
 

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Avatar, Button, TextField, MenuItem, Select } from '@material-ui/core';
 import './createNewPost.css'
 import UploadButton from './UploadButton'
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -37,9 +38,29 @@ const CreateNewPost = ({ username, avatar }) => {
     setMedia(event.target.files[0]);
   };
 
-  const handleSubmit = () => {
-    // Submit the post data
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = {
+      username: "user1",
+      tweetContent: postContent,
+      category: hashtag,
+    };
+    const response = await fetch('http://localhost:2000/tweet/createTweet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    console.log(result);
+    navigate('/');
   };
+  
+  
+
+
+
 
   return (
     <div className="newpost">
@@ -70,8 +91,11 @@ const CreateNewPost = ({ username, avatar }) => {
         <MenuItem value="">
           <em>None</em>
         </MenuItem>
-        <MenuItem value={'animals'}>animals</MenuItem>
-        <MenuItem value={'flowers'}>flowers</MenuItem>
+        <MenuItem value={'science'}>science</MenuItem>
+        <MenuItem value={'programming'}>programming</MenuItem>
+        <MenuItem value={'travel'}>travel</MenuItem>
+        <MenuItem value={'sports'}>sports</MenuItem>
+        <MenuItem value={'pets'}>pets</MenuItem>
       </Select>
       </div>
 
@@ -81,7 +105,7 @@ const CreateNewPost = ({ username, avatar }) => {
       </div>
 
 
-      <Button component={Link} to="/home" onClick={handleSubmit} className={classes.submitButton}>Submit</Button>
+      <Button onClick={handleSubmit} className={classes.submitButton}>Submit</Button>
 
     </div>
   );
