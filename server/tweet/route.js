@@ -10,7 +10,7 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
 const {searchTweetByMultiple, createTweet} = require('./tweet');
-const {likeTweet} = require('./like');
+const {likeTweet, viewLikeTweetByUser} = require('./like');
 const {archiveTweet} = require('./archive')
 const {retweet} = require('./retweet')
 const {viewCommentByTweetId, commentTweet} = require('./comment')
@@ -74,6 +74,16 @@ router.post('/createTweet', upload.single('image'), async (req, res) => {
         res.send(`{"message": "Create a tweet failed. Field(s) missing."}`);
     }
 
+});
+
+router.get('/viewLikeTweet', async (req, res) => {
+    if (req.query.username && req.query.tweetId){
+        let x = await viewLikeTweetByUser(null, req.query.username, req.query.tweetId);
+        console.log(x);
+        res.send(x);
+    } else {
+        res.send(`{"message": "Viewl like/dislike of a tweet failed. Field(s) missing."}`);
+    }
 });
 
 router.post('/archiveTweet', async (req, res) => {

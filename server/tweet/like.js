@@ -19,7 +19,7 @@ async function viewLikeTweetByUser(userId, username, tweetId){
             var rows = await query(`
             SELECT t.tweetId, u.username, l.status
             FROM tweet t, user u, tweetlike l
-            WHERE t.tweetId = l.tweetId AND u.userId = l.userId AND u.username = '${username}' AND t.tweetId = ${tweetId}'
+            WHERE t.tweetId = l.tweetId AND u.userId = l.userId AND u.username = '${username}' AND t.tweetId = ${tweetId}
             ORDER BY tweetId, username;
             `);
         }
