@@ -78,7 +78,9 @@
       let SENDER = '';
       let RECEIPIENT = '';
 
-      var socket = io("http://localhost:3030");
+      // var socket = io("http://localhost:3030");
+      var socket = io("http://ec2-13-55-68-165.ap-southeast-2.compute.amazonaws.com:3030");
+
 
       var messages = document.getElementById("messages");
       var form = document.getElementById("form");

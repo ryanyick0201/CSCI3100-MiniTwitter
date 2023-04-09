@@ -341,16 +341,19 @@ async function writeChatToDb(messageContent, userIdPair, fileName=null, mimeType
 
 async function getChattedUser(userId) {
   try {
+
+    // console.log('getChattedUser starts');
+
     let chattedUser = await query(`
       SELECT chatteduser 
       FROM
         ((SELECT max(sendTime) AS sendtime, sender AS chatteduser
-        FROM message
+        FROM Message
         WHERE receiver = ${userId}
         GROUP BY sender, receiver)
         UNION
         (SELECT max(sendTime), receiver AS chatteduser
-        FROM message
+        FROM Message
         WHERE sender = ${userId}
         GROUP BY sender, receiver)) AS combinedTable
       GROUP BY chatteduser
@@ -362,15 +365,15 @@ async function getChattedUser(userId) {
     for (const userId of chattedUser) {
       // console.log(userId);
       const username = await query(
-        `SELECT u.username FROM User u WHERE u.userId = ${userId}`
+        `SELECT u.username FROM User u WHERE u.userId = ${userId};`
       );
       // console.log(username);
       chattedUserList.push(username[0]["username"]);
     }
     return chattedUserList;
   } catch {
-    console.log("Retrieve chatted failed. DB error when getting chattable");
-    return ["Retrieve chatted failed. DB error when getting chattable"];
+    console.log("Retrieve chatted failed. DB error when getting chattedUser");
+    return ["Retrieve chatted failed. DB error when getting chattedUser"];
   }
 }
 
@@ -421,7 +424,7 @@ router.get("/chatTables", async (req, res) => {
     for (const userId of chattable) {
       // console.log(userId);
       const username = await query(
-        `SELECT u.username FROM User u WHERE u.userId = ${userId}`
+        `SELECT u.username FROM User u WHERE u.userId = ${userId};`
       );
       // console.log(username);
       returnObj.push(username[0]["username"]);
@@ -458,7 +461,7 @@ router.get("/chattedUser", async (req, res) => {
     for (const userId of chattedUser) {
       // console.log(userId);
       const username = await query(
-        `SELECT u.username FROM User u WHERE u.userId = ${userId}`
+        `SELECT u.username FROM User u WHERE u.userId = ${userId};`
       );
       // console.log(username);
       returnObj.push(username[0]["username"]);
