@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Avatar, Button, TextField, Typography, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -66,28 +64,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
 function SearchPage() {
   const classes = useStyles();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [recommendedUsers, setRecommendedUsers] = useState([
-    { name: 'User 1', avatar: '/images/avatar1.jpg' },
-    { name: 'User 2', avatar: '/images/avatar2.jpg' },
-    { name: 'User 3', avatar: '/images/avatar3.jpg' },
-  ]);
+  const [searchResults, setSearchResults] = useState({});
+
+  const [recommendedUsers, setRecommendedUsers] = useState([]);
   const [showAllResults, setShowAllResults] = useState(false);
 
-  const handleSearch = () => {
-    // TODO: Make API call to search for users with searchTerm
-    const results = [
-      { name: 'User A', avatar: '/images/avatar4.jpg' },
-      { name: 'User B', avatar: '/images/avatar5.jpg' },
-      { name: 'User C', avatar: '/images/avatar6.jpg' },
-    ];
-    setSearchResults(results);
-    setShowAllResults(false);
+  const handleSearch = async () => {
+    if(searchTerm==''){
+      setSearchResults({});
+      return;
+    }
+    const response = await fetch(`http://localhost:2000/user/searchUser?username=${searchTerm}`);
+    const data = await response.json();
+    setSearchResults(data);
   };
+
 
   const handleShowAllResults = () => {
     setShowAllResults(true);
@@ -95,11 +92,11 @@ function SearchPage() {
 
   const navigate = useNavigate();
 
-  const handleUserClick = () => {
-    navigate('/other profile');
+  const handleUserClick = (user) => {
+    navigate('/other profile', {state: {username: user.username }});
   };
 
-  
+
 
   return (
     <div className={classes.root}>
@@ -108,7 +105,7 @@ function SearchPage() {
     <div className={classes.searchContainer}>
       <TextField
         className={classes.searchInput}
-        label="Search"
+        label="Search by username"
         variant="outlined"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
@@ -119,18 +116,18 @@ function SearchPage() {
     </div>
 
       <div className={classes.usersContainer}>
-        {searchResults.slice(0, showAllResults ? searchResults.length : 2).map((user) => (
+        {searchResults.result?.slice(0, showAllResults ? searchResults.result?.length : 2).map((user) => (
 
-            <div className={classes.user} key={user.name} onClick={handleUserClick}>
-              <Avatar className={classes.avatar} src={user.avatar} alt={`${user.name} avatar`} />
+            <div className={classes.user} key={user.userId} onClick={() => handleUserClick(user)}>
+              <Avatar className={classes.avatar} src alt={user.username} />
               <Typography variant="subtitle1" className={classes.userName}>
-                {user.name}
+                {user.username}
               </Typography>
             </div>
 
         ))}
       </div>
-      {searchResults.length > 2 && !showAllResults && (
+      {searchResults.result?.length > 2 && !showAllResults && (
         <div>
           <div style={{ height: 16 }}/>
           <Button className={classes.viewMoreButton} onClick={handleShowAllResults}>

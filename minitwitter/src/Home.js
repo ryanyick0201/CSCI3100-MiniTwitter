@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './home.css';
 import Post from './Post'
 import { Link } from 'react-router-dom';
@@ -21,8 +21,26 @@ const useStyles = makeStyles({
 
 
 
-const Home = ({ posts }) => {
+const Home = () => {
   const classes = useStyles();
+
+  const [posts, setPosts] = useState({});
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await fetch('http://localhost:2000/tweet/searchTweet?username=user2');
+      const data = await response.json();
+      setPosts(data);
+    };
+    fetchPosts();
+  }, []);
+  
+
+
+
+
+
+
   return (
   <div>
     <Button  component={Link} to="/createNewPost" size="large" className={classes.newPostButton} >
@@ -32,8 +50,8 @@ const Home = ({ posts }) => {
 
 
     <div className="card">
-      {posts.map(post => (
-        <Post key={post.id} post={post} />
+      {Array.isArray(posts.result) && posts.result.map(post => (
+        <Post key={post.tweetId} post={post} />
       ))}
     </div>
 
