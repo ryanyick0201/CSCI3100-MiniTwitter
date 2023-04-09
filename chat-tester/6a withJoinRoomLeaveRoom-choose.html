@@ -56,8 +56,9 @@
     </style>
   </head>
   <body>
-    <h1>user1 to user2</h1>
-    <button id="joinRoom" onclick="joinRoom()">joinRoom</button>
+    <h1>choose room</h1>
+    <button id="joinRoom12" onclick="joinRoom12()">joinRoom12</button>
+    <button id="joinRoom13" onclick="joinRoom13()">joinRoom13</button>
     <button id="leaveRoom" onclick="leaveRoom()">leaveRoom</button>
     <button id="test" onclick="test()">test</button>
 
@@ -108,8 +109,12 @@
       }
 
 
-      function joinRoom(){
+      function joinRoom12(){
         socket.emit('joinRoom', ['user1', 'user2']);
+      };
+
+      function joinRoom13(){
+        socket.emit('joinRoom', ['user1', 'user3']);
       };
 
       function leaveRoom(){

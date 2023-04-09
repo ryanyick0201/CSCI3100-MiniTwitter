@@ -165,6 +165,9 @@ io.on("connection", async (socket) => {
     console.log(`inRoomFlag is ${IN_ROOM_FLAG}`);
 
     if(IN_ROOM_FLAG){
+      socket.leave(SOCKET_ROOM_ID);
+      console.log(`removed socket ${socket.id} from ${SOCKET_ROOM_ID}`);
+      deleteUsernameSocketDict(USERNAME_PAIR[0], socket.id);
       // resetting all 'global varaibles'
       SOCKET_ROOM_ID = -1;
       USER_ID_PAIR = [];            // format: [ 1, 2 ]
@@ -172,10 +175,7 @@ io.on("connection", async (socket) => {
       // let SOCKET_USERNAME_PAIR = [];
       USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
       IN_ROOM_FLAG = false;
-
-      socket.leave(SOCKET_ROOM_ID);
-      console.log(`removed socket ${socket.id} from ${SOCKET_ROOM_ID}`);
-      deleteUsernameSocketDict(USERNAME_PAIR[0], socket.id);
+      
     }
     IN_ROOM_FLAG = false;
     console.log(`setting inRoomFlag to ${IN_ROOM_FLAG}`);
