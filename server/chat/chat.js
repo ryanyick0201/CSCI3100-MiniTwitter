@@ -68,6 +68,12 @@ io.on("connection", async (socket) => {
   let USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
   let IN_ROOM_FLAG = false;
 
+  socket.on("reqChatted", async (username) => {
+    var id = await searchUserByUsername(username, "true");
+    id = JSON.parse(id).result[0].userId;
+    let chattedUserList = await getChattedUser(id);
+    io.to(socket.id).emit("chattedUser", chattedUserList);
+  });
 
   socket.on("joinRoom", async (usernamePair) => {
     if(usernamePair[1]==""){
