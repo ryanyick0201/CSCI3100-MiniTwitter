@@ -2,10 +2,10 @@ import "./sidebarButton.css";
 
 import { Link } from 'react-router-dom';
 
-function SidebarButton({ text, Icon, to }) {
+function SidebarButton({ text, Icon, to, selected, onClick }) {
     return(
-      <Link to={to} style={{ textDecoration: 'none' }}>
-      <div className="button">
+      <Link to={to} style={{ textDecoration: 'none' }} onClick={onClick}>
+      <div className={`button ${selected ? "selected" : ""}`} >
           <Icon />
           <h2>{text}</h2>
       </div>

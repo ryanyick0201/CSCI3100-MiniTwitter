@@ -59,7 +59,7 @@ function ProfilePage() {
 
 
         <Button variant="contained" className={classes.settingButton} component={Link} to="/profileedit">
-            Edit Profile/setting
+            Edit profile/setting
         </Button>
 
       </div>

@@ -71,6 +71,7 @@ const Home = () => {
 
   return (
   <div>
+    
     <Button  onClick={() => navigate('/CreateNewPost')} size="large" className={classes.newPostButton} >
       +
     </Button>

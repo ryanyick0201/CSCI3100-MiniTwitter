@@ -9,20 +9,22 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
-
+import { useState } from "react";
 
 
 
 function Sidebar(){
+  const [clickedButton, setClickedButton] = useState("");
+
   return(
     <div className="sidebar">
-        <SidebarButton text="Home" Icon={HomeIcon} to="/" />
-        <SidebarButton text="Profile" Icon={AccountCircleIcon} to="/my profile" />
-        <SidebarButton text="Followers" Icon={PeopleIcon} to="/followers" />
-        <SidebarButton text="Chat" Icon={ChatIcon} to="/chat" />
-        <SidebarButton text="Search" Icon={SearchIcon} to="/search" />
-        <SidebarButton text="Recommendation" Icon={ThumbUpIcon} to="/recommendation" />
-        <SidebarButton text="Sign out" Icon={ExitToAppIcon} to="/o" />
+        <SidebarButton text="Home" Icon={HomeIcon} to="/" selected={clickedButton === "Home"} onClick={() => setClickedButton("Home")}/>
+        <SidebarButton text="Profile" Icon={AccountCircleIcon} to="/my profile" selected={clickedButton === "Profile"} onClick={() => setClickedButton("Profile")}/>
+        <SidebarButton text="Followers" Icon={PeopleIcon} to="/followers" selected={clickedButton === "Followers"} onClick={() => setClickedButton("Followers")}/>
+        <SidebarButton text="Chat" Icon={ChatIcon} to="/chat" selected={clickedButton === "Chat"} onClick={() => setClickedButton("Chat")}/>
+        <SidebarButton text="Search" Icon={SearchIcon} to="/search" selected={clickedButton === "Search"} onClick={() => setClickedButton("Search")}/>
+        <SidebarButton text="Recommendation" Icon={ThumbUpIcon} to="/recommendation" selected={clickedButton === "Recommendation"} onClick={() => setClickedButton("Recommendation")}/>
+        <SidebarButton text="Sign out" Icon={ExitToAppIcon} to="/o" onClick={() => setClickedButton("")}/>
   
     </div>
   );

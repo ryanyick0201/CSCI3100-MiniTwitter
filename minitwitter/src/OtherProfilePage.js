@@ -21,17 +21,22 @@ const useStyles = makeStyles({
 
 
 function OtherProfilePage() {
+  const myUsername = sessionStorage.getItem('username');
   const classes = useStyles();
 
   const [user, setUser] = useState({});
   const [posts, setPosts] = useState({});
+
+
+  const [status, setStatus] = useState("");
+
 
   const location = useLocation();
   const username = location.state.username;
 
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?username=${username}`);
+      const response = await fetch(`http://localhost:2000/user/searchUser?username=${username}&exactMatch=true`);
       const data = await response.json();
       setUser(data);
     };
@@ -45,7 +50,71 @@ function OtherProfilePage() {
   }, [username]);
 
   
+  useEffect(() => {
+    var data = {};
+    const fetchStatus = async () => {
+      const response1 = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Pending`);
+      data = await response1.json();
+      if (data.result.length === 0) {
+        const response2 = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Accepted`);
+        data = await response2.json();
+      } 
+      if (data.result.length === 0) {
+        setStatus("not following");
+      }
+      else {setStatus(data.result[0].status);}
+      
+    };
+    fetchStatus();
+  }, [myUsername, username]);
 
+
+  const handleFollow = () => {
+    if (status == "not following"){
+      const data = {
+        follower: myUsername,
+        followee: username,
+        status: "Pending",
+      };
+      fetch('http://localhost:2000/user/followUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      setStatus("Pending");
+    }
+    else if (status == "Accepted"){
+      const data = {
+        follower: myUsername,
+        followee: username,
+      };
+      fetch('http://localhost:2000/user/followUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      setStatus("not following");
+    }
+    
+  }
   
 
 
@@ -64,8 +133,8 @@ function OtherProfilePage() {
         )}
 
 
-        <Button className={classes.Button} >
-            follow
+        <Button className={classes.Button} onClick={handleFollow}>
+          {status === "not following" ? "Follow" : status === "Pending" ? "Requested" : "Following"}
         </Button>
 
       </div>

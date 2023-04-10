@@ -30,6 +30,7 @@ function FollowerPage() {
   const [requests, setRequests] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [followees, setFollowees] = useState([]);
+  const [newState, setNewState] = useState(false);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -69,20 +70,110 @@ function FollowerPage() {
 
   const [showAllRequests, setShowAllRequests] = useState(false);
 
+
+  const handleAccept = (username) => {
+    const data = {
+      follower: username,
+      followee: myUsername,
+      status: "Accepted",
+    };
+    fetch('http://localhost:2000/user/followUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      setNewState(!newState);
+  }
+
+  const handleDecline = (username) => {
+    const data = {
+      follower: username,
+      followee: myUsername,
+    };
+    fetch('http://localhost:2000/user/followUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      setNewState(!newState);
+  }
+
+  const handleRemoveFollowee = (username) => {
+    const data = {
+      follower: username,
+      followee: myUsername,
+    };
+    fetch('http://localhost:2000/user/followUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      setNewState(!newState);
+  }
+
+  const handleRemoveFollower = (username) => {
+    const data = {
+      follower: myUsername,
+      followee: username,
+    };
+    fetch('http://localhost:2000/user/followUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      setNewState(!newState);
+  }
+
   return (
     <div className="list">
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <h2>Requests</h2>
+        <h2>Requests({requests?.length})</h2>
         {requests?.length === 0 && <h4>none</h4>}
         {requests?.slice(0, showAllRequests ? requests?.length : 2).map((request) => (
-          <Card key={request.userId} style={{ display: 'flex', alignItems: 'center' }}>
+          <Card key={request.userId} style={{ display: 'flex', alignItems: 'center' }} className="car">
             <Avatar alt={request.username} src className={classes.Avatar}/>
             <CardContent>
               <h4>{request.username}</h4>                
             </CardContent>
             <CardActions style={{ display: 'flex', justifyContent: 'space-between', marginLeft: 'auto'}}>
-              <Button className={classes.Button} size="small">Accept</Button>
-              <Button className={classes.Button} size="small">Decline</Button>
+              <Button className={classes.Button} size="small" onClick={() => handleAccept(request.username)}>Accept</Button>
+              <Button className={classes.Button} size="small" onClick={() => handleDecline(request.username)}>Decline</Button>
             </CardActions>
           </Card>
         ))}
@@ -96,33 +187,38 @@ function FollowerPage() {
         )}
       </div>
 
+      <div style={{ height: '40px'}} />
+
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <h2>You are following</h2>
+        <h2>You are following({followees?.length})</h2>
         {followees?.length === 0 && <h4>none</h4>}
         {followees?.map((followee) => (
-          <Card key={followee.userId} style={{ display: 'flex', alignItems: 'center' }}>
+          <Card key={followee.userId} style={{ display: 'flex', alignItems: 'center' }} className="car">
             <Avatar alt={followee.username} src className={classes.Avatar}/>
             <CardContent>
               <h4>{followee.username}</h4>              
             </CardContent>            
             <CardActions style={{ marginLeft: 'auto' }}>
-              <Button className={classes.Button} size="small">Remove</Button>
+              <Button className={classes.Button} size="small" onClick={() => handleRemoveFollowee(followee.username)}>Remove</Button>
             </CardActions>
           </Card>
         ))}
       </div>
 
+      <div style={{ height: '40px'}} />
+
+
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <h2>Your followers</h2>
+        <h2>Your followers({followers?.length})</h2>
         {followers?.length === 0 && <h4>none</h4>}
         {followers?.map((follower) => (
-          <Card key={follower.userId} style={{ display: 'flex', alignItems: 'center' }}>
+          <Card key={follower.userId} style={{ display: 'flex', alignItems: 'center' }} className="car">
             <Avatar alt={follower.username} src className={classes.Avatar}/>
             <CardContent>
               <h4>{follower.username}</h4>              
             </CardContent>
             <CardActions style={{ marginLeft: 'auto' }}>
-              <Button className={classes.Button} size="small">Remove</Button>
+              <Button className={classes.Button} size="small" onClick={() => handleRemoveFollower(follower.username)}>Remove</Button>
             </CardActions>
           </Card>
         ))}
