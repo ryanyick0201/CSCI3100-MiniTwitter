@@ -1,22 +1,23 @@
 import { CardHeader, Avatar } from "@material-ui/core";
 
 // typeof name ==> string
-const getPicUrl = async (name) => {
-  try {
-    const url = `http://${window.location.hostname}:3000/user/searchUser?username=${name}&exactMatch=true`;
-    const res = await fetch(url, { mode: "cors" });
-    const data = await res.json();
-    const picSrc = data.result.profilePic ? data.result.profilePic : "/";
-    console.log("getPicUrl for name", name, "res", picSrc);
-    return picSrc;
-  } catch (error) {
-    console.error(error.message);
-    return "/";
-  }
+const getPicUrl = (name) => {
+  var returnUrl = "https://bit.ly/dan-abramov"; //default return
+  const fetchUrl = `http://${window.location.hostname}:3000/user/searchUser?username=${name}&exactMatch=true`;
+  fetch(fetchUrl, { mode: "cors" })
+    .then((res) => res.json())
+    .then((data) => data.result.profilePic)
+    .then((pic) => {
+      console.log("enter pic");
+      returnUrl = pic ? pic : returnUrl;
+    })
+    .catch((err) => console.error(err.message));
+  return returnUrl;
 };
 
 const NameTag = ({ name }) => {
   var picSrc = getPicUrl(name);
+  console.log("picSrc", picSrc);
   return (
     <CardHeader avatar={<Avatar alt={name} src={picSrc} />} title={name} />
   );
