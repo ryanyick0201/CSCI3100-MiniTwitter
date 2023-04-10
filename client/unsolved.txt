@@ -1,0 +1,25 @@
+Unsolved problems as of Apr 1 13:30
+--------------------
+1. How to render the panel (recipient list)
+Significance: UX issue, shd the list be like Instant Messengers', sorting items by latest message time?
+Mitigation 1: Handle by BE, socket event
+
+
+2. How to create a chatroom with unreached recipient?
+Significance: entry point to new room
+Mitigation 1: {
+  method: add button in "other user profile" as entry point
+  }
+  
+Mitigation 2: {
+  method: in Chat page add button to do searching for "chattables" first (cf: dialog component), if found user then open chatroom, else alert
+  progress: completed
+  remarks: "chattables" := followers U following of the current user
+  }
+
+3. How to disconnect socket?
+Significance: server speed?
+Mitigation 1: wait BE for testing
+
+
+
