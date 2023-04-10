@@ -42,9 +42,11 @@ const Image = ({ imgSrc, alt }) => {
   */
   //
   return (
-    <a href={imgSrc} target="_blank">
-      <img style={{ width: 150, height: "auto" }} src={imgSrc} alt={alt} />
-    </a>
+    <div style={{ height: 150 }}>
+      <a href={imgSrc} target="_blank">
+        <img style={{ width: "auto", height: 150 }} src={imgSrc} alt={alt} />
+      </a>
+    </div>
   );
 };
 
