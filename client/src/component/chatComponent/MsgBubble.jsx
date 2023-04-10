@@ -28,7 +28,8 @@ const useStyles = makeStyles({
   },
 });
 
-const Image = ({ fileName, blob }) => {
+const Image = ({ imgSrc, alt }) => {
+  /* old version without AWS
   const [imgSrc, setImgSrc] = useState("");
 
   useEffect(() => {
@@ -38,10 +39,11 @@ const Image = ({ fileName, blob }) => {
       setImgSrc(reader.result);
     };
   }, [blob]);
+  */
   return (
-    <div>
-      <img style={{ width: 150, height: "auto" }} src={imgSrc} alt={fileName} />
-    </div>
+    <a href={imgSrc} target="_blank">
+      <img style={{ width: 150, height: "auto" }} src={imgSrc} alt={alt} />
+    </a>
   );
 };
 
@@ -60,17 +62,12 @@ const MsgBubble = ({ msgList }) => {
           }
         >
           {(msg.isImg && (
-            <Image
-              fileName={msg.message.fileName}
-              blob={
-                new Blob([msg.message.file], { type: msg.message.mimeType })
-              }
-            />
+            <Image imgSrc={msg.imgUrl} alt={"An image from" + msg.sender} />
           )) || <div>{msg.message}</div>}
           <div
             style={{
               textAlign: "right",
-              fontSize: "50%",
+              fontSize: "0.5em",
               fontStyle: "italic",
             }}
           >
