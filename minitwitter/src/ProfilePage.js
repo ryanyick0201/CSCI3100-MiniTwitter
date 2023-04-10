@@ -17,9 +17,10 @@ const useStyles = makeStyles({
   },
 });
 
-const myUsername = sessionStorage.getItem('username');
+
 
 function ProfilePage() {
+  const myUsername = sessionStorage.getItem('username');
   const classes = useStyles();
 
   const [user, setUser] = useState({});
@@ -38,7 +39,7 @@ function ProfilePage() {
     };
     fetchUser();
     fetchPosts();
-  }, []);
+  }, [myUsername]);
 
 
 

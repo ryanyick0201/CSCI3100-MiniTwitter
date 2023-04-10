@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 
 
 const PostDetailPage = () => {
+  const myUsername = sessionStorage.getItem('username');
   const classes = useStyles();
   
   const [comments, setComments] = useState({});
@@ -67,7 +68,7 @@ const PostDetailPage = () => {
 
   const handleAddComment = (comment) => {
     const data = {
-      userId: 1,
+      userId: myUsername,
       tweetId: post.tweetId,
       commentContent: comment,
     };

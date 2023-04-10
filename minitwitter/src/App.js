@@ -17,7 +17,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
 function App(){
-  sessionStorage.setItem('username', 'user1');
+  sessionStorage.setItem('username', 'user3');
 
   const posts = [
     {
@@ -44,43 +44,6 @@ function App(){
     }
   ];
 
-  const comments = [
-    {
-      id: 1,
-      username: 'user3',
-      content: 'This is a comment.',
-    },
-    {
-      id: 2,
-      username: 'user4',
-      content: 'This is a comment.',
-    },
-  ];
-
-  const followers = [
-    {
-      id: 1,
-      name: 'John Doe',
-    },
-    {
-      id: 2,
-      name: 'Jane Doe',
-    },
-  ];
-  
-  const following = [
-    {
-      id: 3,
-      name: 'Bob Smith',
-    },
-  ];
-  
-  const followRequests = [
-    {
-      id: 4,
-      name: 'Alice Johnson',
-    },
-  ];
 
   return (
     <Router>
@@ -107,7 +70,7 @@ function App(){
         <Routes>
           <Route
             path="/followers"
-            element={<FollowerPage followers={followers} following={following} followRequests={followRequests} />}
+            element={<FollowerPage/>}
           />
         </Routes>
         <Routes>

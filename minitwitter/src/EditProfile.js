@@ -25,10 +25,11 @@ const useStyles = makeStyles({
   },
 });
 
-const myUsername = sessionStorage.getItem('username');
+
 
 
 const EditProfile = () => {
+  const myUsername = sessionStorage.getItem('username');
   const classes = useStyles();
 
   const [newUsername, setNewUsername] = useState('');

@@ -29,10 +29,11 @@ const useStyles = makeStyles({
 });
 
 
-const myUsername = sessionStorage.getItem('username');
+
 
 
 const CreateNewPost = () => {
+  const myUsername = sessionStorage.getItem('username');
   const classes = useStyles();
 
   const [postContent, setPostContent] = useState('');
@@ -67,7 +68,7 @@ const CreateNewPost = () => {
     });
     const result = await response.json();
     console.log(result);
-    navigate('/');
+    navigate(-1);
   };
   
   

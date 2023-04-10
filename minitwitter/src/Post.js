@@ -1,4 +1,4 @@
-import React, { useState }from 'react';
+import React, { useState, useEffect }from 'react';
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Typography } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
@@ -6,33 +6,62 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import RepeatIcon from '@material-ui/icons/Repeat';
-import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom';
 
+const useStyles = makeStyles((theme) => ({
+  use: {
+    '&:hover': {
+      background: 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))',
+    },
+  },
+}));
 
 const Post = ({ post }) => {
+  const myUsername = sessionStorage.getItem('username');
+  const classes = useStyles();
+
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
+  const [status, setStatus] = useState("");
   const [likes, setLikes] = useState(post.likes);
   const [dislikes, setDislikes] = useState(post.dislikes);
   
 
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const response = await fetch(`http://localhost:2000/tweet/viewLikeTweet?username=${myUsername}&tweetId=${post.tweetId}`);
+      const data = await response.json();
+      if (data.result.length == 0 ) {
+        setStatus("neither");
+      }
+      else {
+        setStatus(data.result[0].status);
+      }
+    };
+    fetchStatus();
+  }, [myUsername]);
+
+
+  useEffect(() => {
+    if (status == "neither"){
+      setLiked(false);
+      setDisliked(false);
+    }
+    else if (status == "like"){
+      setLiked(true);
+      setDisliked(false);
+    }
+    else if (status == "dislike"){
+      setLiked(false);
+      setDisliked(true);
+    }
+  }, [status]);
 
 
   const handleLike = () => {
-    if (liked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
-    }
-    setLiked(!liked);
-    if (disliked) {
-      setDisliked(false);
-      setDislikes(dislikes - 1);
-    }
-
     const data = {
-      username: post.username,
+      username: myUsername,
       tweetId: post.tweetId,
       status: liked ? null : 'like',
     };
@@ -51,24 +80,24 @@ const Post = ({ post }) => {
     .catch((error) => {
       console.error(error);
     });
+
+    if (liked) {
+      setLikes(likes - 1);
+    } else {
+      setLikes(likes + 1);
+    }
+    setLiked(!liked);
+    if (disliked) {
+      setDisliked(false);
+      setDislikes(dislikes - 1);
+    }
   };
 
 
 
   const handleDislike = () => {
-    if (disliked) {
-      setDislikes(dislikes - 1);
-    } else {
-      setDislikes(dislikes + 1);
-    }
-    setDisliked(!disliked);
-    if (liked) {
-      setLiked(false);
-      setLikes(likes - 1);
-    }
-
     const data = {
-      username: post.username,
+      username: myUsername,
       tweetId: post.tweetId,
       status: disliked ? null : 'dislike',
     };
@@ -87,6 +116,17 @@ const Post = ({ post }) => {
     .catch((error) => {
       console.error(error);
     });
+
+    if (disliked) {
+      setDislikes(dislikes - 1);
+    } else {
+      setDislikes(dislikes + 1);
+    }
+    setDisliked(!disliked);
+    if (liked) {
+      setLiked(false);
+      setLikes(likes - 1);
+    }
   };
 
   const navigate = useNavigate();
@@ -105,6 +145,7 @@ const Post = ({ post }) => {
         title={post.username}
         subheader={new Date(post.postTime).toLocaleString('en-US')}
         onClick={() => handleUserClick(post)}
+        className={classes.use}
       />
       {/*post.image && <CardMedia image />*/}
       <CardContent>

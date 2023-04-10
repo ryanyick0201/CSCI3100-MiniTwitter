@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function SearchPage() {
+  const myUsername = sessionStorage.getItem('username');
   const classes = useStyles();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -117,14 +118,23 @@ function SearchPage() {
 
       <div className={classes.usersContainer}>
         {searchResults.result?.slice(0, showAllResults ? searchResults.result?.length : 2).map((user) => (
-
+          <div>
+          {user.username !== myUsername ? (
             <div className={classes.user} key={user.userId} onClick={() => handleUserClick(user)}>
               <Avatar className={classes.avatar} src alt={user.username} />
               <Typography variant="subtitle1" className={classes.userName}>
                 {user.username}
               </Typography>
             </div>
-
+          ) : (
+            <div className={classes.user} key={user.userId} onClick={() => navigate('/my profile')}>
+              <Avatar className={classes.avatar} src alt={user.username} />
+              <Typography variant="subtitle1" className={classes.userName}>
+                {user.username}
+              </Typography>
+            </div>
+          )}
+          </div>
         ))}
       </div>
       {searchResults.result?.length > 2 && !showAllResults && (
