@@ -5,23 +5,72 @@ const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: false}));
 
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
 const {searchTweetByMultiple, createTweet} = require('./tweet');
 const {likeTweet, viewLikeTweetByUser} = require('./like');
 const {archiveTweet} = require('./archive')
 const {retweet} = require('./retweet')
 const {viewCommentByTweetId, commentTweet} = require('./comment')
 
+const {uploadFile, deleteFile, getObjectSignedUrl} = require('../multimedia/image');
+const {query} = require('../database')
+
 router.get('/searchTweet', async (req, res) => {
     //Map all tweets with username, content, postTime, category, #likes, #dislikes, #comments, #retweets
-    x = await searchTweetByMultiple(req.query.username, req.query.tweetContent, req.query.category);
-    res.send(x);   
+    var tweets = await searchTweetByMultiple(req.query.username, req.query.tweetContent, req.query.category);
+
+    var tweetsResJson = JSON.parse(tweets)['result'];
+
+    for (let tweet of tweetsResJson){
+        if (tweet.image){
+            tweet.image = await getObjectSignedUrl(tweet.image + "-image");
+        }
+    }
+
+    for (let tweet of tweetsResJson){
+        if (tweet.video){
+            tweet.image = await getObjectSignedUrl(tweet.video + "-video");
+        }
+    }    
+
+    console.log(`{"message": ${JSON.stringify(JSON.parse(tweets).message)}, "result": ${JSON.stringify(tweetsResJson)}}`)
+    res.send(`{"message": ${JSON.stringify(JSON.parse(tweets).message)}, "result": ${JSON.stringify(tweetsResJson)}}`);  
 });
 
-router.post('/createTweet', async (req, res) => {
-    if (req.body.username && req.body.tweetContent && req.body.category){
-        let x = await createTweet(req.body.username, req.body.tweetContent, req.body.category);
-        res.send(x);
+router.post('/createTweet', upload.single('image'), async (req, res) => {
+    if (req.body.username && req.body.tweetContent && req.body.category && (!req.file || (req.file && (req.body.fileType === "video" || req.body.fileType === "image")))){
+        let x = await createTweet(req.body.username, req.body.tweetContent, req.body.category);   
+        console.log(x);
+        if (x === `{"message": "Retrieve tweet failed. db error."}`){
+            res.send(x);
+        }
+
+        if (req.file){
+            const file = req.file;
+            const fileBuffer = file.buffer;
+            const fileType = req.body.fileType; //either 'video' or 'image'
+    
+            const tweetId = JSON.parse(await searchTweetByMultiple()).result.length;
+    
+            var fileName;
+            if (fileType === 'video'){
+                fileName = tweetId + "-video"; //E.g. 1-tweetVideo
+                await query(`UPDATE Tweet SET video = ? WHERE tweetId = ?;`, [tweetId + "-tweetVideo", tweetId]);
+            } else if (fileType === 'image') {
+                fileName = tweetId + "-image"; //E.g. 1-tweetImage
+                await query(`UPDATE Tweet SET image = ? WHERE tweetId = ?;`, [tweetId + "-tweetImage", tweetId]);
+            }
+    
+            const x = await uploadFile(fileBuffer, fileName, file.mimetype);   
+            console.log(x);
+            res.send(x);
+        }
+
     } else {
+        console.log(`{"message": "Create a tweet failed. Field(s) missing."}`);
         res.send(`{"message": "Create a tweet failed. Field(s) missing."}`);
     }
 

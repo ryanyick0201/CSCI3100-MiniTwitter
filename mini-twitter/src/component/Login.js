@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate  } from 'react-router-dom';
 import { TextField, Button, Typography, FormControl, Box} from '@material-ui/core';
 import { UseStyles } from './CssFormat';
-import bcrypt from 'bcryptjs';
+//import bcrypt from 'bcryptjs';
 import {
   usernameValidator,
   passwordValidator,
+  usernameloginValidator,
 } from "./Validator";
 
 function Login() {
@@ -15,27 +16,39 @@ function Login() {
   const [password, setPassword] = useState('');
 
   const handleSubmit = (event) => {
+    console.log('handleSubmit');
     event.preventDefault();
     loginAction();  
   };
 
-  const hashPassword = async (password) => {
+  /*const hashPassword = async (password) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     return hashedPassword;
-  };
+  }; */
 
   const loginAction= async() => {
     console.log('Enter loginAction');
     let mode = "";
     let hashedPassword = "";
     let login_Url = 'http://'+ window.location.hostname + ':3000/login';
-    if (username === 'admin' && password === 'admin') {
-      console.log('Login as Admin');
-      mode = 'admin';
+    // change this
+    if (username.includes('admin')) {
+      let userValidateResult = usernameloginValidator(username);
+      let pwdValidateResult = passwordValidator(password);
+      let ValidateResult = userValidateResult + pwdValidateResult;
+      if (ValidateResult !== "") {
+        alert(ValidateResult);
+        return null;
+      }
+        else{
+          console.log('Login as Admin');
+          mode = 'admin';
+        }
+      
     } else {
         console.log('Login as User');
-        let userValidateResult = usernameValidator(username);
+        let userValidateResult = usernameloginValidator(username);
         let pwdValidateResult = passwordValidator(password);
         let ValidateResult = userValidateResult + pwdValidateResult;
         if (ValidateResult !== "") {
@@ -44,14 +57,15 @@ function Login() {
         }        
         else {
           mode = 'user';
-          hashedPassword = await hashPassword(password); // hash password
+          //hashedPassword = await bcrypt.hash(password, 10); // hash password
         }
     }
-    let ok = false;
+
     const postBody = {
       username: username,
-      password: hashedPassword
+      password: password
     };
+    //console.log(JSON.stringify(postBody))
     fetch(
       login_Url,
       {
@@ -61,11 +75,11 @@ function Login() {
         body: JSON.stringify(postBody),
       }
     )
+       
       .then(response => response.json())
       .then((data) => {
         if(data.message == "Login succeeded."){
           sessionStorage.setItem('username', username);
-          this.props.setUsername(username);
           // TODO Need Integration
           // if(mode === "user") 
           //   navigate('/userHome');
@@ -128,6 +142,7 @@ function Login() {
               classes={{ root: classes.button }}
               variant="contained"
               type="submit"
+              onClick={handleSubmit}
             >
               Sign In
             </Button>

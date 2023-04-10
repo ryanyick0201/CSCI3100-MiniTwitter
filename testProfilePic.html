@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Page Title</title>
+</head>
+<body>
+	<form enctype="multipart/form-data">
+	  <label for="file-upload">Upload from computer:</label>
+	  <input type="file" id="file-upload" name="image">
+	  <br>
+	  <label for="username-input">Username:</label>
+	  <input type="text" id="username-input" name="username">
+	  <br>
+	  <button type="submit" id="submit-btn">Submit</button>
+	</form>
+	
+	<script>
+	  const form = document.querySelector('form');
+	  const fileInput = document.querySelector('#file-upload');
+	  const usernameInput = document.querySelector('#username-input');
+	  const submitBtn = document.querySelector('#submit-btn');
+	
+	  form.addEventListener('submit', (event) => {
+	    event.preventDefault(); // prevent form from submitting normally
+	
+	    const formData = new FormData();
+	    formData.append('image', fileInput.files[0]);
+		formData.append('username', usernameInput.value);
+	
+	    fetch('http://localhost:3000/user/editProfilePic', {
+	      method: 'POST',
+	      body: formData
+	    })
+	    .then(response => {
+	      console.log('File uploaded successfully');
+	      // do something with the response, if needed
+	    })
+	    .catch(error => {
+	      console.error('Error uploading file:', error);
+	    });
+	  });
+	</script>
+
+</body>
+</html>

@@ -1,17 +1,31 @@
 const express = require('express');
 const router = express.Router();
 
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
 const {searchUserByUsername, createUser, deleteUser, updateUser} = require('./user');
 const {searchFollow, followUser} = require('./follow')
+const {uploadFile, getObjectSignedUrl} = require('../multimedia/image')
+
+const {query} = require('../database');
 
 const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: false}));
 
 router.get('/searchUser', async (req, res) => {
-    x = await searchUserByUsername(req.query.username, req.query.exactMatch);
-    console.log(x);
-    res.send(x);   
+    users = await searchUserByUsername(req.query.username, req.query.exactMatch);
+
+    var usersResJson = JSON.parse(users)['result'];
+
+    for (user of usersResJson){
+        user.profilePic = (user.profilePic) && await getObjectSignedUrl(user.profilePic + "-profilePic");
+    }
+
+    console.log(`{"message": ${JSON.stringify(JSON.parse(users).message)}, "result": ${JSON.stringify(usersResJson)}}`)
+    res.send(`{"message": ${JSON.stringify(JSON.parse(users).message)}, "result": ${JSON.stringify(usersResJson)}}`);   
 });
 
 router.post('/createUser', async (req, res) => {
@@ -65,4 +79,21 @@ router.post('/followUser', async (req, res) => {
         res.send(`{"message": "Follow/unfollow a user failed. Field(s) missing."}`);
     }
 });
+
+//edit includes both create and update
+router.post('/editProfilePic', upload.single('image'), async (req, res) => {
+    if (req.file){
+        const file = req.file;
+        const fileBuffer = file.buffer;
+
+        const imageName = req.body.username + "-profilePic"; //E.g. 1-profilePic
+
+        const x = await uploadFile(fileBuffer, imageName, file.mimetype);
+        await query(`UPDATE User SET profilePic = ? WHERE username = ?;`, [req.body.username + "-profilePic", req.body.username]);
+
+        console.log(x);
+        res.send(x);  
+    }
+});
+
 module.exports = router;
