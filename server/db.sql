@@ -204,7 +204,7 @@ VALUES
 (10, 2, 'Pending'),
 -- below added for testing chattable functionality
 (1, 4, 'Accepted'),
-(1, 5, 'Accepted'),
+(1, 3, 'Accepted'),
 (6, 1, 'Pending')
 ;
 

@@ -40,10 +40,13 @@ const Image = ({ imgSrc, alt }) => {
     };
   }, [blob]);
   */
+  //
   return (
-    <a href={imgSrc} target="_blank">
-      <img style={{ width: 150, height: "auto" }} src={imgSrc} alt={alt} />
-    </a>
+    <div style={{ height: 150 }}>
+      <a href={imgSrc} target="_blank">
+        <img style={{ width: "auto", height: 150 }} src={imgSrc} alt={alt} />
+      </a>
+    </div>
   );
 };
 
@@ -62,7 +65,7 @@ const MsgBubble = ({ msgList }) => {
           }
         >
           {(msg.isImg && (
-            <Image imgSrc={msg.imgUrl} alt={"An image from" + msg.sender} />
+            <Image imgSrc={msg.imgUrl} alt={"An image from " + msg.sender} />
           )) || <div>{msg.message}</div>}
           <div
             style={{
