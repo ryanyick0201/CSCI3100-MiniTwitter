@@ -12,8 +12,8 @@ async function searchTweetByMultiple(username, tweetContent, category){
     try{
         let rows = await query(`
         SELECT u.username, t.tweetId, t.tweetContent, t.postTime, t.category, t.category, t.image, t.video,
-        COUNT(CASE WHEN l.status = 'like' THEN 1 END) AS likes,
-        COUNT(CASE WHEN l.status = 'dislike' THEN 1 END) AS dislikes,
+        (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "like" group by tweetId) AS likes,
+        (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "dislike" group by tweetId) AS dislikes,
         (select COUNT(*) commentId from tweetComment c where c.tweetId = t.tweetId group by tweetId) AS comment,
         (select COUNT(*) retweetTime from TweetRetweet r where r.tweetId = t.tweetId group by tweetId) AS retweet
         FROM tweet t, tweetlike l, user u
