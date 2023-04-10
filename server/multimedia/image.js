@@ -45,7 +45,7 @@ async function uploadFile(fileBuffer, fileName, mimetype) {
   }
 }
 
-await function deleteFile(fileName) {
+async function deleteFile(fileName) {
   try {
     const deleteParams = {
       Bucket: bucketName,
@@ -56,7 +56,7 @@ await function deleteFile(fileName) {
   } catch {
     return `{"message": "File delete failed"}`;
   }
-};
+}
 
 async function getObjectSignedUrl(key) {
   const params = {
