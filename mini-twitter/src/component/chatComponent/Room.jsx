@@ -13,7 +13,7 @@ import RoomFooter from "./RoomFooter.jsx";
 // Styling
 const useStyles = makeStyles({
   roomContainer: {
-    width: "50%",
+    width: "100%",
     height: "100%",
     position: "relative",
   },
