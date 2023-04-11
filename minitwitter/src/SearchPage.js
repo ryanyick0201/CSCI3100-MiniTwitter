@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Avatar, Button, TextField, Typography, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom';
@@ -73,7 +73,11 @@ function SearchPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState({});
 
-  const [recommendedUsers, setRecommendedUsers] = useState([]);
+  const [followeesId, setFolloweesId] = useState([]);
+  const [users, setUsers] = useState({});
+  const [followees, setFollowees] = useState([]);
+  const [recommendUsers, setRecommendUsers] = useState([]);
+
   const [showAllResults, setShowAllResults] = useState(false);
 
   const handleSearch = async () => {
@@ -97,6 +101,72 @@ function SearchPage() {
     navigate('/other profile', {state: {username: user.username }});
   };
 
+
+
+
+  useEffect(() => {
+    const fetchFollowees = async () => {
+      const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&status=Accepted`);
+      const data = await response.json();
+      setFolloweesId(data.result.map(result => result.followee));
+    };
+    const fetchUsers = async () => {
+      const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
+      const data = await response.json();
+      setUsers(data);
+    };
+    fetchFollowees();
+    fetchUsers();
+  }, [myUsername]);
+
+
+  useEffect(() => {
+    setFollowees( users.result?.filter(user => followeesId.includes(user.userId))  );
+  }, [followeesId, users]);
+
+
+  useEffect(() => {
+    async function getRecommendUsers () {
+      let count = 0;
+      let targetUsers = [];
+      for (let i = 0; i < followees.length && count < 3; i++) {
+        const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${followees[i].username}&status=Accepted`);
+        const data = await response.json();
+        const followeeFolloweesId = data.result?.map(result => result.followee);
+        const followeeFollowees = users.result?.filter(user => followeeFolloweesId.includes(user.userId));
+
+        for (let j = 0; j < followeeFollowees?.length && count < 3; j++){
+          if (followees.some(followee => followee.userId === followeeFollowees[j].userId) || followeeFollowees[j].username == myUsername) {
+            continue;
+          }
+          else {
+            targetUsers.push(followeeFollowees[j]);
+            count++;
+          }
+        }
+      }
+
+      if (targetUsers?.length == 0){
+        const spareTarget = users.result?.filter(user => user.username !== myUsername && !followees?.find(followee => followee.username === user.username));
+        const indexRecord = [];
+        while (indexRecord.length < 3) {
+          const index = Math.floor(Math.random() * (spareTarget?.length-1));
+          if (!indexRecord.includes(index)) {
+            indexRecord.push(index);
+          }
+        }
+        for (let k = 0; k < 3; k++){
+          targetUsers.push(spareTarget[indexRecord[k]] );
+        }
+        setRecommendUsers(targetUsers);
+      }
+      else {
+        setRecommendUsers(targetUsers);
+      }
+      
+    }
+    getRecommendUsers();
+  }, [followees, users]);
 
 
   return (
@@ -155,11 +225,11 @@ function SearchPage() {
       <CardContent>
       <Typography variant="h6">You may want to follow these users:</Typography>
       <div className={classes.recomUsersContainer}>
-        {recommendedUsers.map((user) => (
-          <div className={classes.recomUser} key={user.name} onClick={handleUserClick}>
-            <Avatar src alt />
+        {recommendUsers?.map((user) => (
+          <div className={classes.recomUser} key={user.name} onClick={() => handleUserClick(user)}>
+            <Avatar />
             <Typography variant="subtitle1" className={classes.userName}>
-              {user.name}
+              {user.username}
             </Typography>
           </div>
         ))}

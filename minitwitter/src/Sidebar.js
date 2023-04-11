@@ -14,7 +14,7 @@ import { useState } from "react";
 
 
 function Sidebar(){
-  const [clickedButton, setClickedButton] = useState("");
+  const [clickedButton, setClickedButton] = useState("Home");
 
   return(
     <div className="sidebar">
