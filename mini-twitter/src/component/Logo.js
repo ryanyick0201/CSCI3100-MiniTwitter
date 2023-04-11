@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import logo from './logo_twi.png';
-//import './App.css';
 
 const useStyles = makeStyles({
   root: {

@@ -7,6 +7,8 @@ import ForgotPassword from './component/forgotPassword';
 import SignUp from './component/signUp'
 import React from 'react';
 import EmailVerf from './component/emailVerf';
+// import AdminPage from './AdminPage'
+// import UserPage from './Home';
 
 function App() {
   return (
@@ -14,7 +16,9 @@ function App() {
         <Route path="/" element={<Content />}/>
         <Route path="/forgot_password" element={<ForgotPassword />}/>
         <Route path="/signUp" element={<SignUp />}/>
-        <Route path="/EmailVerf" element={<EmailVerf />}/>
+        <Route path="/emailVerf" element={<EmailVerf />}/>
+        {/* <Route path="/adminHome" element={<AdminPage />}/>
+        <Route path="/userHome" element={<UserPage />}/> */}
       </Routes>
   );
 }

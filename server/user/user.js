@@ -19,7 +19,7 @@ async function searchUserByUsername(username, exactMatch){
 async function createUser(username, password, email, hasVerified){
     try{
         let rec = JSON.parse(await searchUserByUsername(username))["result"];
-        //password = await bcrypt.hash(password, 10);
+        password = await bcrypt.hash(password, 10);
 
         if (rec.length >= 1){
             throw `{"message": "Username has been used."}`;
