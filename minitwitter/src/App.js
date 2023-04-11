@@ -19,32 +19,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 function App(){
   sessionStorage.setItem('username', 'user3');
 
-  const posts = [
-    {
-      userId: 1,
-      username: 'user1',
-      tweetContent: 'This is the body of the first post',
-      likes: 10,
-      dislikes: 2,
-      comment: 5,
-      retweet: 3,
-      category: 'hashtag',
-      timestamp: Date.now(),
-    },
-    {
-      userId: 2,
-      username: 'user2',
-      tweetContent: 'This is the body of the second post',
-      likes: 10,
-      dislikes: 2,
-      comment: 6,
-      retweet: 3,
-      category: 'hashtag',
-      timestamp: Date.now(),
-    }
-  ];
-
-
+  
   return (
     <Router>
       <div>
@@ -94,7 +69,7 @@ function App(){
         <Routes>
           <Route
             path="/recommendation"
-            element={<RecommendationPage posts={posts} />}
+            element={<RecommendationPage/>}
           />
         </Routes>
         <Routes>

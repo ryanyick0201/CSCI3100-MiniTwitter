@@ -146,6 +146,11 @@ const Post = ({ post }) => {
     navigate('/post', {state: { tweetId: post.tweetId }});
   };
 
+
+  const handleArchive = () => {
+
+  }
+
   return (
     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
       <Card style={{flex: '1'}}>
@@ -187,7 +192,7 @@ const Post = ({ post }) => {
     </Card>
 
 
-      <Button  className={classes.archiveButton}>
+      <Button  className={classes.archiveButton} onClick={handleArchive}>
         archive
       </Button>
 

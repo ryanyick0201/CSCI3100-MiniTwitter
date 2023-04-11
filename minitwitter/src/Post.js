@@ -9,7 +9,7 @@ import RepeatIcon from '@material-ui/icons/Repeat';
 import { makeStyles } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   use: {
     '&:hover': {
       background: 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))',
@@ -26,6 +26,7 @@ const Post = ({ post }) => {
   const [status, setStatus] = useState("");
   const [likes, setLikes] = useState(post.likes);
   const [dislikes, setDislikes] = useState(post.dislikes);
+  const [newRetweet, setNewRetweet] = useState();
   
 
   useEffect(() => {
@@ -138,6 +139,29 @@ const Post = ({ post }) => {
     navigate('/post', {state: { tweetId: post.tweetId }});
   };
 
+
+  const handleRetweet = (post) => {
+    const data = {
+      senderUsername: myUsername,
+      tweetId: post.tweetId,
+    };
+    fetch('http://localhost:2000/tweet/retweet', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+    
+  }
+
   return (
     <Card>
       <CardHeader
@@ -167,7 +191,7 @@ const Post = ({ post }) => {
           <ChatBubbleOutlineIcon />
         </IconButton>
         <Typography variant="caption">{post.comment}</Typography>
-        <IconButton>
+        <IconButton onClick={() => handleRetweet(post)}>
           <RepeatIcon />
         </IconButton>
         <Typography variant="caption">{post.retweet}</Typography>
