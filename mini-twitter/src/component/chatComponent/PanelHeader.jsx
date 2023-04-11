@@ -11,12 +11,16 @@ import {
 import { Autocomplete, TextField, Snackbar, Alert } from "@mui/material/";
 
 import RateReviewIcon from "@mui/icons-material/RateReview";
+import NameTag from "./NameTag";
 
 const fetchChattableList = async (sender) => {
   console.log("enter fetchChattableList");
 
   const url =
-    "http://" + window.location.hostname + ":3000/chat/chatTables?q=" + sender;
+    "http://" +
+    window.location.hostname +
+    ":3000/chat/chatTables?username=" +
+    sender;
   const res = await fetch(url, { mode: "cors" });
 
   console.log(
@@ -88,7 +92,7 @@ const PanelHeader = ({ sender, setRecipient }) => {
     <>
       <Card square style={{ minHeight: "10%" }}>
         <Grid container justifyContent="center" alignItems="center">
-          <CardHeader avatar={<Avatar alt={sender} src="/" />} title={sender} />
+          <NameTag name={sender} />
           <IconButton aria-label="compose" onClick={handleClickOpen}>
             <RateReviewIcon color="warning" />
           </IconButton>

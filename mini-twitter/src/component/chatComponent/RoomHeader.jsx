@@ -1,13 +1,11 @@
-import { Card, CardHeader, Avatar, Grid } from "@material-ui/core";
+import { Card, Grid } from "@material-ui/core";
+import NameTag from "./NameTag.jsx";
 
 const RoomHeader = ({ recipient }) => {
   return (
     <Card square style={{ minHeight: "10%" }}>
       <Grid container justifyContent="center" alignItems="center">
-        <CardHeader
-          avatar={<Avatar alt={recipient} src="" />}
-          title={recipient}
-        />
+        <NameTag name={recipient} />
       </Grid>
     </Card>
   );
