@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button, FormControl, Typography, Box} from '@material-ui/core';
 import { UseStyles } from './CssFormat';
 import { optValidator} from './Validator';
 import Cookies from 'js-cookie';
-
-const useStyles = makeStyles((theme) => ({
-  SubButton: {
-    padding: '20px 40px 20px 40px',
-  },
-}));
+import {
+  sendEmail,
+} from "./sendEmail";
 
 function EmailVerf() {
-  //const classes = useStyles();
   const classes = UseStyles();
   const navigate  = useNavigate();
   const username = Cookies.get('signUpUsernameCookie');
@@ -44,40 +39,14 @@ function EmailVerf() {
     }
   };
 
-  const handleResent = (event) => {
+const handleResent = (event) => {
     event.preventDefault();
     console.log('Send OTP button clicked');
     
-    //Email validation
-    if (username) {     //If ok, call api with email to send 
-      const api_url = 'http://'+ window.location.hostname + ':3000/setOTP';
-      const postBody = {
-        username: username
-      };
-      fetch(
-        api_url,
-        {
-          method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({postBody}),
-        }
-      )
-      .then(response => response.json())
-      .then((data) => {
-        if (data.message === "Set otp success.") {
-          alert("OTP is sended to your email account. ");
-        } else {
-          //Alert user
-          alert(data.message);
-        }
-      })
-      .catch((err)=> alert(err) );
-      
-      //Change Button text to Resend and only can click resend button each 60 second
-      setIsResendEnable(true);
-      setCountdown(60);
-    }
+    sendEmail(username);   
+    //Change Button text to Resend and only can click resend button each 60 second
+    setIsResendEnable(true);
+    setCountdown(60);
   }
 
   const handleSubmit = (event) => {
@@ -87,7 +56,7 @@ function EmailVerf() {
     if (otpValidateResult !== '') {
       alert(otpValidateResult);
     } else {
-      let api_url = 'http://'+ window.location.hostname + ':3000/verfOTP';
+      let api_url = 'http://'+ window.location.hostname + ':3000/verifyOTP';
       const postBody = {
         username: username,
         otp: otp
@@ -104,6 +73,7 @@ function EmailVerf() {
       .then(response => response.json())
       .then((data) => {
         if (data.message === "Verify otp success.") {
+          alert('Email verified. Return to login page.');
           navigate('/');
         } else {
           //Alert user
@@ -147,6 +117,7 @@ function EmailVerf() {
               color="primary"
               classes={{ root: classes.button }} 
               type="submit"
+              onClick={handleSubmit}
             >
               Submit
             </Button>

@@ -9,6 +9,9 @@ import {
   passwordValidator,
   emailValidator,
 } from "./Validator";
+import {
+  sendEmail,
+} from "./sendEmail";
 
 function SignUp() {
   const classes = UseStyles();
@@ -24,7 +27,6 @@ function SignUp() {
   const handleSubmit = async(event) => {
     event.preventDefault();
     console.log('Enter handleSubmit');
-    let hashedPassword = "";
     let signUp_Url = 'http://'+ window.location.hostname + ':3000/user/createUser';
     let userValidateResult = usernameValidator(username);
     let pwdValidateResult = passwordValidator(password);
@@ -35,10 +37,10 @@ function SignUp() {
       return null;
     }        
     else {
-      hashedPassword = await hashPassword(password); // hash password
+      //hashedPassword = await hashPassword(password); // hash password
       const postBody = {
         username: username,
-        password: hashedPassword,
+        password: password,
         email: email,
         hasVerified: false
       };
@@ -55,6 +57,7 @@ function SignUp() {
         .then((data) => {
           if(data.message === "Create user succeeded"){
             Cookies.set('signUpUsernameCookie', username);
+            sendEmail(username);
             navigate('/emailVerf');
           } else {
             alert(data.message);
