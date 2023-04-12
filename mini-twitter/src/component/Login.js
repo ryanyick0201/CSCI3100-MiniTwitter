@@ -22,7 +22,7 @@ function Login() {
   const loginAction= async() => {
     console.log('Enter loginAction');
     let mode = "";
-    let login_Url = 'http://'+ window.location.hostname + ':3000/login';
+    let login_Url = 'http://'+ window.location.hostname + ':2000/login';
     // change this
     if (username.includes('admin')) {
       let userValidateResult = usernameloginValidator(username);

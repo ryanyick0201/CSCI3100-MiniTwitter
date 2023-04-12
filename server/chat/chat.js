@@ -58,7 +58,7 @@ const NEW_MESSAGE_EVENT = "newMessageEvent";
 const server = http.createServer(app);
 const io = socketIO(server, {
   cors: true,
-  origins: ["localhost:3000"],
+  origins: ["localhost:2000"],
   maxHttpBufferSize: 1e9
 });
 

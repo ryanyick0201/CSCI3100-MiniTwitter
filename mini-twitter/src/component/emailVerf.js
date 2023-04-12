@@ -56,7 +56,7 @@ const handleResent = (event) => {
     if (otpValidateResult !== '') {
       alert(otpValidateResult);
     } else {
-      let api_url = 'http://'+ window.location.hostname + ':3000/verifyOTP';
+      let api_url = 'http://'+ window.location.hostname + ':2000/verifyOTP';
       const postBody = {
         username: username,
         otp: otp

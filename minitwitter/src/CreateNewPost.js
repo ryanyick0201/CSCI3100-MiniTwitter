@@ -60,6 +60,7 @@ const CreateNewPost = () => {
       username: myUsername,
       tweetContent: postContent,
       category: hashtag,
+      fileTYpe: "image",
     };
     const response = await fetch('http://localhost:2000/tweet/createTweet', {
       method: 'POST',
@@ -67,7 +68,7 @@ const CreateNewPost = () => {
       body: JSON.stringify(data),
     });
     const result = await response.json();
-    console.log(result);
+    console.log(1);
     navigate(-1);
   };
   

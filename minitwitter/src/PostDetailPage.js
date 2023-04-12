@@ -27,6 +27,7 @@ const PostDetailPage = () => {
   const [comments, setComments] = useState({});
   const [posts, setPosts] = useState({});
   const [post, setPost] = useState({});
+  const [me, setMe] = useState({});
 
   const location = useLocation();
   const tweetId = location.state?.tweetId;
@@ -35,7 +36,7 @@ const PostDetailPage = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/searchTweet?`);
+      const response = await fetch(`http://localhost:2000/tweet/searchMyTweet`);
       const data = await response.json();
       setPosts(data);
       
@@ -45,8 +46,14 @@ const PostDetailPage = () => {
       const data = await response.json();
       setComments(data);
     };
+    const fetchMe = async () => {
+      const response = await fetch(`http://localhost:2000/user/searchUser?username=${myUsername}&exactMatch=true`);
+      const data = await response.json();
+      setMe(data.result[0]);
+    };
     fetchPosts();
     fetchComments();
+    fetchMe();
   }, [tweetId]);
 
   
@@ -68,7 +75,7 @@ const PostDetailPage = () => {
 
   const handleAddComment = (comment) => {
     const data = {
-      userId: myUsername,
+      userId: me.userId,
       tweetId: post.tweetId,
       commentContent: comment,
     };
@@ -86,6 +93,7 @@ const PostDetailPage = () => {
       .then(response => response.json())
       .then(data => {
         setComments(data);
+        console.log(comments);
       })
       .catch(error => console.log(error));
     })

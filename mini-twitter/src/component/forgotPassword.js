@@ -39,7 +39,7 @@ function ForgotPassword() {
       setIsResendEnable(true);
       setButtonText('Resend');
       setCountdown(60);
-      const api_url = 'http://'+ window.location.hostname + ':3000/sendEmail?';
+      const api_url = 'http://'+ window.location.hostname + ':2000/sendEmail?';
       const api_with_params = `${api_url}username=${username}`;
       console.log('Calling API: ',api_with_params);
       fetch(
@@ -86,7 +86,7 @@ function ForgotPassword() {
     if (otpValidateResult !== '') {
       alert(otpValidateResult);
     } else {
-      let api_url ='http://'+ window.location.hostname + ':3000/verifyOTP';
+      let api_url ='http://'+ window.location.hostname + ':2000/verifyOTP';
       const postBody = {
         username: username,
         otp: otp

@@ -6,7 +6,7 @@ const getRecipientList = async (username) => {
   const url =
     "http://" +
     window.location.hostname +
-    ":3000/chat/chattedUser?q=" +
+    ":2000/chat/chattedUser?q=" +
     username;
   const res = await fetch(url, { mode: "cors" });
 

@@ -27,7 +27,7 @@ function SignUp() {
   const handleSubmit = async(event) => {
     event.preventDefault();
     console.log('Enter handleSubmit');
-    let signUp_Url = 'http://'+ window.location.hostname + ':3000/user/createUser';
+    let signUp_Url = 'http://'+ window.location.hostname + ':2000/user/createUser';
     let userValidateResult = usernameValidator(username);
     let pwdValidateResult = passwordValidator(password);
     let emailValidateResult = emailValidator(email);

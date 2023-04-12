@@ -55,8 +55,8 @@ const Home = () => {
     const fetchTweets = async () => {
       const tweets = [];
       await Promise.all(
-        followees.map(async (followee) => {
-          const response = await fetch(`http://localhost:2000/tweet/searchTweet?username=${followee.username}`);
+        followees?.map(async (followee) => {
+          const response = await fetch(`http://localhost:2000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`);
           const data = await response.json();
           tweets.push(...data.result);
         })

@@ -3,7 +3,7 @@ export const sendEmail = (username) => {
     
     //Email validation
     if (username) {     //If ok, call api with email to send 
-      const api_url = 'http://'+ window.location.hostname + ':3000/sendEmail?';
+      const api_url = 'http://'+ window.location.hostname + ':2000/sendEmail?';
       const api_with_params = `${api_url}username=${username}`;
       
       fetch(

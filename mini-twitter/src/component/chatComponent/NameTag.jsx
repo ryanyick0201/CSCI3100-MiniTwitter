@@ -3,7 +3,7 @@ import { CardHeader, Avatar } from "@material-ui/core";
 // typeof name ==> string
 const getPicUrl = (name) => {
   var returnUrl = "https://bit.ly/dan-abramov"; //default return
-  const fetchUrl = `http://${window.location.hostname}:3000/user/searchUser?username=${name}&exactMatch=true`;
+  const fetchUrl = `http://${window.location.hostname}:2000/user/searchUser?username=${name}&exactMatch=true`;
   fetch(fetchUrl, { mode: "cors" })
     .then((res) => res.json())
     .then((data) => data.result.profilePic)

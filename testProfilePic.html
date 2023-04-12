@@ -27,7 +27,7 @@
 	    formData.append('image', fileInput.files[0]);
 		formData.append('username', usernameInput.value);
 	
-	    fetch('http://localhost:3000/user/editProfilePic', {
+	    fetch('http://localhost:2000/user/editProfilePic', {
 	      method: 'POST',
 	      body: formData
 	    })

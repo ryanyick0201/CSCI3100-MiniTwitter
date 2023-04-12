@@ -41,7 +41,7 @@ function OtherProfilePage() {
       setUser(data);
     };
     const fetchPosts = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/searchTweet?username=${username}`);
+      const response = await fetch(`http://localhost:2000/tweet/searchOtherTweet?lookForUsername=${username}&myUsername=${myUsername}`);
       const data = await response.json();
       setPosts(data);
     };
@@ -144,6 +144,7 @@ function OtherProfilePage() {
       <h2 style={{margin: '30px auto 20px 400px'}}>Post</h2>
       
       <div className="post">
+      {posts.result?.length === 0 && <h4>none</h4>}
       {Array.isArray(posts.result) && posts.result.map(post => (
         <Post key={post.tweetId} post={post} />
       ))}

@@ -11,6 +11,14 @@ const useStyles = makeStyles({
     fontWeight: 'bold', 
     color: 'white',
   },
+  viewButton: {
+    textTransform: 'none',
+    backgroundColor: '#F47458',
+    borderRadius: '25px',
+    fontWeight: 'bold', 
+    color: 'white',
+    width: '100%',
+  },
   Avatar: {
     marginLeft: '10px',
   }
@@ -30,23 +38,23 @@ function FollowerPage() {
   const [requests, setRequests] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [followees, setFollowees] = useState([]);
-  const [newState, setNewState] = useState(false);
+  const [newState, setNewState] = useState(0);
 
   useEffect(() => {
     const fetchRequests = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&status=Pending`);
+      const response = await fetch(`http://localhost:2000/user/searchFollow?followee=${myUsername}&status=Pending`);
       const data = await response.json();
-      setRequestsId(data.result.map(result => result.followee));
+      setRequestsId(data.result?.map(result => result.follower));
     };
     const fetchFollowees = async () => {
       const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&status=Accepted`);
       const data = await response.json();
-      setFolloweesId(data.result.map(result => result.followee));
+      setFolloweesId(data.result?.map(result => result.followee));
     };
     const fetchFollowers = async () => {
       const response = await fetch(`http://localhost:2000/user/searchFollow?followee=${myUsername}&status=Accepted`);
       const data = await response.json();
-      setFollowersId(data.result.map(result => result.follower));
+      setFollowersId(data.result?.map(result => result.follower));
     };
     const fetchUsers = async () => {
       const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
@@ -58,7 +66,7 @@ function FollowerPage() {
     fetchFollowers();
     fetchUsers();
     
-  }, [myUsername]);
+  }, [myUsername, newState]);
 
 
   useEffect(() => {
@@ -87,11 +95,11 @@ function FollowerPage() {
       .then(response => response.json())
       .then(data => {
         console.log(data);
+        setNewState(newState+1);
       })
       .catch((error) => {
         console.error(error);
       });
-      setNewState(!newState);
   }
 
   const handleDecline = (username) => {
@@ -109,36 +117,14 @@ function FollowerPage() {
       .then(response => response.json())
       .then(data => {
         console.log(data);
+        setNewState(newState+1);
       })
       .catch((error) => {
         console.error(error);
       });
-      setNewState(!newState);
   }
 
   const handleRemoveFollowee = (username) => {
-    const data = {
-      follower: username,
-      followee: myUsername,
-    };
-    fetch('http://localhost:2000/user/followUser', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-      setNewState(!newState);
-  }
-
-  const handleRemoveFollower = (username) => {
     const data = {
       follower: myUsername,
       followee: username,
@@ -153,6 +139,29 @@ function FollowerPage() {
       .then(response => response.json())
       .then(data => {
         console.log(data);
+        setNewState(newState+1);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  const handleRemoveFollower = (username) => {
+    const data = {
+      follower: username,
+      followee: myUsername,
+    };
+    fetch('http://localhost:2000/user/followUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setNewState(newState+1);
       })
       .catch((error) => {
         console.error(error);
@@ -180,7 +189,7 @@ function FollowerPage() {
         {requests?.length > 2 && !showAllRequests && (
           <div>
             <div style={{ height: 16 }} />
-            <Button className={classes.Button}  onClick={() => setShowAllRequests(true)}>
+            <Button className={classes.viewButton}  onClick={() => setShowAllRequests(true)}>
               View More
             </Button>
           </div>

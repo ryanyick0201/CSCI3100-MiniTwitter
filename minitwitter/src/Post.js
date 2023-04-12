@@ -26,7 +26,8 @@ const Post = ({ post }) => {
   const [status, setStatus] = useState("");
   const [likes, setLikes] = useState(post.likes);
   const [dislikes, setDislikes] = useState(post.dislikes);
-  const [newRetweet, setNewRetweet] = useState();
+  const [retweets, setRetweets] = useState([]);
+  const [retweeted, setRetweeted] = useState();
   
 
   useEffect(() => {
@@ -40,7 +41,13 @@ const Post = ({ post }) => {
         setStatus(data.result[0].status);
       }
     };
+    const fetchRetweets = async () => {
+      const response = await fetch(`http://localhost:2000/tweet/viewRetweet?senderUsername=${myUsername}`);
+      const data = await response.json();
+      setRetweets(data.result);
+    };
     fetchStatus();
+    fetchRetweets();
   }, [myUsername]);
 
 
@@ -57,6 +64,8 @@ const Post = ({ post }) => {
       setLiked(false);
       setDisliked(true);
     }
+
+    /* setRetweeted( retweets?.filter(user => requestsId.includes(user.userId))) */
   }, [status]);
 
 

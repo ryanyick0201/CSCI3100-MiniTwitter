@@ -149,14 +149,19 @@ function SearchPage() {
       if (targetUsers?.length == 0){
         const spareTarget = users.result?.filter(user => user.username !== myUsername && !followees?.find(followee => followee.username === user.username));
         const indexRecord = [];
-        while (indexRecord.length < 3) {
+        var time = 0;
+        while (indexRecord.length < 3 && time < 10) {
           const index = Math.floor(Math.random() * (spareTarget?.length-1));
           if (!indexRecord.includes(index)) {
             indexRecord.push(index);
           }
+          time++;
         }
+        console.log(indexRecord);
         for (let k = 0; k < 3; k++){
-          targetUsers.push(spareTarget[indexRecord[k]] );
+          if (!isNaN(indexRecord[k])) {
+            targetUsers.push(spareTarget[indexRecord[k]] );
+          }
         }
         setRecommendUsers(targetUsers);
       }

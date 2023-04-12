@@ -27,15 +27,20 @@ function ProfilePage() {
   const [posts, setPosts] = useState({});
 
   useEffect(() => {
+    var myTweetandRetweet = [];
     const fetchUser = async () => {
       const response = await fetch(`http://localhost:2000/user/searchUser?username=${myUsername}`);
       const data = await response.json();
       setUser(data);
     };
     const fetchPosts = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/searchTweet?username=${myUsername}`);
-      const data = await response.json();
-      setPosts(data);
+      const response1 = await fetch(`http://localhost:2000/tweet/searchMyTweet?username=${myUsername}`);
+      const data1 = await response1.json();
+      const response2 = await fetch(`http://localhost:2000/tweet/viewRetweet?senderUsername=${myUsername}`);
+      const data2 = await response2.json();
+      myTweetandRetweet.push(...data1.result);
+      myTweetandRetweet.push(...data2.result);
+      setPosts(myTweetandRetweet);
     };
     fetchUser();
     fetchPosts();
@@ -69,8 +74,11 @@ function ProfilePage() {
       <h2 style={{margin: '30px auto 20px 400px'}}>Post</h2>
       
       <div className="pos">
-      {Array.isArray(posts.result) && posts.result.map(post => (
+      {Array.isArray(posts) && posts.map(post => (
+        <div>
+        {post.username !== myUsername && <h4>You have Retweeted</h4>}
         <PostWithArc key={post.tweetId} post={post} />
+        </div>
       ))}
       </div>
     

@@ -19,7 +19,7 @@ const fetchChattableList = async (sender) => {
   const url =
     "http://" +
     window.location.hostname +
-    ":3000/chat/chatTables?username=" +
+    ":2000/chat/chatTables?username=" +
     sender;
   const res = await fetch(url, { mode: "cors" });
 

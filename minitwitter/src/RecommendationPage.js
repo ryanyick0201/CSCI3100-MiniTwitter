@@ -19,7 +19,7 @@ const RecommendationPage = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/searchTweet?username=${myUsername}`);
+      const response = await fetch(`http://localhost:2000/tweet/searchMyTweet?username${myUsername}`);
       const data = await response.json();
       setMyPosts(data);
     };
@@ -51,7 +51,7 @@ const RecommendationPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       if (recommendCategories.length === 0) {
-        const response = await fetch(`http://localhost:2000/tweet/searchTweet`);
+        const response = await fetch(`http://localhost:2000/tweet/searchMyTweet`);
         const data = await response.json();
         setPosts(data.result);
         console.log(1);
@@ -59,7 +59,7 @@ const RecommendationPage = () => {
       else {
         const posts = [];
         for (const category of recommendCategories) {
-        const response = await fetch(`http://localhost:2000/tweet/searchTweet?category=${category}`);
+        const response = await fetch(`http://localhost:2000/tweet/searchOtherTweet?myUsername=${myUsername}&category=${category}`);
         const data = await response.json();
         posts.push(...data.result);
         }
@@ -102,7 +102,7 @@ const RecommendationPage = () => {
     </div>
     
     <div className="card">
-      {Array.isArray(posts) && posts.filter(post => post.username !== myUsername && !followees?.find(followee => followee.username === post.username)).map(post => (
+      {Array.isArray(posts) && posts?.filter(post => post.username !== myUsername && !followees?.find(followee => followee.username === post.username)).map(post => (
         <Post key={post.tweetId} post={post} />
       ))}
     </div>
