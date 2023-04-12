@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate  } from 'react-router-dom';
 import { TextField, Button, Typography, FormControl, Box} from '@material-ui/core';
 import { UseStyles } from './CssFormat';
-//import bcrypt from 'bcryptjs';
 import {
-  usernameValidator,
   passwordValidator,
   usernameloginValidator,
 } from "./Validator";
@@ -21,16 +19,9 @@ function Login() {
     loginAction();  
   };
 
-  /*const hashPassword = async (password) => {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    return hashedPassword;
-  }; */
-
   const loginAction= async() => {
     console.log('Enter loginAction');
     let mode = "";
-    let hashedPassword = "";
     let login_Url = 'http://'+ window.location.hostname + ':3000/login';
     // change this
     if (username.includes('admin')) {
@@ -57,7 +48,6 @@ function Login() {
         }        
         else {
           mode = 'user';
-          //hashedPassword = await bcrypt.hash(password, 10); // hash password
         }
     }
 
@@ -65,7 +55,6 @@ function Login() {
       username: username,
       password: password
     };
-    //console.log(JSON.stringify(postBody))
     fetch(
       login_Url,
       {
@@ -78,7 +67,7 @@ function Login() {
        
       .then(response => response.json())
       .then((data) => {
-        if(data.message == "Login succeeded."){
+        if(data.message === "Login succeeded."){
           sessionStorage.setItem('username', username);
           // TODO Need Integration
           // if(mode === "user") 
@@ -95,7 +84,7 @@ function Login() {
 
   return (
     <div className={classes.root}>
-      <div className={classes.formContainer} style={{padding: '5%', width: '70%', height: '80%', borderColor: 'white', borderRadius: '25px',}}>
+      <div className={classes.formContainer} style={{padding: '5%', width: '70%', borderColor: 'white', borderRadius: '25px',}}>
       <Box>
         <Typography variant="h6" className={classes.loginDesc}>
           Welcome back
