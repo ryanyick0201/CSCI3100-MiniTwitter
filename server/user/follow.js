@@ -40,10 +40,13 @@ async function followUser(follower, followee, status) {
             var recPending = JSON.parse(await searchFollow(follower, followee, "Pending"))['result'];
             var recAccepted = JSON.parse(await searchFollow(follower, followee, "Accepted"))['result'];
 
-            if (recPending.length + recAccepted.length === 0){
+            if (recPending.length + recAccepted.length === 0 && !status){
+                throw `{"message": "Field(s) missing."}`;
+            }
+            else if (recPending.length + recAccepted.length === 0){
                 let x = await query(`INSERT INTO Follow (follower, followee, status)
                 VALUES (${followerId}, ${followeeId}, "${status}");`);
-    
+
             } else {
                 if (status){
                     let x = await query(`UPDATE Follow
