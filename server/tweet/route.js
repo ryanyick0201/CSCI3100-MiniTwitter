@@ -86,8 +86,9 @@ router.post('/createTweet', upload.single('image'), async (req, res) => {
             const fileBuffer = file.buffer;
             const fileType = req.body.fileType; //either 'video' or 'image'
     
-            const tweetId = JSON.parse(await searchTweetByMultiple()).result.length;
-    
+            var tweetId = (await query(`SELECT COUNT(*) AS Tweet FROM Tweet`));
+            tweetId = tweetId[0].Tweet
+
             var fileName;
             if (fileType === 'video'){
                 fileName = tweetId + "-video"; //E.g. 1-tweetVideo
@@ -99,6 +100,8 @@ router.post('/createTweet', upload.single('image'), async (req, res) => {
     
             const x = await uploadFile(fileBuffer, fileName, file.mimetype);   
             console.log(x);
+            res.send(x);
+        } else {
             res.send(x);
         }
 
