@@ -71,7 +71,7 @@ async function updateUser(oldUsername, newUsername, password, personalBio, priva
 
             var userInfoArray = [
                 newUsername !== null ? `username = '${newUsername}'` : '',
-                password !== null ? `password = '${password}'` : '',
+                password !== null ? `password = '${await bcrypt.hash(password, 10)}'` : '',
                 personalBio !== null ? `personalBio = '${personalBio}'` : '',
                 privacySetting !== null ? `privacySetting = '${privacySetting}'` : '',
                 hasVerified !== null ? `hasVerified = ${hasVerified}` : ''
