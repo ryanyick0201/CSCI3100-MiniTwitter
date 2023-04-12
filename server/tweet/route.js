@@ -9,18 +9,20 @@ const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
-const {searchTweetByMultiple, createTweet} = require('./tweet');
+const {searchSelfTweetByMultiple, searchOthersTweetByMultiple, createTweet} = require('./tweet');
 const {likeTweet, viewLikeTweetByUser} = require('./like');
 const {archiveTweet} = require('./archive')
-const {retweet} = require('./retweet')
+const {retweet, viewRetweet} = require('./retweet')
 const {viewCommentByTweetId, commentTweet} = require('./comment')
+
+const {searchFollow} = require('../user/follow');
 
 const {uploadFile, deleteFile, getObjectSignedUrl} = require('../multimedia/image');
 const {query} = require('../database')
 
-router.get('/searchTweet', async (req, res) => {
+router.get('/searchMyTweet', async (req, res) => {
     //Map all tweets with username, content, postTime, category, #likes, #dislikes, #comments, #retweets
-    var tweets = await searchTweetByMultiple(req.query.username, req.query.tweetContent, req.query.category);
+    var tweets = await searchSelfTweetByMultiple(req.query.username, req.query.category);
 
     var tweetsResJson = JSON.parse(tweets)['result'];
 
@@ -39,6 +41,37 @@ router.get('/searchTweet', async (req, res) => {
     console.log(`{"message": ${JSON.stringify(JSON.parse(tweets).message)}, "result": ${JSON.stringify(tweetsResJson)}}`)
     res.send(`{"message": ${JSON.stringify(JSON.parse(tweets).message)}, "result": ${JSON.stringify(tweetsResJson)}}`);  
 });
+
+router.get('/searchOtherTweet', async(req, res) => {
+    if (!req.query.lookForUsername){
+        var users = await query(`SELECT username FROM User`);
+
+        var tweets = []
+        for (let user of users){
+            //TODO
+            for (let newTweet of JSON.parse(await searchOthersTweetByMultiple(req.query.myUsername, user.username, req.query.category))['result'])
+                tweets.push(newTweet);
+            console.log(tweets);
+        }
+    } else {
+        var tweets = JSON.parse(await searchOthersTweetByMultiple(req.query.myUsername, req.query.lookForUsername, req.query.category))['result'];
+    }
+
+    for (let tweet of tweets){
+        if (tweet.image){
+            tweet.image = await getObjectSignedUrl(tweet.image + "-image");
+        }
+    }
+
+    for (let tweet of tweets){
+        if (tweet.video){
+            tweet.image = await getObjectSignedUrl(tweet.video + "-video");
+        }
+    }    
+
+    // console.log(`{"message": $"Retrieve succeeded", "result": ${JSON.stringify(tweets)}}`)
+    res.send(`{"message": "Retrieve succeeded", "result": ${JSON.stringify(tweets)}}`);  
+})
 
 router.post('/createTweet', upload.single('image'), async (req, res) => {
     if (req.body.username && req.body.tweetContent && req.body.category && (!req.file || (req.file && (req.body.fileType === "video" || req.body.fileType === "image")))){
@@ -79,6 +112,16 @@ router.post('/createTweet', upload.single('image'), async (req, res) => {
 router.get('/viewLikeTweet', async (req, res) => {
     if (req.query.username && req.query.tweetId){
         let x = await viewLikeTweetByUser(null, req.query.username, req.query.tweetId);
+        console.log(x);
+        res.send(x);
+    } else {
+        res.send(`{"message": "Viewl like/dislike of a tweet failed. Field(s) missing."}`);
+    }
+});
+
+router.get('/viewRetweet', async (req, res) => {
+    if (req.query.senderUsername){
+        let x = await viewRetweet(req.query.senderUsername);
         console.log(x);
         res.send(x);
     } else {

@@ -11,7 +11,7 @@ function ForgotPassword() {
   const [otp, setOTP] = useState('');
   const [buttonText, setButtonText] = useState('Send me OTP');
   const [isResendEnable, setIsResendEnable] = useState(false);
-  const [isSubmitEnable, setIsSubmitEnable] = useState(false);
+  const [isSubmitEnable, setIsSubmitEnable] = useState(true);
   const [countdown, setCountdown] = useState(null);
 
   useEffect(() => {
@@ -36,6 +36,9 @@ function ForgotPassword() {
     
     //Email validation
     if (username) {     //If ok, call api with email to send 
+      setIsResendEnable(true);
+      setButtonText('Resend');
+      setCountdown(60);
       const api_url = 'http://'+ window.location.hostname + ':3000/sendEmail?';
       const api_with_params = `${api_url}username=${username}`;
       console.log('Calling API: ',api_with_params);
@@ -55,9 +58,6 @@ function ForgotPassword() {
         } else {
           //Alert user
           alert(data.message);
-          setIsResendEnable(true);
-          setButtonText('Resend');
-          setCountdown(60);
         }
       })
       .catch((err)=> alert(err) );
@@ -103,7 +103,8 @@ function ForgotPassword() {
       .then((res) => {
         if (res.ok) {
           // ##TODO Route to usermain page
-          navigate('/');
+          alert('Going to user home page');
+          //navigate('/userHome');
         } else {
           //Alert user
           alert(res.text);

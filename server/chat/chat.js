@@ -29,6 +29,7 @@ Step 3: write codes on server.js to integrate the module into the server
 
 // calling libraries
 
+
 const express = require("express");
 const app = express();
 const router = express.Router();
@@ -37,6 +38,7 @@ router.use(bodyParser.json());
 
 const cors = require("cors");
 const http = require("http");
+const crypto = require('crypto') // for randcomized image name
 const socketIO = require("socket.io");
 const { query } = require("../database");
 const { searchUserByUsername } = require("../user/user");
@@ -47,6 +49,8 @@ const {
   deleteUsernameSocketDict,
   getUsernameSocketDict,
 } = require("./room.js");
+const {uploadFile, deleteFile, getObjectSignedUrl} = require('../multimedia/image');
+
 
 const PORT = 3030;
 const NEW_MESSAGE_EVENT = "newMessageEvent";
@@ -55,6 +59,7 @@ const server = http.createServer(app);
 const io = socketIO(server, {
   cors: true,
   origins: ["localhost:3000"],
+  maxHttpBufferSize: 1e9
 });
 
 app.use(cors());
@@ -67,6 +72,7 @@ io.on("connection", async (socket) => {
   // let SOCKET_USERNAME_PAIR = [];
   let USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
   let IN_ROOM_FLAG = false;
+
 
   socket.on("reqChatted", async (username) => {
     var id = await searchUserByUsername(username, "true");
@@ -91,19 +97,19 @@ io.on("connection", async (socket) => {
     console.log(`this is the socket.id that emitted 'joinroom' ${socket.id}`);
     console.log("joinRoom event triggered", usernamePair);
     console.log(
-      `${usernamePair[0]} want to open a room with ${usernamePair[1]}`
+      `${USERNAME_PAIR[0]} want to open a room with ${USERNAME_PAIR[1]}`
     );
 
     // find userid of the pair
-    USER_ID_PAIR = await findUserIdPair(usernamePair);
+    USER_ID_PAIR = await findUserIdPair(USERNAME_PAIR);
     USER_ID_PAIR.forEach((id, i) => {
-      USERNAME_ID_DICT[id] = usernamePair[i];
+      USERNAME_ID_DICT[id] = USERNAME_PAIR[i];
     }); // note that userId key coerced to string
 
     console.log("userIdPair", USER_ID_PAIR);
     console.log("usernameIdDict", USERNAME_ID_DICT);
 
-    addUsernameSocketDict(usernamePair[0], socket.id);
+    addUsernameSocketDict(USERNAME_PAIR[0], socket.id);
 
     // find room number, if not exist, open enw
     SOCKET_ROOM_ID = findRoom(USER_ID_PAIR);
@@ -117,30 +123,38 @@ io.on("connection", async (socket) => {
 
     // fetch chat history
     let result = await fetchChat(USER_ID_PAIR);
-    console.log("chat history succesfully retreived");
-    // console.log(result);
-    // io.to(socket.id).emit(        "chat message",        `this is emit message after ${socket.id} join retrieving chat history`);
+      console.log("chat history succesfully retreived");
+      // console.log(result);
+      // io.to(socket.id).emit("chat message",`this is emit message after ${socket.id} join retrieving chat history`);
 
-    // convert sender from userId to username
-    const emitObj = [];
-    for (chatObj of result) {
-      // console.log(chatObj);
-      chatObj = {
-        ...chatObj,
-        sender: USERNAME_ID_DICT[String(chatObj["sender"])],
-        receiver: USERNAME_ID_DICT[String(chatObj["receiver"])],
-      };
-      emitObj.push(chatObj);
-    }
-    // emit to the client
-    console.log("the parsed emitObj is", emitObj);
-    io.to(socket.id).emit("chatHistory", emitObj);
+      // convert sender from userId to username & add imgUrl & convert sendTime back to UTC+8
+      // note that the sendTime received is a Date object?????
+
+      const emitObj = [];
+      for (chatObj of result) {
+        let url = "";
+        if (chatObj.isImg){
+          url = await getObjectSignedUrl(chatObj.fileName);
+        }
+
+        chatObj = {
+          ...chatObj,
+          sender: USERNAME_ID_DICT[String(chatObj["sender"])],
+          receiver: USERNAME_ID_DICT[String(chatObj["receiver"])],
+          sendTime: parseDateToUTC8(chatObj.sendTime),
+          imgUrl: url
+        };
+        emitObj.push(chatObj);
+      }
+      // emit to the client
+      console.log("the parsed emitObj is", emitObj);
+      io.to(socket.id).emit("chatHistory", emitObj);
 
     // fetch and send chattedUserLists (chatted User of both user)
     sendChattedUsers(USER_ID_PAIR, USERNAME_PAIR, io);
 
     // start handling client sending message after join room
-    
+
     console.log("reached line166");
 
     if(!IN_ROOM_FLAG) {
@@ -149,25 +163,53 @@ io.on("connection", async (socket) => {
     }
 
   });
+  
+  socket.on(NEW_MESSAGE_EVENT, async (data) => {
+    if(!IN_ROOM_FLAG){
+      console.log("inRoomFlag false, but receive msg from client:" + data["message"]);
+      return;
+    }
+    
+    console.log("receive msg from client, isImg" + data["isImg"]);
 
-  socket.on(NEW_MESSAGE_EVENT, (data) => {
-    if(IN_ROOM_FLAG){
-      console.log("receive msg from client:" + data["message"]);
+    if(!data.isImg){
+      console.log("receive !isImg msg from client:" + data["message"]);
+      
       // send to other client in the room
       io.in(SOCKET_ROOM_ID).emit(NEW_MESSAGE_EVENT, data);
-
       // write to the database
-      if (!data["isImg"]) {
-        writeChatToDb(data["message"], USER_ID_PAIR);
-      }
+      writeChatToDb(data["message"], USER_ID_PAIR);
+    }
+    
+    else{ // msg isImg
+    // genereate random name
+    let randomName = crypto.randomBytes(32).toString('hex');
 
-      // fetch and send chattedUserLists (chatted User of both user)
-      // call getChattedUser inside, and send 'chattedUser'
-      sendChattedUsers(USER_ID_PAIR, USERNAME_PAIR, io);
-    }
-    else{
-      console.log("inRoomFlag false, but receive msg from client:" + data["message"]);
-    }
+    console.log('received isImg msg from client');
+    console.log(data.message.file);
+    console.log(data.message.mimeType);
+    console.log(randomName);
+    const x = await uploadFile(data.message.file, randomName, data.message.mimeType);   
+    console.log(x);
+
+    const writeChatToDbReturnObj = await writeChatToDb(randomName, USER_ID_PAIR, randomName, data.message.mimeType);
+    const url = await getObjectSignedUrl(randomName);
+    
+
+    const dataToRoom = {
+      sender: data.sender,
+      recipient: data.recipient,
+      isImg: true,
+      sendTime: data.sendTime,
+      imgUrl: url 
+    }      
+    io.in(SOCKET_ROOM_ID).emit(NEW_MESSAGE_EVENT, dataToRoom);
+  }
+
+
+    // fetch and send chattedUserLists (chatted User of both user)
+    // call getChattedUser inside, and send 'chattedUser'
+    sendChattedUsers(USER_ID_PAIR, USERNAME_PAIR, io);
   });
 
   socket.on("leaveRoom", () => {
@@ -185,7 +227,7 @@ io.on("connection", async (socket) => {
       // let SOCKET_USERNAME_PAIR = [];
       USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
       IN_ROOM_FLAG = false;
-      
+    
     }
     IN_ROOM_FLAG = false;
     console.log(`setting inRoomFlag to ${IN_ROOM_FLAG}`);
@@ -198,7 +240,7 @@ io.on("connection", async (socket) => {
     console.log("test received");
     return;
   });
-  
+
 
   socket.on("disconnect", () => {
     if(IN_ROOM_FLAG){
@@ -238,12 +280,7 @@ async function findUserIdPair(usernamePair) {
 }
 
 async function fetchChat(userIdPair) {
-  // console.log("this is start of fetchChat, at this point userIdPair is ");
-  // console.log(userIdPair);
-  // fetch userId
-  // console.log('starting to fetch userids');
-  // let userIds = await findUserIdPair(usernamePair);
-  // console.log('userIds are', userIds)
+
   // fetch chat
   try {
     let rows = await query(
@@ -259,42 +296,64 @@ async function fetchChat(userIdPair) {
   }
 }
 
-async function writeChatToDb(messageContent, userIdPair) {
+function parseDateToUTC8 (dateObject){
+    // referenced hhttps://stackoverflow.com/questions/12413243/javascript-date-format-like-iso-but-local
+    let offsetToUTC = dateObject.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
+    let nowWithOffset = dateObject - offsetToUTC;
+    const newNow = new Date(nowWithOffset);
+    const formattedTime = newNow.toISOString().replace("T", " ").slice(0, -5);
+  return formattedTime;
+}
+
+async function writeChatToDb(messageContent, userIdPair, fileName=null, mimeType=null) {
   try {
     // referenced hhttps://stackoverflow.com/questions/12413243/javascript-date-format-like-iso-but-local
     const now = new Date();
-    let offsetToUTC = now.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
-    let nowWithOffset = now - offsetToUTC;
-    const newNow = new Date(nowWithOffset);
-    const formattedTime = newNow.toISOString().replace("T", " ").slice(0, -5);
+    // let offsetToUTC = now.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
+    // let nowWithOffset = now - offsetToUTC;
+    // const newNow = new Date(nowWithOffset);
+    // const formattedTime = newNow.toISOString().replace("T", " ").slice(0, -5);
+    const formattedTime = parseDateToUTC8(now);
 
+
+    if (fileName == null || mimeType == null){
     let x = await query(
-      `INSERT INTO Message (message, sendTime, sender, receiver, isImg)
-        VALUES (?, ?, ?, ?, ?)`,
-      [messageContent, formattedTime, userIdPair[0], userIdPair[1], false]
-    );
+      `INSERT INTO Message (message, sendTime, sender, receiver, isImg, fileName, mimeType)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [messageContent, formattedTime, userIdPair[0], userIdPair[1], false, null, null]
+    );} 
+    
+    else{
+      let x = await query(
+        `INSERT INTO Message (message, sendTime, sender, receiver, isImg, fileName, mimeType)
+          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [messageContent, formattedTime, userIdPair[0], userIdPair[1], true, fileName, mimeType]
+      );
+    }
 
     console.log("write chat to db success");
-    return `{"message": "Create a tweet success"}`;
+    return `{"message": "Write chat to db success"}`;
   } catch {
     console.log("write chat to db failed. db error.");
-
     return `{"message": "write chat to db failed. db error."}`;
   }
 }
 
 async function getChattedUser(userId) {
   try {
+
+    // console.log('getChattedUser starts');
+
     let chattedUser = await query(`
       SELECT chatteduser 
       FROM
         ((SELECT max(sendTime) AS sendtime, sender AS chatteduser
-        FROM message
+        FROM Message
         WHERE receiver = ${userId}
         GROUP BY sender, receiver)
         UNION
         (SELECT max(sendTime), receiver AS chatteduser
-        FROM message
+        FROM Message
         WHERE sender = ${userId}
         GROUP BY sender, receiver)) AS combinedTable
       GROUP BY chatteduser
@@ -306,15 +365,15 @@ async function getChattedUser(userId) {
     for (const userId of chattedUser) {
       // console.log(userId);
       const username = await query(
-        `SELECT u.username FROM User u WHERE u.userId = ${userId}`
+        `SELECT u.username FROM User u WHERE u.userId = ${userId};`
       );
       // console.log(username);
       chattedUserList.push(username[0]["username"]);
     }
     return chattedUserList;
   } catch {
-    console.log("Retrieve chatted failed. DB error when getting chattable");
-    return ["Retrieve chatted failed. DB error when getting chattable"];
+    console.log("Retrieve chatted failed. DB error when getting chattedUser");
+    return ["Retrieve chatted failed. DB error when getting chattedUser"];
   }
 }
 
@@ -365,7 +424,7 @@ router.get("/chatTables", async (req, res) => {
     for (const userId of chattable) {
       // console.log(userId);
       const username = await query(
-        `SELECT u.username FROM User u WHERE u.userId = ${userId}`
+        `SELECT u.username FROM User u WHERE u.userId = ${userId};`
       );
       // console.log(username);
       returnObj.push(username[0]["username"]);
@@ -402,7 +461,7 @@ router.get("/chattedUser", async (req, res) => {
     for (const userId of chattedUser) {
       // console.log(userId);
       const username = await query(
-        `SELECT u.username FROM User u WHERE u.userId = ${userId}`
+        `SELECT u.username FROM User u WHERE u.userId = ${userId};`
       );
       // console.log(username);
       returnObj.push(username[0]["username"]);

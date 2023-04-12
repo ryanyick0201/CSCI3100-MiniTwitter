@@ -2,6 +2,18 @@ import { useEffect, useState } from "react";
 
 const NEW_MESSAGE_EVENT = "newMessageEvent";
 
+// get now time in formatted string
+function nowFormattedString() {
+  // get now time
+  const now = new Date();
+  let offsetToUTC = now.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
+  let nowWithOffset = now - offsetToUTC;
+  const newNow = new Date(nowWithOffset);
+  const formattedTime = newNow.toISOString().replace("T", " ").slice(0, -5);
+
+  return formattedTime;
+}
+
 const useChatRoom = (msgSender, msgRecipient, socket) => {
   const [messages, setMessages] = useState([]);
 
@@ -48,7 +60,7 @@ const useChatRoom = (msgSender, msgRecipient, socket) => {
       recipient: msgRecipient,
       isImg: isImg,
       message: messageBody, // if (isImg) message = {file, mimeType, fileName} else message is String
-      sendTime: new Date(),
+      sendTime: nowFormattedString(),
     });
   };
   return { messages, sendMessage, socket };

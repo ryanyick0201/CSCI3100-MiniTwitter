@@ -24,7 +24,7 @@ function addUsernameSocketDict(username, socketID) {
   const index = array.indexOf(socketID);
   if (index == -1) {
     // only push the socket into the array when item is not found
-    array.push(socketID);  
+    array.push(socketID);
   }
 
   usernameSocketDict[username] = array;

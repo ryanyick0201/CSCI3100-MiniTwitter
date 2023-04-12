@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import PanelHeader from "./PanelHeader";
 import usePanel from "./usePanel.jsx";
+import NameTag from "./NameTag";
 
 const useStyles = makeStyles({
   panelContainer: {
@@ -38,7 +39,7 @@ const Panel = ({ sender, setRecipient, socket }) => {
               setRecipient(e.target.innerText);
             }}
           >
-            <CardHeader avatar={<Avatar alt={name} src="" />} title={name} />
+            <NameTag name={name} />
           </CardActionArea>
         ))}
       </div>
