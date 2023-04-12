@@ -9,7 +9,7 @@ const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
-const {searchTweetByMultiple, searchOthersTweetByMultiple, createTweet} = require('./tweet');
+const {searchSelfTweetByMultiple, searchOthersTweetByMultiple, createTweet} = require('./tweet');
 const {likeTweet, viewLikeTweetByUser} = require('./like');
 const {archiveTweet} = require('./archive')
 const {retweet, viewRetweet} = require('./retweet')
@@ -22,7 +22,7 @@ const {query} = require('../database')
 
 router.get('/searchMyTweet', async (req, res) => {
     //Map all tweets with username, content, postTime, category, #likes, #dislikes, #comments, #retweets
-    var tweets = await searchTweetByMultiple(req.query.username, req.query.category);
+    var tweets = await searchSelfTweetByMultiple(req.query.username, req.query.category);
 
     var tweetsResJson = JSON.parse(tweets)['result'];
 

@@ -4,7 +4,7 @@ const {searchUserByUsername} = require('../user/user');
 
 //Map all tweets with username, content, postTime, category, #likes, #dislikes, #comments, #retweets
 //Accept username, tweetContent and category as optional parameter
-async function searchTweetByMultiple(username, category){
+async function searchSelfTweetByMultiple(username, category){
     category = (category) ? `t.category = '${category}' ` : "";
     //tweetContent = (tweetContent) ? `%${tweetContent}%` : "%%";
     username = (username) ? `u.username = '${username}'` : "";
@@ -128,4 +128,4 @@ async function createTweet(username, tweetContent, category, image, video){
 }
 
 
-module.exports = {searchTweetByMultiple, searchOthersTweetByMultiple, createTweet, searchTweetByTweetId};
+module.exports = {searchSelfTweetByMultiple, searchOthersTweetByMultiple, createTweet, searchTweetByTweetId};
