@@ -66,10 +66,11 @@ function Login({ setIsLoggedIn }) {
         if (data.message === "Login succeeded.") {
           sessionStorage.setItem("username", username);
           alert("Login Success");
-          setIsLoggedIn(true);
           // TODO Need Integration
-          if (mode === "user") navigate("/userHome");
-          else navigate("/adminHome");
+          if (mode === "user") {
+            setIsLoggedIn(true);
+            navigate("/userHome");
+          } else navigate("/adminHome");
         } else {
           alert(data.message);
         }

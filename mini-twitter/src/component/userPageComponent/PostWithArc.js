@@ -44,6 +44,8 @@ const Post = ({ post }) => {
   const [status, setStatus] = useState("");
   const [likes, setLikes] = useState(post.likes);
   const [dislikes, setDislikes] = useState(post.dislikes);
+  const [user, setUser] = useState({});
+  const [archived, setArchived] = useState(false);
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -57,7 +59,15 @@ const Post = ({ post }) => {
         setStatus(data.result[0].status);
       }
     };
+    const fetchUser = async () => {
+      const response = await fetch(
+        `http://${window.location.hostname}:3000/user/searchUser?username=${post.username}&exactMatch=true`
+      );
+      const data = await response.json();
+      setUser(data.result[0]);
+    };
     fetchStatus();
+    fetchUser();
   }, [myUsername]);
 
   useEffect(() => {
@@ -71,6 +81,12 @@ const Post = ({ post }) => {
       setLiked(false);
       setDisliked(true);
     }
+
+    if (post.archived == null) {
+      setArchived(false);
+    } else {
+      setArchived(true);
+    }
   }, [status]);
 
   const handleLike = () => {
@@ -80,7 +96,7 @@ const Post = ({ post }) => {
       status: liked ? null : "like",
     };
 
-    fetch('http://" + window.location.hostname + ":3000/tweet/likeTweet', {
+    fetch("http://" + window.location.hostname + ":3000/tweet/likeTweet", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +130,7 @@ const Post = ({ post }) => {
       status: disliked ? null : "dislike",
     };
 
-    fetch('http://" + window.location.hostname + ":3000/tweet/likeTweet', {
+    fetch("http://" + window.location.hostname + ":3000/tweet/likeTweet", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -152,7 +168,43 @@ const Post = ({ post }) => {
     navigate("/post", { state: { tweetId: post.tweetId } });
   };
 
-  const handleArchive = () => {};
+  const handleArchive = () => {
+    if (post.username != myUsername) {
+      return;
+    }
+    if (archived) {
+      const data = {
+        tweetId: post.tweetId,
+      };
+
+      fetch("http://" + window.location.hostname + ":3000/tweet/archiveTweet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      setArchived(!archived);
+    } else {
+      const data = {
+        tweetId: post.tweetId,
+        status: "Archived",
+      };
+
+      fetch("http://" + window.location.hostname + ":3000/tweet/archiveTweet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      setArchived(!archived);
+    }
+  };
+
+  console.log(post.image);
 
   return (
     <div
@@ -165,13 +217,13 @@ const Post = ({ post }) => {
     >
       <Card style={{ flex: "1" }}>
         <CardHeader
-          avatar={<Avatar src />}
+          avatar={<Avatar src={user?.profilePic} />}
           title={post.username}
           subheader={new Date(post.postTime).toLocaleString("en-US")}
           onClick={() => handleUserClick(post)}
           className={classes.use}
         />
-        {/*post.image && <CardMedia image />*/}
+        {post.image && <CardMedia image={post.image} />}
         <CardContent>
           <Typography variant="body1">{post.tweetContent}</Typography>
           <Button
@@ -219,7 +271,7 @@ const Post = ({ post }) => {
       </Card>
 
       <Button className={classes.archiveButton} onClick={handleArchive}>
-        archive
+        {archived ? "unarchive" : "archive"}
       </Button>
     </div>
   );

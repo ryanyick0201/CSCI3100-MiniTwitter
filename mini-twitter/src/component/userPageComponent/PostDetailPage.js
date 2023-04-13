@@ -74,7 +74,7 @@ const PostDetailPage = () => {
       commentContent: comment,
     };
 
-    fetch('http://" + window.location.hostname + ":3000/tweet/commentTweet', {
+    fetch("http://" + window.location.hostname + ":3000/tweet/commentTweet", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

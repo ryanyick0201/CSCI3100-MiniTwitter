@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AdminPage() {
+function AdminPage({ setIsLoggedIn }) {
   const classes = useStyles();
 
   const [users, setUsers] = useState([]);
@@ -134,6 +134,7 @@ function AdminPage() {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
+    setIsLoggedIn(false);
     navigate("/");
   };
 
@@ -158,7 +159,7 @@ function AdminPage() {
         hasVerified: false,
       };
       const response = await fetch(
-        'http://" + window.location.hostname + ":3000/user/createUser',
+        "http://" + window.location.hostname + ":3000/user/createUser",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -178,7 +179,7 @@ function AdminPage() {
         privacySetting: "public",
       };
       const response = await fetch(
-        'http://" + window.location.hostname + ":3000/user/updateUser',
+        "http://" + window.location.hostname + ":3000/user/updateUser",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -195,7 +196,7 @@ function AdminPage() {
         username: usernameInput,
       };
       const response = await fetch(
-        'http://" + window.location.hostname + ":3000/user/deleteUser',
+        "http://" + window.location.hostname + ":3000/user/deleteUser",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

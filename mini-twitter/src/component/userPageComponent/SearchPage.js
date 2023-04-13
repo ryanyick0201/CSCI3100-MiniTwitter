@@ -226,7 +226,7 @@ function SearchPage() {
                     >
                       <Avatar
                         className={classes.avatar}
-                        src
+                        src={user.profilePic}
                         alt={user.username}
                       />
                       <Typography
@@ -244,7 +244,7 @@ function SearchPage() {
                     >
                       <Avatar
                         className={classes.avatar}
-                        src
+                        src={user.profilePic}
                         alt={user.username}
                       />
                       <Typography
@@ -284,7 +284,7 @@ function SearchPage() {
                 key={user.name}
                 onClick={() => handleUserClick(user)}
               >
-                <Avatar />
+                <Avatar src={user.profilePic} />
                 <Typography variant="subtitle1" className={classes.userName}>
                   {user.username}
                 </Typography>

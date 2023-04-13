@@ -98,7 +98,7 @@ function FollowerPage() {
       followee: myUsername,
       status: "Accepted",
     };
-    fetch('http://" + window.location.hostname + ":3000/user/followUser', {
+    fetch("http://" + window.location.hostname + ":3000/user/followUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +120,7 @@ function FollowerPage() {
       follower: username,
       followee: myUsername,
     };
-    fetch('http://" + window.location.hostname + ":3000/user/followUser', {
+    fetch("http://" + window.location.hostname + ":3000/user/followUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -142,7 +142,7 @@ function FollowerPage() {
       follower: myUsername,
       followee: username,
     };
-    fetch('http://" + window.location.hostname + ":3000/user/followUser', {
+    fetch("http://" + window.location.hostname + ":3000/user/followUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -164,7 +164,7 @@ function FollowerPage() {
       follower: username,
       followee: myUsername,
     };
-    fetch('http://" + window.location.hostname + ":3000/user/followUser', {
+    fetch("http://" + window.location.hostname + ":3000/user/followUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -195,7 +195,7 @@ function FollowerPage() {
               style={{ display: "flex", alignItems: "center" }}
               className="car"
             >
-              <Avatar alt={request.username} src className={classes.Avatar} />
+              <Avatar src={request.profilePic} className={classes.Avatar} />
               <CardContent>
                 <h4>{request.username}</h4>
               </CardContent>
@@ -247,7 +247,11 @@ function FollowerPage() {
             style={{ display: "flex", alignItems: "center" }}
             className="car"
           >
-            <Avatar alt={followee.username} src className={classes.Avatar} />
+            <Avatar
+              alt={followee.username}
+              src={followee.profilePic}
+              className={classes.Avatar}
+            />
             <CardContent>
               <h4>{followee.username}</h4>
             </CardContent>
@@ -275,7 +279,11 @@ function FollowerPage() {
             style={{ display: "flex", alignItems: "center" }}
             className="car"
           >
-            <Avatar alt={follower.username} src className={classes.Avatar} />
+            <Avatar
+              alt={follower.username}
+              src={follower.profilePic}
+              className={classes.Avatar}
+            />
             <CardContent>
               <h4>{follower.username}</h4>
             </CardContent>

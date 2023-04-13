@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Avatar, Button, TextField, MenuItem, Select } from "@material-ui/core";
 import "./createNewPost.css";
 import UploadButton from "./UploadButton";
@@ -35,6 +35,19 @@ const CreateNewPost = () => {
   const [postContent, setPostContent] = useState("");
   const [hashtag, setHashtag] = useState("");
   const [media, setMedia] = useState(null);
+  const [imaOrVi, setImaOrVi] = useState("");
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await fetch(
+        `http://${window.location.hostname}:3000/user/searchUser?username=${myUsername}&exactMatch=true`
+      );
+      const data = await response.json();
+      setUser(data.result[0]);
+    };
+    fetchUser();
+  }, [myUsername]);
 
   const handlePostContentChange = (event) => {
     setPostContent(event.target.value);
@@ -46,24 +59,33 @@ const CreateNewPost = () => {
 
   const handleMediaChange = (event) => {
     setMedia(event.target.files[0]);
+    if (media.type.startsWith("image/")) {
+      setImaOrVi("image");
+    } else if (media.type.startsWith("video/")) {
+      setImaOrVi("video");
+    }
   };
+
+  useEffect(() => {
+    console.log(media);
+  }, [media]);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
-      username: myUsername,
-      tweetContent: postContent,
-      category: hashtag,
-      fileTYpe: "image",
-    };
+    const data = new FormData();
+    data.append("username", myUsername);
+    data.append("tweetContent", postContent);
+    data.append("category", hashtag);
+    data.append("fileType", imaOrVi);
+    data.append("image", media);
+
     const response = await fetch(
-      'http://" + window.location.hostname + ":3000/tweet/createTweet',
+      "http://" + window.location.hostname + ":3000/tweet/createTweet",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: data,
       }
     );
     const result = await response.json();
@@ -91,7 +113,7 @@ const CreateNewPost = () => {
               alignItems: "center",
             }}
           >
-            <Avatar src alt={myUsername} />
+            <Avatar src={user.profilePic} alt={myUsername} />
             <p>{myUsername}</p>
           </div>
         </div>

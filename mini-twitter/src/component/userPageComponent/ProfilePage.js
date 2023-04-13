@@ -53,7 +53,11 @@ function ProfilePage() {
   return (
     <div>
       <div className="up">
-        <Avatar aria-label="recipe" style={{ width: 150, height: 150 }} />
+        <Avatar
+          aria-label="recipe"
+          src={user.result && user?.result[0].profilePic}
+          style={{ width: 150, height: 150 }}
+        />
 
         {user.result && user.result.length > 0 && (
           <div

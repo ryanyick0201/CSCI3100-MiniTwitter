@@ -50,6 +50,7 @@ const PostWithBox = ({ post, AddComment }) => {
   const [retweeted, setRetweeted] = useState(false);
   const [retweetCount, setRetweetCount] = useState(post.retweet);
   const [commentCount, setCommentCount] = useState(post.comment);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -70,8 +71,16 @@ const PostWithBox = ({ post, AddComment }) => {
       const data = await response.json();
       setRetweets(data.result);
     };
+    const fetchUser = async () => {
+      const response = await fetch(
+        `http://${window.location.hostname}:3000/user/searchUser?username=${post.username}&exactMatch=true`
+      );
+      const data = await response.json();
+      setUser(data.result[0]);
+    };
     fetchStatus();
     fetchRetweets();
+    fetchUser();
   }, [myUsername]);
 
   useEffect(() => {
@@ -96,7 +105,7 @@ const PostWithBox = ({ post, AddComment }) => {
       status: liked ? null : "like",
     };
 
-    fetch('http://" + window.location.hostname + ":3000/tweet/likeTweet', {
+    fetch("http://" + window.location.hostname + ":3000/tweet/likeTweet", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -130,7 +139,7 @@ const PostWithBox = ({ post, AddComment }) => {
       status: disliked ? null : "dislike",
     };
 
-    fetch('http://" + window.location.hostname + ":3000/tweet/likeTweet', {
+    fetch("http://" + window.location.hostname + ":3000/tweet/likeTweet", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -178,7 +187,7 @@ const PostWithBox = ({ post, AddComment }) => {
         senderUsername: myUsername,
         tweetId: post.tweetId,
       };
-      fetch('http://" + window.location.hostname + ":3000/tweet/retweet', {
+      fetch("http://" + window.location.hostname + ":3000/tweet/retweet", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -202,13 +211,13 @@ const PostWithBox = ({ post, AddComment }) => {
     <div>
       <Card>
         <CardHeader
-          avatar={<Avatar src />}
+          avatar={<Avatar src={user?.profilePic} />}
           title={post.username}
           subheader={new Date(post.postTime).toLocaleString("en-US")}
           onClick={() => handleUserClick(post)}
           className={classes.use}
         />
-        {/*post.image && <CardMedia image />*/}
+        {post.image && <CardMedia image={post.image} />}
         <CardContent>
           <Typography variant="body1">{post.tweetContent}</Typography>
           <Button
