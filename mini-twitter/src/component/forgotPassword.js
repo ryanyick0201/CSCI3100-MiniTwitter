@@ -105,7 +105,7 @@ function ForgotPassword() {
           if (res.ok) {
             // ##TODO Route to usermain page
             alert("Going to user home page");
-            //navigate('/userHome');
+            navigate("/userHome");
           } else {
             //Alert user
             alert(res.text);

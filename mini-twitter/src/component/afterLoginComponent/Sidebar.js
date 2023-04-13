@@ -61,7 +61,7 @@ function Sidebar() {
       <SidebarButton
         text="Sign out"
         Icon={ExitToAppIcon}
-        to="/o"
+        to="/"
         onClick={() => setClickedButton("")}
       />
     </div>

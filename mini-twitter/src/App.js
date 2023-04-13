@@ -13,7 +13,6 @@ import ChatPage from "./component/ChatPage";
 function App() {
   return (
     <>
-      {false && <AdminPage />}
       {false && <ChatPage />}
       {true && <UserPage />}
       {false && (
@@ -22,6 +21,7 @@ function App() {
           <Route path="/forgot_password" element={<ForgotPassword />} />
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/emailVerf" element={<EmailVerf />} />
+          <Route path="/adminHome" element={<AdminPage />} />
         </Routes>
       )}
     </>

@@ -66,10 +66,8 @@ function Login() {
         if (data.message === "Login succeeded.") {
           sessionStorage.setItem("username", username);
           // TODO Need Integration
-          // if(mode === "user")
-          //   navigate('/userHome');
-          // else
-          //   navigate('/adminHome');
+          if (mode === "user") navigate("/userHome");
+          else navigate("/adminHome");
           alert("Login Success");
         } else {
           alert(data.message);

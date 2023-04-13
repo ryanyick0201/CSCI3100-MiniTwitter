@@ -20,7 +20,8 @@ function UserPage() {
     <div>
       <Sidebar />
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/*
+        <Route path="/userHome" element={<Home />} />
         <Route path="/post" element={<PostDetailPage />} />
         <Route path="/createNewPost" element={<CreateNewPost />} />
         <Route path="/followers" element={<FollowerPage />} />
@@ -28,7 +29,8 @@ function UserPage() {
         <Route path="/profileedit" element={<EditProfile />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/recommendation" element={<RecommendationPage />} />
-        <Route path="/other profile" element={<OtherProfilePage />} />
+        <Route path="/other profile" element={<OtherProfilePage />} />*/}
+
         <Route
           path="/chat"
           element={<ChatPage sender={sessionStorage.getItem("username")} />}
