@@ -44,7 +44,7 @@ const Post = ({ post }) => {
   useEffect(() => {
     const fetchStatus = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/tweet/viewLikeTweet?username=${myUsername}&tweetId=${post.tweetId}`
+        `http://${window.location.hostname}:3000/tweet/viewLikeTweet?username=${myUsername}&tweetId=${post.tweetId}`
       );
       const data = await response.json();
       if (data.result.length == 0) {
@@ -55,7 +55,7 @@ const Post = ({ post }) => {
     };
     const fetchRetweets = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/tweet/viewRetweet?senderUsername=${myUsername}`
+        `http://${window.location.hostname}:3000/tweet/viewRetweet?senderUsername=${myUsername}`
       );
       const data = await response.json();
       setRetweets(data.result);

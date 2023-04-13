@@ -32,14 +32,14 @@ function OtherProfilePage() {
   useEffect(() => {
     const fetchUser = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchUser?username=${username}&exactMatch=true`
+        `http://${window.location.hostname}:3000/user/searchUser?username=${username}&exactMatch=true`
       );
       const data = await response.json();
       setUser(data);
     };
     const fetchPosts = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/tweet/searchOtherTweet?lookForUsername=${username}&myUsername=${myUsername}`
+        `http://${window.location.hostname}:3000/tweet/searchOtherTweet?lookForUsername=${username}&myUsername=${myUsername}`
       );
       const data = await response.json();
       setPosts(data);
@@ -52,12 +52,12 @@ function OtherProfilePage() {
     var data = {};
     const fetchStatus = async () => {
       const response1 = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Pending`
+        `http://${window.location.hostname}:3000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Pending`
       );
       data = await response1.json();
       if (data.result.length === 0) {
         const response2 = await fetch(
-          `http://' + window.location.hostname + ':3000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Accepted`
+          `http://${window.location.hostname}:3000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Accepted`
         );
         data = await response2.json();
       }

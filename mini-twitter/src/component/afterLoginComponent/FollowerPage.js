@@ -46,28 +46,28 @@ function FollowerPage() {
   useEffect(() => {
     const fetchRequests = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchFollow?followee=${myUsername}&status=Pending`
+        `http://${window.location.hostname}:3000/user/searchFollow?followee=${myUsername}&status=Pending`
       );
       const data = await response.json();
       setRequestsId(data.result?.map((result) => result.follower));
     };
     const fetchFollowees = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchFollow?follower=${myUsername}&status=Accepted`
+        `http://${window.location.hostname}:3000/user/searchFollow?follower=${myUsername}&status=Accepted`
       );
       const data = await response.json();
       setFolloweesId(data.result?.map((result) => result.followee));
     };
     const fetchFollowers = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchFollow?followee=${myUsername}&status=Accepted`
+        `http://${window.location.hostname}:3000/user/searchFollow?followee=${myUsername}&status=Accepted`
       );
       const data = await response.json();
       setFollowersId(data.result?.map((result) => result.follower));
     };
     const fetchUsers = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchUser?exactMatch=true`
+        `http://${window.location.hostname}:3000/user/searchUser?exactMatch=true`
       );
       const data = await response.json();
       setUsers(data);

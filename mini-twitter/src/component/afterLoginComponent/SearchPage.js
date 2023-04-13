@@ -91,7 +91,7 @@ function SearchPage() {
       return;
     }
     const response = await fetch(
-      `http://' + window.location.hostname + ':3000/user/searchUser?username=${searchTerm}`
+      `http://${window.location.hostname}:3000/user/searchUser?username=${searchTerm}`
     );
     const data = await response.json();
     setSearchResults(data);
@@ -110,14 +110,14 @@ function SearchPage() {
   useEffect(() => {
     const fetchFollowees = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchFollow?follower=${myUsername}&status=Accepted`
+        `http://${window.location.hostname}:3000/user/searchFollow?follower=${myUsername}&status=Accepted`
       );
       const data = await response.json();
       setFolloweesId(data.result.map((result) => result.followee));
     };
     const fetchUsers = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchUser?exactMatch=true`
+        `http://${window.location.hostname}:3000/user/searchUser?exactMatch=true`
       );
       const data = await response.json();
       setUsers(data);
@@ -138,7 +138,7 @@ function SearchPage() {
       let targetUsers = [];
       for (let i = 0; i < followees.length && count < 3; i++) {
         const response = await fetch(
-          `http://' + window.location.hostname + ':3000/user/searchFollow?follower=${followees[i].username}&status=Accepted`
+          `http://${window.location.hostname}:3000/user/searchFollow?follower=${followees[i].username}&status=Accepted`
         );
         const data = await response.json();
         const followeeFolloweesId = data.result?.map(

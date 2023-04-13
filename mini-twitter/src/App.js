@@ -12,8 +12,8 @@ import UserPage from "./component/UserPage";
 function App() {
   return (
     <>
-      <AdminPage />
-      <UserPage />
+      {false && <AdminPage />}
+      {true && <UserPage />}
       {false && (
         <Routes>
           <Route path="/" element={<Content />} />

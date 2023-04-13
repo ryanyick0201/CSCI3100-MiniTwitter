@@ -118,7 +118,7 @@ function AdminPage() {
   useEffect(() => {
     const fetchUsers = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchUser?exactMatch=true`
+        `http://${window.location.hostname}:3000/user/searchUser?exactMatch=true`
       );
       const data = await response.json();
       setUsers(data.result);
@@ -129,7 +129,7 @@ function AdminPage() {
   const handleRetrieve = () => {
     const fetchUsers = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchUser?exactMatch=true`
+        `http://${window.location.hostname}:3000/user/searchUser?exactMatch=true`
       );
       const data = await response.json();
       setUsers(data.result);

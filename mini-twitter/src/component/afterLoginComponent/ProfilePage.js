@@ -28,18 +28,18 @@ function ProfilePage() {
     var myTweetandRetweet = [];
     const fetchUser = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchUser?username=${myUsername}`
+        `http://${window.location.hostname}:3000/user/searchUser?username=${myUsername}`
       );
       const data = await response.json();
       setUser(data);
     };
     const fetchPosts = async () => {
       const response1 = await fetch(
-        `http://' + window.location.hostname + ':3000/tweet/searchMyTweet?username=${myUsername}`
+        `http://${window.location.hostname}:3000/tweet/searchMyTweet?username=${myUsername}`
       );
       const data1 = await response1.json();
       const response2 = await fetch(
-        `http://' + window.location.hostname + ':3000/tweet/viewRetweet?senderUsername=${myUsername}`
+        `http://${window.location.hostname}:3000/tweet/viewRetweet?senderUsername=${myUsername}`
       );
       const data2 = await response2.json();
       myTweetandRetweet.push(...data1.result);

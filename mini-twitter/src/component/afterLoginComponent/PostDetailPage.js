@@ -33,21 +33,21 @@ const PostDetailPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/tweet/searchMyTweet`
+        `http://${window.location.hostname}:3000/tweet/searchMyTweet`
       );
       const data = await response.json();
       setPosts(data);
     };
     const fetchComments = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/tweet/searchCommentByTweetId?tweetId=${tweetId}`
+        `http://${window.location.hostname}:3000/tweet/searchCommentByTweetId?tweetId=${tweetId}`
       );
       const data = await response.json();
       setComments(data);
     };
     const fetchMe = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/user/searchUser?username=${myUsername}&exactMatch=true`
+        `http://${window.location.hostname}:3000/user/searchUser?username=${myUsername}&exactMatch=true`
       );
       const data = await response.json();
       setMe(data.result[0]);
@@ -84,7 +84,7 @@ const PostDetailPage = () => {
       .then((response) => response.json())
       .then(() => {
         fetch(
-          `http://' + window.location.hostname + ':3000/tweet/searchCommentByTweetId?tweetId=${tweetId}`
+          `http://${window.location.hostname}:3000/tweet/searchCommentByTweetId?tweetId=${tweetId}`
         )
           .then((response) => response.json())
           .then((data) => {

@@ -48,7 +48,7 @@ const Post = ({ post }) => {
   useEffect(() => {
     const fetchStatus = async () => {
       const response = await fetch(
-        `http://' + window.location.hostname + ':3000/tweet/viewLikeTweet?username=${myUsername}&tweetId=${post.tweetId}`
+        `http://${window.location.hostname}:3000/tweet/viewLikeTweet?username=${myUsername}&tweetId=${post.tweetId}`
       );
       const data = await response.json();
       if (data.result.length == 0) {
