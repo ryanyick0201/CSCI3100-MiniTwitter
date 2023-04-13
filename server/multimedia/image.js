@@ -59,6 +59,7 @@ async function deleteFile(fileName) {
 }
 
 async function getObjectSignedUrl(key) {
+  console.log(key);
   const params = {
     Bucket: bucketName,
     Key: key,
@@ -66,11 +67,8 @@ async function getObjectSignedUrl(key) {
 
   // https://aws.amazon.com/blogs/developer/generate-presigned-url-modular-aws-sdk-javascript/
   const command = new GetObjectCommand(params);
-  //const seconds = 60
-  const url = await getSignedUrl(
-    s3Client,
-    command /*, { expiresIn: seconds }*/
-  );
+  const seconds = 60000;
+  const url = await getSignedUrl(s3Client, command, { expiresIn: seconds });
 
   return url;
 }

@@ -8,11 +8,13 @@ import React from "react";
 import EmailVerf from "./component/emailVerf";
 import AdminPage from "./component/AdminPage";
 import UserPage from "./component/UserPage";
+import ChatPage from "./component/ChatPage";
 
 function App() {
   return (
     <>
       {false && <AdminPage />}
+      {false && <ChatPage />}
       {true && <UserPage />}
       {false && (
         <Routes>

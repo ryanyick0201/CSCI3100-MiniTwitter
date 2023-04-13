@@ -1,66 +1,145 @@
-const{query} = require('../database')
+const { query } = require("../database");
 
-const {searchUserByUsername} = require('../user/user');
+const { searchUserByUsername } = require("../user/user");
 
 //Map all tweets with username, content, postTime, category, #likes, #dislikes, #comments, #retweets
 //Accept username, tweetContent and category as optional parameter
-async function searchTweetByMultiple(username, tweetContent, category){
-    category = (category) ? `t.category = '${category}' and ` : "";
-    tweetContent = (tweetContent) ? `%${tweetContent}%` : "%%";
-    username = (username) ? `and u.username = '${username}'` : "";
+async function searchSelfTweetByMultiple(username, category) {
+  category = category ? `t.category = '${category}' ` : "";
+  //tweetContent = (tweetContent) ? `%${tweetContent}%` : "%%";
+  username = username ? `u.username = '${username}'` : "";
+  var hasAnd1 = category || username ? `and` : "";
+  var hasAnd2 = category && username ? `and` : "";
 
-    try{
-        let rows = await query(`
-        SELECT u.username, t.tweetId, t.tweetContent, t.postTime, t.category, t.category, t.image, t.video,
-        COUNT(CASE WHEN l.status = 'like' THEN 1 END) AS likes,
-        COUNT(CASE WHEN l.status = 'dislike' THEN 1 END) AS dislikes,
+  try {
+    let rows = await query(`
+        SELECT u.username, t.tweetId, t.tweetContent, t.postTime, t.category, t.archived, t.image, t.video,
+        (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "like" group by tweetId) AS likes,
+        (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "dislike" group by tweetId) AS dislikes,
         (select COUNT(*) commentId from tweetComment c where c.tweetId = t.tweetId group by tweetId) AS comment,
         (select COUNT(*) retweetTime from TweetRetweet r where r.tweetId = t.tweetId group by tweetId) AS retweet
         FROM tweet t, tweetlike l, user u
-        WHERE t.creator = u.userId and ${category}t.tweetContent LIKE "${tweetContent}" ${username}
+        WHERE t.creator = u.userId ${hasAnd1} ${category} ${hasAnd2} ${username}
         GROUP BY tweetId, category
         ORDER BY tweetId;
         `);
-        
-        return `{"message": "Retrieve succeeded", "result": ${JSON.stringify(rows)}}`
-    } catch(err) {
-        return `{"message": "Retrieve tweet failed. db error."}`;   
-    }
+
+    return `{"message": "Retrieve succeeded", "result": ${JSON.stringify(
+      rows
+    )}}`;
+  } catch (err) {
+    return `{"message": "Retrieve tweet failed. db error."}`;
+  }
 }
 
-/*
-async function searchTweetByTweetId(tweetId){
-    try{
-        return await query(`
-        SELECT * FROM Tweet WHERE tweetId = ${tweetId};
-        `);   
-    } catch {
-        return;
-    }
+async function searchOthersTweetByMultiple(
+  myUsername,
+  lookForUsername,
+  category
+) {
+  if (!myUsername) throw `{"message": "myUsername missing."}`;
+
+  if (category) {
+    category = `t.category = "${category}" and`;
+  } else {
+    category = "";
+  }
+
+  myUserId = JSON.parse(await searchUserByUsername(myUsername, true))[
+    "result"
+  ][0]["userId"];
+  lookForUserId = JSON.parse(await searchUserByUsername(lookForUsername, true))[
+    "result"
+  ][0]["userId"];
+
+  let tweets = [];
+
+  let rows = await query(`
+    SELECT u.username, t.tweetId, t.tweetContent, t.postTime, t.category, t.archived, t.image, t.video, f.follower, f.followee, f.status,
+    (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "like" group by tweetId) AS likes,
+    (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "dislike" group by tweetId) AS dislikes,
+    (select COUNT(*) commentId from tweetComment c where c.tweetId = t.tweetId group by tweetId) AS comment,
+    (select COUNT(*) retweetTime from TweetRetweet r where r.tweetId = t.tweetId group by tweetId) AS retweet
+    FROM tweet t, tweetlike l, user u, follow f
+    WHERE t.creator = u.userId and t.archived IS NULL and f.followee = t.creator and
+    f.follower = ${myUserId} and f.followee = ${lookForUserId} and ${category}
+    f.status = "Accepted" and
+    f.followee IN (SELECT UserId FROM User WHERE privacySetting = "follower")
+    GROUP BY tweetId, category, follower, followee
+    ORDER BY tweetId;
+    `);
+
+  if (rows.length > 0) {
+    for (let i = 0; i < rows.length; i++) tweets.push(rows[i]);
+  }
+
+  rows = await query(`
+    SELECT u.username, t.tweetId, t.tweetContent, t.postTime, t.category, t.archived, t.image, t.video,
+    (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "like" group by tweetId) AS likes,
+    (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "dislike" group by tweetId) AS dislikes,
+    (select COUNT(*) commentId from tweetComment c where c.tweetId = t.tweetId group by tweetId) AS comment,
+    (select COUNT(*) retweetTime from TweetRetweet r where r.tweetId = t.tweetId group by tweetId) AS retweet
+    FROM tweet t, tweetlike l, user u
+    WHERE ${category} t.creator = u.userId and t.archived IS NULL and u.privacySetting = 'public' and t.creator = ${lookForUserId}
+    GROUP BY tweetId, category
+    ORDER BY tweetId;
+    `);
+
+  if (rows.length > 0) {
+    for (let i = 0; i < rows.length; i++) tweets.push(rows[i]);
+  }
+
+  console.log(tweets);
+  return `{"message": "Retrieve succeeded", "result": ${JSON.stringify(
+    tweets
+  )}}`;
 }
-*/
 
-async function createTweet(username, tweetContent, category, image, video){
-    try{
-        var id = await searchUserByUsername(username, "true");
-        id = JSON.parse(id).result[0].userId;
-
-    } catch {
-        return `{"message": "Search user by username failed. db error."}`;
-    }
-    
-    try{
-        const now = new Date();
-        const formattedTime = now.toISOString().replace('T', ' ').slice(0, -5);
-    
-        let x = await query(`INSERT INTO Tweet (creator, tweetContent, postTime, category, image, video)
-        VALUES (?, ?, ?, ?, ?, ?)`, [id, tweetContent, formattedTime, category, image, video]);
-
-        return `{"message": "Create a tweet success"}`;
-    } catch {
-        return `{"message": "Create tweet failed. db error."}`;
-    }
+async function searchTweetByTweetId(tweetId) {
+  try {
+    return await query(`
+        SELECT u.username, t.tweetId, t.tweetContent, t.postTime, t.category, t.archived, t.image, t.video,
+        (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "like" group by tweetId) AS likes,
+        (select COUNT(*) userId from tweetLike l where l.tweetId = t.tweetId and l.status = "dislike" group by tweetId) AS dislikes,
+        (select COUNT(*) commentId from tweetComment c where c.tweetId = t.tweetId group by tweetId) AS comment,
+        (select COUNT(*) retweetTime from TweetRetweet r where r.tweetId = t.tweetId group by tweetId) AS retweet
+        FROM tweet t, tweetlike l, user u
+        WHERE t.creator = u.userId and t.tweetId = ${tweetId}
+        GROUP BY tweetId, category
+        ORDER BY tweetId;
+        `);
+  } catch {
+    return;
+  }
 }
 
+async function createTweet(username, tweetContent, category, image, video) {
+  try {
+    var id = await searchUserByUsername(username, "true");
+    id = JSON.parse(id).result[0].userId;
+  } catch {
+    return `{"message": "Search user by username failed. db error."}`;
+  }
 
-module.exports = {searchTweetByMultiple, createTweet/*, searchTweetByTweetId*/};
+  try {
+    const now = new Date();
+    const formattedTime = now.toISOString().replace("T", " ").slice(0, -5);
+
+    let x = await query(
+      `INSERT INTO Tweet (creator, tweetContent, postTime, category, image, video)
+        VALUES (?, ?, ?, ?, ?, ?)`,
+      [id, tweetContent, formattedTime, category, image, video]
+    );
+
+    return `{"message": "Create a tweet success"}`;
+  } catch {
+    return `{"message": "Create tweet failed. db error."}`;
+  }
+}
+
+module.exports = {
+  searchSelfTweetByMultiple,
+  searchOthersTweetByMultiple,
+  createTweet,
+  searchTweetByTweetId,
+};
