@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles, Grid, Typography, TextField, Button, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -94,22 +94,67 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const users = [
-  { id: 1, username: 'user1' },
-  { id: 2, username: 'user2' },
-  { id: 3, username: 'user3' },
-];
+
 
 function AdminPage() {
   const classes = useStyles();
 
+  const [users, setUsers] = useState([]);
+  const [option, setOption] = useState("");
+  const [usernameInput, setUsernameInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
+      const data = await response.json();
+      setUsers(data.result);
+    };
+    fetchUsers();
+  }, []);
+
+
+  const handleRetrieve = () => {
+    const fetchUsers = async () => {
+      const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
+      const data = await response.json();
+      setUsers(data.result);
+    };
+    fetchUsers();
+  }
+
   const handleSignOut = () => {
-    // sign out logic here
+    
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // submit logic here
+    if (option === "create") {
+      const data = {
+        username: usernameInput,
+        password: passwordInput,
+        email: `${usernameInput}@gmail.com`,
+        hasVerified: false,
+      };
+      const response = await fetch('http://localhost:2000/user/createUser', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      console.log(result);
+      setUsernameInput('');
+      setPasswordInput('');
+    }
+    else if (option === "update") {
+      
+    }
+    else if (option === "delete") {
+
+    }
+    else {
+
+    }
   };
 
   return (
@@ -126,7 +171,7 @@ function AdminPage() {
   
       <Grid container spacing={2}>
       <Grid item xs={6}>
-      <Button variant="contained" className={classes.retButton}>Retrieve user list</Button>
+      <Button variant="contained" className={classes.retButton} onClick={handleRetrieve}>Retrieve user list</Button>
       <div className={classes.userList}>
         <TableContainer component={Paper} className={classes.tableContainer}>
           <Table>
@@ -136,8 +181,8 @@ function AdminPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id} className={user.id % 2 === 0 ? classes.tableRowEven : classes.tableRowOdd}>
+              {users?.map((user, index) => (
+                <TableRow key={user.tweetId} className={(index +1 ) % 2 === 0 ? classes.tableRowEven : classes.tableRowOdd}>
                   <TableCell className={classes.tableCell}>{user.username}</TableCell>
                 </TableRow>
               ))}
@@ -152,13 +197,13 @@ function AdminPage() {
         <div style={{ height:'150px'}}></div>
         <div><span>Choose an option:</span></div>
         <div className={classes.formRow}>
-          <Button variant="contained" className={classes.formButton}>
+          <Button variant="contained" className={classes.formButton} onClick={() => setOption("create")}>
             Create
           </Button>
-          <Button variant="contained" className={classes.formButton}>
+          <Button variant="contained" className={classes.formButton} onClick={() => setOption("update")}>
             Update
           </Button>
-          <Button variant="contained" className={classes.formButton}>
+          <Button variant="contained" className={classes.formButton} onClick={() => setOption("delete")}>
             Delete
           </Button>
         </div>
@@ -166,16 +211,16 @@ function AdminPage() {
           <Typography variant="subtitle1" className={classes.formLabel}>
             Username:
           </Typography>
-          <TextField className={classes.formInput} />
+          <TextField value={usernameInput} className={classes.formInput} onChange={(e) => setUsernameInput(e.target.value)}/>
         </div>
         <div style={{ height:'20px'}}></div>
         <div className={classes.formRow}>
           <Typography variant="subtitle1" className={classes.formLabel}>
             Password:
           </Typography>
-          <TextField type="password" className={classes.formInput} />
+          <TextField value={passwordInput} type="password" className={classes.formInput} onChange={(e) => setPasswordInput(e.target.value)}/>
         </div>
-        <Button variant="contained" className={classes.submitButton}>
+        <Button variant="contained" className={classes.submitButton} onClick={handleSubmit}>
           Submit
         </Button>
       </div>

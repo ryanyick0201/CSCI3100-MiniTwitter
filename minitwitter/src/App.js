@@ -23,66 +23,45 @@ function App(){
   return (
     <Router>
       <div>
-      <Sidebar />        
+      {/* <Sidebar /> */}        
         <Routes>
-          <Route
-            path="/"
-            element={<Home/>}
-          />
+          <Route path="/" element={<Home/>}/>
         </Routes>
+
         <Routes>
-          <Route
-            path="/post"
-            element={<PostDetailPage/>}
-          />
+          <Route path="/post" element={<PostDetailPage/>}/>
         </Routes>
+
         <Routes>
-          <Route
-            path="/createNewPost"
-            element={<CreateNewPost/>}
-          />
+          <Route path="/createNewPost" element={<CreateNewPost/>}/>
         </Routes>
+
         <Routes>
-          <Route
-            path="/followers"
-            element={<FollowerPage/>}
-          />
+          <Route path="/followers" element={<FollowerPage/>}/>
         </Routes>
+
         <Routes>
-          <Route
-            path="/my profile"
-            element={<ProfilePage />}
-          />
+          <Route path="/my profile" element={<ProfilePage />}/>
         </Routes>
+
         <Routes>
-          <Route
-            path="/profileedit"
-            element={<EditProfile />}
-          />
+          <Route path="/profileedit" element={<EditProfile />}/>
         </Routes>
+
         <Routes>
-          <Route
-            path="/search"
-            element={<SearchPage />}
-          />
+          <Route path="/search" element={<SearchPage />}/>
         </Routes>
+
         <Routes>
-          <Route
-            path="/recommendation"
-            element={<RecommendationPage/>}
-          />
+          <Route path="/recommendation" element={<RecommendationPage/>}/>
         </Routes>
+
         <Routes>
-          <Route
-            path="/other profile"
-            element={<OtherProfilePage />}
-          />
+          <Route path="/other profile" element={<OtherProfilePage />}/>
         </Routes>
+
         <Routes>
-          <Route
-            path="/admin"
-            element={<AdminPage />}
-          />
+          <Route path="/admin" element={<AdminPage />}/>
         </Routes>
       </div>
     </Router>
