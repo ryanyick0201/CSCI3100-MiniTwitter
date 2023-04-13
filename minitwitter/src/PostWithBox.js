@@ -6,6 +6,7 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import RepeatIcon from '@material-ui/icons/Repeat';
+import RepeatOneIcon from '@material-ui/icons/RepeatOne';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useNavigate } from 'react-router-dom';
@@ -38,6 +39,10 @@ const PostWithBox = ({ post, AddComment }) => {
   const [status, setStatus] = useState("");
   const [likes, setLikes] = useState(post.likes);
   const [dislikes, setDislikes] = useState(post.dislikes);
+  const [retweets, setRetweets] = useState([]);
+  const [retweeted, setRetweeted] = useState(false);
+  const [retweetCount, setRetweetCount] = useState(post.retweet);
+  const [commentCount, setCommentCount] = useState(post.comment);
 
 
   useEffect(() => {
@@ -51,7 +56,13 @@ const PostWithBox = ({ post, AddComment }) => {
         setStatus(data.result[0].status);
       }
     };
+    const fetchRetweets = async () => {
+      const response = await fetch(`http://localhost:2000/tweet/viewRetweet?senderUsername=${myUsername}`);
+      const data = await response.json();
+      setRetweets(data.result);
+    };
     fetchStatus();
+    fetchRetweets();
   }, [myUsername]);
 
 
@@ -68,7 +79,10 @@ const PostWithBox = ({ post, AddComment }) => {
       setLiked(false);
       setDisliked(true);
     }
-  }, [status]);
+
+    setRetweeted( retweets?.some(retweet => retweet.tweetId === post.tweetId) );
+
+  }, [status, retweets, post.tweetId]);
 
 
   const handleLike = () => {
@@ -147,6 +161,7 @@ const PostWithBox = ({ post, AddComment }) => {
     event.preventDefault();
     AddComment(comment);
     setComment('');
+    setCommentCount(commentCount + 1);
   };
 
   const navigate = useNavigate();
@@ -154,6 +169,34 @@ const PostWithBox = ({ post, AddComment }) => {
   const handleUserClick = (post) => {
     navigate('/other profile', {state: { username: post.username }});
   };
+
+
+  const handleRetweet = (post) => {
+    if (!retweeted){
+      const data = {
+        senderUsername: myUsername,
+        tweetId: post.tweetId,
+      };
+      fetch('http://localhost:2000/tweet/retweet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    
+      setRetweetCount(retweetCount + 1);
+
+    }
+    setRetweeted(true);
+  }
   
 
   return (
@@ -185,11 +228,11 @@ const PostWithBox = ({ post, AddComment }) => {
         <IconButton >
           <ChatBubbleOutlineIcon />
         </IconButton>
-        <Typography variant="caption">{post.comment}</Typography>
-        <IconButton>
-          <RepeatIcon />
+        <Typography variant="caption">{commentCount}</Typography>
+        <IconButton onClick={() => handleRetweet(post)}>
+          {(retweeted || post.username == myUsername) ? <RepeatOneIcon /> : <RepeatIcon />}
         </IconButton>
-        <Typography variant="caption">{post.retweet}</Typography>
+        <Typography variant="caption">{retweetCount}</Typography>
         
       </CardActions>
     </Card>

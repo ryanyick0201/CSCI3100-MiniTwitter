@@ -6,6 +6,7 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import RepeatIcon from '@material-ui/icons/Repeat';
+import RepeatOneIcon from '@material-ui/icons/RepeatOne';
 import { makeStyles } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,7 +28,8 @@ const Post = ({ post }) => {
   const [likes, setLikes] = useState(post.likes);
   const [dislikes, setDislikes] = useState(post.dislikes);
   const [retweets, setRetweets] = useState([]);
-  const [retweeted, setRetweeted] = useState();
+  const [retweeted, setRetweeted] = useState(false);
+  const [retweetCount, setRetweetCount] = useState(post.retweet);
   
 
   useEffect(() => {
@@ -65,8 +67,9 @@ const Post = ({ post }) => {
       setDisliked(true);
     }
 
-    /* setRetweeted( retweets?.filter(user => requestsId.includes(user.userId))) */
-  }, [status]);
+    setRetweeted( retweets?.some(retweet => retweet.tweetId === post.tweetId) );
+
+  }, [status, retweets, post.tweetId]);
 
 
   const handleLike = () => {
@@ -150,25 +153,30 @@ const Post = ({ post }) => {
 
 
   const handleRetweet = (post) => {
-    const data = {
-      senderUsername: myUsername,
-      tweetId: post.tweetId,
-    };
-    fetch('http://localhost:2000/tweet/retweet', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    if (!retweeted){
+      const data = {
+        senderUsername: myUsername,
+        tweetId: post.tweetId,
+      };
+      fetch('http://localhost:2000/tweet/retweet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     
+      setRetweetCount(retweetCount + 1);
+
+    }
+    setRetweeted(true);
   }
 
   return (
@@ -201,9 +209,9 @@ const Post = ({ post }) => {
         </IconButton>
         <Typography variant="caption">{post.comment}</Typography>
         <IconButton onClick={() => handleRetweet(post)}>
-          <RepeatIcon />
+          {retweeted ? <RepeatOneIcon /> : <RepeatIcon />}
         </IconButton>
-        <Typography variant="caption">{post.retweet}</Typography>
+        <Typography variant="caption">{retweetCount}</Typography>
         <Button onClick={() => handleTweetClick(post)} size="small" color="primary" style={{textTransform: 'none'}}>
           Show this thread
         </Button>

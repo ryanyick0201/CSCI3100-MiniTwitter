@@ -5,7 +5,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
-import RepeatIcon from '@material-ui/icons/Repeat';
+import RepeatOneIcon from '@material-ui/icons/RepeatOne';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom';
@@ -140,7 +140,9 @@ const Post = ({ post }) => {
   const navigate = useNavigate();
 
   const handleUserClick = (post) => {
-    navigate('/other profile', {state: { username: post.username }});
+    if(post.username != myUsername) {
+      navigate('/other profile', {state: { username: post.username }});
+    }
   };
   const handleTweetClick = (post) => {
     navigate('/post', {state: { tweetId: post.tweetId }});
@@ -158,7 +160,7 @@ const Post = ({ post }) => {
         avatar={<Avatar src />}
         title={post.username}
         subheader={new Date(post.postTime).toLocaleString('en-US')}
-        /* onClick={() => handleUserClick(post)} */
+        onClick={() => handleUserClick(post)}
         className={classes.use}
       />
       {/*post.image && <CardMedia image />*/}
@@ -177,12 +179,12 @@ const Post = ({ post }) => {
           {disliked ? <ThumbDownIcon color="primary" /> : <ThumbDownAltOutlinedIcon />}
         </IconButton>
         <Typography variant="caption">{dislikes}</Typography>
-        <IconButton component={Link} to={`/post`}>
+        <IconButton onClick={() => handleTweetClick(post)}>
           <ChatBubbleOutlineIcon />
         </IconButton>
         <Typography variant="caption">{post.comment}</Typography>
         <IconButton>
-          <RepeatIcon />
+          <RepeatOneIcon />
         </IconButton>
         <Typography variant="caption">{post.retweet}</Typography>
         <Button onClick={() => handleTweetClick(post)} size="small" color="primary" style={{textTransform: 'none'}}>
