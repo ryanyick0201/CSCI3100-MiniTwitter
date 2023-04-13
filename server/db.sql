@@ -1,3 +1,4 @@
+DROP DATABASE Twitter;
 CREATE DATABASE Twitter;
 
 USE Twitter;
@@ -82,16 +83,21 @@ CREATE TABLE Follow (
     FOREIGN KEY (followee) REFERENCES User(userId) ON DELETE CASCADE
   );
 
-
 CREATE TABLE Message (
     message VARCHAR(500) NOT NULL,
     sendTime DATETIME NOT NULL,
     sender INT NOT NULL,
     receiver INT NOT NULL,
+    isImg BOOLEAN NOT NULL,
+    fileName VARCHAR(500),
+	  mimeType VARCHAR(500),
     PRIMARY KEY (message, sendTime, sender, receiver),
     FOREIGN KEY (sender) REFERENCES User(userId) ON DELETE CASCADE,
-    FOREIGN KEY (receiver) REFERENCES User(userId) ON DELETE CASCADE
+    FOREIGN KEY (receiver) REFERENCES User(userId) ON DELETE CASCADE,
+    CONSTRAINT if_isImg_true_then_fileName_mimeType_not_null
+		CHECK ( (NOT isImg) OR ( (fileName IS NOT NULL) AND (mimeType IS NOT NULL) ) )
   );
+
 
 INSERT INTO User (username, password, email, hasVerified, personalBio, privacySetting, otp)
 VALUES 
@@ -195,4 +201,21 @@ VALUES
 (3, 1, 'Accepted'),
 (5, 6, 'Pending'),
 (8, 3, 'Accepted'),
-(10, 2, 'Pending');
+(10, 2, 'Pending'),
+-- below added for testing chattable functionality
+(1, 4, 'Accepted'),
+(1, 3, 'Accepted'),
+(6, 1, 'Pending')
+;
+
+
+INSERT INTO Message (message, sendTime, sender, receiver, isImg, fileName, mimeType)
+VALUES
+('testing msg1', '2023-03-19 02:00:00', 1, 2, false, null, null),
+('testing msg1a', '2023-03-19 02:00:00', 1, 3, false, null, null),
+('testing msg1b', '2023-03-19 02:00:00', 2, 3, false, null, null),
+('testing msg2', '2023-03-19 02:00:01', 2, 1, false, null, null),
+('testing msg3', '2023-03-19 02:00:02', 2, 1, false, null, null),
+('testing msg4', '2023-03-19 02:00:02', 3, 1, false, null, null),
+('223317b95898ecb52b7e5cd7a8415048a4cbc9598a89e0ec960d21e48d558f52', '2023-03-19 02:00:02', 3, 1, true, '223317b95898ecb52b7e5cd7a8415048a4cbc9598a89e0ec960d21e48d558f52', 'image/jpeg'),
+('223317b95898ecb52b7e5cd7a8415048a4cbc9598a89e0ec960d21e48d558f52', '2023-03-19 02:00:03', 2, 1, true, '223317b95898ecb52b7e5cd7a8415048a4cbc9598a89e0ec960d21e48d558f52', 'image/jpeg');

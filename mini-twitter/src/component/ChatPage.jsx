@@ -10,14 +10,15 @@ const socket = io(SOCKET_SERVER_URL);
 
 const useStyles = makeStyles({
   pageContainer: {
-    position: "fixed",
-    top: "5%",
-    left: "5%",
+    position: "relative",
+    top: "5vh",
+    //left: "5%",
     borderStyle: "solid",
     borderColor: "green",
 
     display: "flex",
-    width: "90vw",
+    flex: 1,
+    //width: "90vw",
     height: "90vh",
     backgroundColor: "#263238",
   },
