@@ -77,7 +77,7 @@ function OtherProfilePage() {
         followee: username,
         status: "Pending",
       };
-      fetch("http://" + window.location.hostname + ":3000/user/followUser", {
+      fetch('http://" + window.location.hostname + ":3000/user/followUser', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@ function OtherProfilePage() {
         follower: myUsername,
         followee: username,
       };
-      fetch("http://" + window.location.hostname + ":3000/user/followUser", {
+      fetch('http://" + window.location.hostname + ":3000/user/followUser', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

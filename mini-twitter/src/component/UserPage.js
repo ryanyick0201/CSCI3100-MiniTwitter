@@ -1,26 +1,24 @@
-import Sidebar from "./afterLoginComponent/Sidebar";
-import Home from "./afterLoginComponent/Home";
-import PostDetailPage from "./afterLoginComponent/PostDetailPage";
-import CreateNewPost from "./afterLoginComponent/CreateNewPost";
-import FollowerPage from "./afterLoginComponent/FollowerPage";
-import ProfilePage from "./afterLoginComponent/ProfilePage";
-import EditProfile from "./afterLoginComponent/EditProfile";
-import SearchPage from "./afterLoginComponent/SearchPage";
-import RecommendationPage from "./afterLoginComponent/RecommendationPage";
-import OtherProfilePage from "./afterLoginComponent/OtherProfilePage";
-
+import "./UserPage.css";
+import Sidebar from "./userPageComponent/Sidebar";
+import Home from "./userPageComponent/Home";
+import PostDetailPage from "./userPageComponent/PostDetailPage";
+import CreateNewPost from "./userPageComponent/CreateNewPost";
+import FollowerPage from "./userPageComponent/FollowerPage";
+import ProfilePage from "./userPageComponent/ProfilePage";
+import EditProfile from "./userPageComponent/EditProfile";
+import SearchPage from "./userPageComponent/SearchPage";
+import RecommendationPage from "./userPageComponent/RecommendationPage";
+import OtherProfilePage from "./userPageComponent/OtherProfilePage";
 import ChatPage from "./ChatPage";
+//import AdminPage from './userPageComponent/AdminPage'
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-function UserPage() {
-  sessionStorage.setItem("username", "user1");
-
+const UserPage = ({ setIsLoggedIn }) => {
   return (
     <div>
-      <Sidebar />
+      <Sidebar setIsLoggedIn={setIsLoggedIn} />
       <Routes>
-        {/*
         <Route path="/userHome" element={<Home />} />
         <Route path="/post" element={<PostDetailPage />} />
         <Route path="/createNewPost" element={<CreateNewPost />} />
@@ -29,15 +27,14 @@ function UserPage() {
         <Route path="/profileedit" element={<EditProfile />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/recommendation" element={<RecommendationPage />} />
-        <Route path="/other profile" element={<OtherProfilePage />} />*/}
-
+        <Route path="/other profile" element={<OtherProfilePage />} />
         <Route
-          path="/chat"
+          path="chat"
           element={<ChatPage sender={sessionStorage.getItem("username")} />}
         />
       </Routes>
     </div>
   );
-}
+};
 
 export default UserPage;

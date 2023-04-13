@@ -51,7 +51,7 @@ const EditProfile = () => {
       privacySetting: newPrivacySetting,
     };
     const response = await fetch(
-      "http://" + window.location.hostname + ":3000/user/updateUser",
+      'http://" + window.location.hostname + ":3000/user/updateUser',
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

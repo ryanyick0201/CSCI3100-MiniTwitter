@@ -10,7 +10,7 @@ import {
 import { UseStyles } from "./CssFormat";
 import { usernameValidator, optValidator } from "./Validator";
 
-function ForgotPassword() {
+function ForgotPassword({ setIsLoggedIn }) {
   const classes = UseStyles();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -105,6 +105,7 @@ function ForgotPassword() {
           if (res.ok) {
             // ##TODO Route to usermain page
             alert("Going to user home page");
+            setIsLoggedIn(true);
             navigate("/userHome");
           } else {
             //Alert user

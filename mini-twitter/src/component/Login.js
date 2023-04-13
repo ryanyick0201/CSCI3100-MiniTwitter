@@ -10,7 +10,7 @@ import {
 import { UseStyles } from "./CssFormat";
 import { passwordValidator, usernameloginValidator } from "./Validator";
 
-function Login() {
+function Login({ setIsLoggedIn }) {
   const classes = UseStyles();
   let navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -65,10 +65,11 @@ function Login() {
       .then((data) => {
         if (data.message === "Login succeeded.") {
           sessionStorage.setItem("username", username);
+          alert("Login Success");
+          setIsLoggedIn(true);
           // TODO Need Integration
           if (mode === "user") navigate("/userHome");
           else navigate("/adminHome");
-          alert("Login Success");
         } else {
           alert(data.message);
         }

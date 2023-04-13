@@ -98,7 +98,7 @@ function FollowerPage() {
       followee: myUsername,
       status: "Accepted",
     };
-    fetch("http://" + window.location.hostname + ":3000/user/followUser", {
+    fetch('http://" + window.location.hostname + ":3000/user/followUser', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +120,7 @@ function FollowerPage() {
       follower: username,
       followee: myUsername,
     };
-    fetch("http://" + window.location.hostname + ":3000/user/followUser", {
+    fetch('http://" + window.location.hostname + ":3000/user/followUser', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -142,7 +142,7 @@ function FollowerPage() {
       follower: myUsername,
       followee: username,
     };
-    fetch("http://" + window.location.hostname + ":3000/user/followUser", {
+    fetch('http://" + window.location.hostname + ":3000/user/followUser', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -164,7 +164,7 @@ function FollowerPage() {
       follower: username,
       followee: myUsername,
     };
-    fetch("http://" + window.location.hostname + ":3000/user/followUser", {
+    fetch('http://" + window.location.hostname + ":3000/user/followUser', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

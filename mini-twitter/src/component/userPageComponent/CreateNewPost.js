@@ -59,7 +59,7 @@ const CreateNewPost = () => {
       fileTYpe: "image",
     };
     const response = await fetch(
-      "http://" + window.location.hostname + ":3000/tweet/createTweet",
+      'http://" + window.location.hostname + ":3000/tweet/createTweet',
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

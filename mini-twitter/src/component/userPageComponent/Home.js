@@ -31,16 +31,14 @@ const Home = () => {
   useEffect(() => {
     const fetchFollowees = async () => {
       const response = await fetch(
-        `http://${window.location.hostname}:3000/user/searchFollow?follower=${myUsername}&status=Accepted`,
-        { mode: "cors", headers: { "Content-Type": "application/json" } }
+        `http://${window.location.hostname}:3000/user/searchFollow?follower=${myUsername}&status=Accepted`
       );
       const data = await response.json();
       setFolloweesId(data.result.map((result) => result.followee));
     };
     const fetchUsers = async () => {
       const response = await fetch(
-        `http://${window.location.hostname}:3000/user/searchUser?exactMatch=true`,
-        { mode: "cors", headers: { "Content-Type": "application/json" } }
+        `http://${window.location.hostname}:3000/user/searchUser?exactMatch=true`
       );
       const data = await response.json();
       setUsers(data);
@@ -61,8 +59,7 @@ const Home = () => {
       await Promise.all(
         followees?.map(async (followee) => {
           const response = await fetch(
-            `http://${window.location.hostname}:3000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`,
-            { mode: "cors", headers: { "Content-Type": "application/json" } }
+            `http://${window.location.hostname}:3000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`
           );
           const data = await response.json();
           tweets.push(...data.result);
@@ -88,8 +85,7 @@ const Home = () => {
       <div className="card">
         {posts?.length === 0 && (
           <h2>
-            You are not following anyone yet, or the ones you follewed have not
-            posted anything yet.
+            You are not following anyone yet.
             <br />
             Start discovering interesting accounts to follow.
           </h2>

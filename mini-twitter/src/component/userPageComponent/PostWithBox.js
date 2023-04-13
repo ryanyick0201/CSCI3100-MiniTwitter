@@ -9,6 +9,7 @@ import {
   CardMedia,
   IconButton,
   Typography,
+  TextField,
 } from "@material-ui/core";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
@@ -18,17 +19,25 @@ import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import RepeatIcon from "@material-ui/icons/Repeat";
 import RepeatOneIcon from "@material-ui/icons/RepeatOne";
 import { makeStyles } from "@material-ui/core/styles";
+
 import { useNavigate } from "react-router-dom";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
+  submitButton: {
+    textTransform: "none",
+    backgroundColor: "#F47458",
+    borderRadius: "25px",
+    fontWeight: "bold",
+    color: "white",
+  },
   use: {
     "&:hover": {
       background: "linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))",
     },
   },
-}));
+});
 
-const Post = ({ post }) => {
+const PostWithBox = ({ post, AddComment }) => {
   const myUsername = sessionStorage.getItem("username");
   const classes = useStyles();
 
@@ -40,6 +49,7 @@ const Post = ({ post }) => {
   const [retweets, setRetweets] = useState([]);
   const [retweeted, setRetweeted] = useState(false);
   const [retweetCount, setRetweetCount] = useState(post.retweet);
+  const [commentCount, setCommentCount] = useState(post.comment);
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -86,7 +96,7 @@ const Post = ({ post }) => {
       status: liked ? null : "like",
     };
 
-    fetch("http://" + window.location.hostname + ":3000/tweet/likeTweet", {
+    fetch('http://" + window.location.hostname + ":3000/tweet/likeTweet', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +130,7 @@ const Post = ({ post }) => {
       status: disliked ? null : "dislike",
     };
 
-    fetch("http://" + window.location.hostname + ":3000/tweet/likeTweet", {
+    fetch('http://" + window.location.hostname + ":3000/tweet/likeTweet', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -147,13 +157,19 @@ const Post = ({ post }) => {
     }
   };
 
+  const [comment, setComment] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    AddComment(comment);
+    setComment("");
+    setCommentCount(commentCount + 1);
+  };
+
   const navigate = useNavigate();
 
   const handleUserClick = (post) => {
     navigate("/other profile", { state: { username: post.username } });
-  };
-  const handleTweetClick = (post) => {
-    navigate("/post", { state: { tweetId: post.tweetId } });
   };
 
   const handleRetweet = (post) => {
@@ -162,7 +178,7 @@ const Post = ({ post }) => {
         senderUsername: myUsername,
         tweetId: post.tweetId,
       };
-      fetch("http://" + window.location.hostname + ":3000/tweet/retweet", {
+      fetch('http://" + window.location.hostname + ":3000/tweet/retweet', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -183,53 +199,75 @@ const Post = ({ post }) => {
   };
 
   return (
-    <Card>
-      <CardHeader
-        avatar={<Avatar src />}
-        title={post.username}
-        subheader={new Date(post.postTime).toLocaleString("en-US")}
-        onClick={() => handleUserClick(post)}
-        className={classes.use}
-      />
-      {/*post.image && <CardMedia image />*/}
-      <CardContent>
-        <Typography variant="body1">{post.tweetContent}</Typography>
-        <Button size="small" color="primary" style={{ textTransform: "none" }}>
-          #{post.category}
+    <div>
+      <Card>
+        <CardHeader
+          avatar={<Avatar src />}
+          title={post.username}
+          subheader={new Date(post.postTime).toLocaleString("en-US")}
+          onClick={() => handleUserClick(post)}
+          className={classes.use}
+        />
+        {/*post.image && <CardMedia image />*/}
+        <CardContent>
+          <Typography variant="body1">{post.tweetContent}</Typography>
+          <Button
+            size="small"
+            color="primary"
+            style={{ textTransform: "none" }}
+          >
+            #{post.category}
+          </Button>
+        </CardContent>
+        <CardActions>
+          <IconButton onClick={handleLike}>
+            {liked ? (
+              <FavoriteIcon color="secondary" />
+            ) : (
+              <FavoriteBorderIcon />
+            )}
+          </IconButton>
+          <Typography variant="caption">{likes}</Typography>
+          <IconButton onClick={handleDislike}>
+            {disliked ? (
+              <ThumbDownIcon color="primary" />
+            ) : (
+              <ThumbDownAltOutlinedIcon />
+            )}
+          </IconButton>
+          <Typography variant="caption">{dislikes}</Typography>
+          <IconButton>
+            <ChatBubbleOutlineIcon />
+          </IconButton>
+          <Typography variant="caption">{commentCount}</Typography>
+          <IconButton onClick={() => handleRetweet(post)}>
+            {retweeted || post.username == myUsername ? (
+              <RepeatOneIcon />
+            ) : (
+              <RepeatIcon />
+            )}
+          </IconButton>
+          <Typography variant="caption">{retweetCount}</Typography>
+        </CardActions>
+      </Card>
+
+      <div className="comment-input">
+        <h3>Comments</h3>
+        <TextField
+          variant="outlined"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          label="leave your comment"
+          multiline
+          minRows={4}
+          fullWidth
+        />
+        <Button className={classes.submitButton} onClick={handleSubmit}>
+          Submit
         </Button>
-      </CardContent>
-      <CardActions>
-        <IconButton onClick={handleLike}>
-          {liked ? <FavoriteIcon color="secondary" /> : <FavoriteBorderIcon />}
-        </IconButton>
-        <Typography variant="caption">{likes}</Typography>
-        <IconButton onClick={handleDislike}>
-          {disliked ? (
-            <ThumbDownIcon color="primary" />
-          ) : (
-            <ThumbDownAltOutlinedIcon />
-          )}
-        </IconButton>
-        <Typography variant="caption">{dislikes}</Typography>
-        <IconButton onClick={() => handleTweetClick(post)}>
-          <ChatBubbleOutlineIcon />
-        </IconButton>
-        <Typography variant="caption">{post.comment}</Typography>
-        <IconButton onClick={() => handleRetweet(post)}>
-          {retweeted ? <RepeatOneIcon /> : <RepeatIcon />}
-        </IconButton>
-        <Typography variant="caption">{retweetCount}</Typography>
-        <Button
-          onClick={() => handleTweetClick(post)}
-          size="small"
-          color="primary"
-          style={{ textTransform: "none" }}
-        >
-          Show this thread
-        </Button>
-      </CardActions>
-    </Card>
+      </div>
+    </div>
   );
 };
 
-export default Post;
+export default PostWithBox;

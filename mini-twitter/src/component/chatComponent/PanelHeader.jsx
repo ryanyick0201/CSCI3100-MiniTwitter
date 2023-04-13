@@ -48,7 +48,7 @@ const fetchChattableList = async (sender) => {
 */
 };
 
-const PanelHeader = ({ sender, setRecipient }) => {
+const PanelHeader = ({ sender, setRecipient, socket }) => {
   /* Dialog */
   const [open, setOpen] = useState(false);
   const [chattables, setChattables] = useState([]);
@@ -70,6 +70,7 @@ const PanelHeader = ({ sender, setRecipient }) => {
   const handleConfirm = () => {
     const target = formRef.current.value;
     if (chattables.includes(target)) {
+      socket.emit("leaveRoom");
       setRecipient(target);
       setOpen(false);
       setAlertVisibility(false);
