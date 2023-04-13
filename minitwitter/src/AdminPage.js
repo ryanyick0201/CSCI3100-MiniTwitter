@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { makeStyles, Grid, Typography, TextField, Button, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -101,8 +102,12 @@ function AdminPage() {
 
   const [users, setUsers] = useState([]);
   const [option, setOption] = useState("");
+
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+
+  const [oldUsernameInput, setOldUsernameInput] = useState("");
+  const [newUsernameInput, setNewUsernameInput] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -114,6 +119,13 @@ function AdminPage() {
   }, []);
 
 
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    navigate('/');
+  };
+
+
   const handleRetrieve = () => {
     const fetchUsers = async () => {
       const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
@@ -123,9 +135,7 @@ function AdminPage() {
     fetchUsers();
   }
 
-  const handleSignOut = () => {
-    
-  };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -147,13 +157,39 @@ function AdminPage() {
       setPasswordInput('');
     }
     else if (option === "update") {
-      
+      const data = {
+      oldUsername: oldUsernameInput,
+      newUsername: newUsernameInput,
+      password: passwordInput,
+      personalBio: "",
+      privacySetting: "public",
+    };
+      const response = await fetch('http://localhost:2000/user/updateUser', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      console.log(result);
+      setOldUsernameInput('');
+      setNewUsernameInput('');
+      setPasswordInput('');
     }
     else if (option === "delete") {
-
+      const data = {
+        username: usernameInput,
+      };
+        const response = await fetch('http://localhost:2000/user/deleteUser', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        console.log(result);
+        setUsernameInput('');
     }
     else {
-
+      alert("Please choose an option.");
     }
   };
 
@@ -164,7 +200,7 @@ function AdminPage() {
         <Typography variant="h4" className={classes.title}>
           Welcome admin!
         </Typography>
-        <Button variant="contained"  className={classes.signOutButton}>
+        <Button variant="contained"  className={classes.signOutButton} onClick={handleSignOut}>
           Sign Out
         </Button>
       </div>
@@ -207,6 +243,12 @@ function AdminPage() {
             Delete
           </Button>
         </div>
+
+
+        <div>
+        {(option === 'create') || (option === "") ? (
+        <>  
+
         <div className={classes.formRow}>
           <Typography variant="subtitle1" className={classes.formLabel}>
             Username:
@@ -220,6 +262,55 @@ function AdminPage() {
           </Typography>
           <TextField value={passwordInput} type="password" className={classes.formInput} onChange={(e) => setPasswordInput(e.target.value)}/>
         </div>
+
+        </>
+        ) : option === 'update' ? (
+        <>  
+          <div className={classes.formRow}>
+          <Typography variant="subtitle1" className={classes.formLabel}>
+            Old username:
+          </Typography>
+          <TextField value={oldUsernameInput} className={classes.formInput} onChange={(e) => setOldUsernameInput(e.target.value)}/>
+        </div>
+
+        <div style={{ height:'20px'}}></div>
+
+        <div className={classes.formRow}>
+          <Typography variant="subtitle1" className={classes.formLabel}>
+            New username:
+          </Typography>
+          <TextField value={newUsernameInput} className={classes.formInput} onChange={(e) => setNewUsernameInput(e.target.value)}/>
+        </div>
+
+        <div style={{ height:'20px'}}></div>
+
+        <div className={classes.formRow}>
+          <Typography variant="subtitle1" className={classes.formLabel}>
+            Password:
+          </Typography>
+          <TextField value={passwordInput} type="password" className={classes.formInput} onChange={(e) => setPasswordInput(e.target.value)}/>
+        </div>
+
+
+        </>
+        ) : (
+        <>  
+          <div className={classes.formRow}>
+          <Typography variant="subtitle1" className={classes.formLabel}>
+            Username:
+          </Typography>
+          <TextField value={usernameInput} className={classes.formInput} onChange={(e) => setUsernameInput(e.target.value)}/>
+        </div>
+        
+        
+
+        </>
+        )}
+        </div>
+
+
+
+
         <Button variant="contained" className={classes.submitButton} onClick={handleSubmit}>
           Submit
         </Button>

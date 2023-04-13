@@ -23,7 +23,7 @@ function App(){
   return (
     <Router>
       <div>
-      {/* <Sidebar /> */}        
+      <Sidebar />        
         <Routes>
           <Route path="/" element={<Home/>}/>
         </Routes>
