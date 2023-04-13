@@ -60,22 +60,6 @@ const Home = () => {
       const tweets = [];
       await Promise.all(
         followees?.map(async (followee) => {
-          console.log(
-            "test url 0:",
-            `http://${window.location.hostname}:3000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`
-          );
-          console.log(
-            "test url 1:",
-            `http://localhost:3000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`
-          );
-          console.log(
-            "test url 2:",
-            `http://localhost:3000/tweet/searchOtherTweet?lookForUsername=user4&myUsername=${myUsername}`
-          );
-          console.log(
-            "test url 3:",
-            `http://localhost:3000/tweet/searchOtherTweet?lookForUsername=user4&myUsername=user1`
-          );
           const response = await fetch(
             `http://${window.location.hostname}:3000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`,
             { mode: "cors", headers: { "Content-Type": "application/json" } }
