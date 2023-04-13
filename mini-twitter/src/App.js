@@ -6,21 +6,23 @@ import ForgotPassword from "./component/forgotPassword";
 import SignUp from "./component/signUp";
 import React from "react";
 import EmailVerf from "./component/emailVerf";
-import ChatPage from "./component/ChatPage";
-// import AdminPage from './AdminPage'
-// import UserPage from './Home';
+import AdminPage from "./component/AdminPage";
+import UserPage from "./component/UserPage";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<ChatPage sender="user1" />} />
-      <Route path="/" element={<Content />} />
-      <Route path="/forgot_password" element={<ForgotPassword />} />
-      <Route path="/signUp" element={<SignUp />} />
-      <Route path="/emailVerf" element={<EmailVerf />} />
-      {/* <Route path="/adminHome" element={<AdminPage />}/>
-        <Route path="/userHome" element={<UserPage />}/> */}
-    </Routes>
+    <>
+      <AdminPage />
+      <UserPage />
+      {false && (
+        <Routes>
+          <Route path="/" element={<Content />} />
+          <Route path="/forgot_password" element={<ForgotPassword />} />
+          <Route path="/signUp" element={<SignUp />} />
+          <Route path="/emailVerf" element={<EmailVerf />} />
+        </Routes>
+      )}
+    </>
   );
 }
 

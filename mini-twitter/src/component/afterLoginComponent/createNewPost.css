@@ -1,0 +1,17 @@
+.newpost {
+  margin: 40px 120px 120px 400px;
+}
+
+.nameAndAvatar {
+  margin: 40px auto 60px auto;
+  display: flex;
+  align-items: flex-start;
+}
+
+.select {
+  margin: 40px auto 60px auto;
+}
+
+.file-input {
+  margin: 80px auto 60px auto;
+}

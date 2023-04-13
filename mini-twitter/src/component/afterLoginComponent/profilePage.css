@@ -1,0 +1,22 @@
+.up {
+  margin: 40px 120px 20px 400px;
+  display: flex;
+  align-items: center;
+}
+
+.nameAndBio {
+  display: flex;
+  flex-direction: column;
+  text-align: flex-start;
+  margin: auto auto auto 50px;
+}
+
+.pos {
+  margin: 40px 120px 20px 400px;
+}
+
+.pos .MuiCard-root {
+  margin-bottom: 40px;
+  border-radius: 56px;
+  border: 0.3px solid rgba(247, 243, 243, 0.12);
+}
