@@ -28,13 +28,13 @@ router.get('/searchMyTweet', async (req, res) => {
 
     for (let tweet of tweetsResJson){
         if (tweet.image){
-            tweet.image = await getObjectSignedUrl(tweet.image + "-image");
+            tweet.image = await getObjectSignedUrl(tweet.tweetId + "-image");
         }
     }
 
     for (let tweet of tweetsResJson){
         if (tweet.video){
-            tweet.image = await getObjectSignedUrl(tweet.video + "-video");
+            tweet.image = await getObjectSignedUrl(tweet.tweetId + "-image");
         }
     }    
 
@@ -59,13 +59,13 @@ router.get('/searchOtherTweet', async(req, res) => {
 
     for (let tweet of tweets){
         if (tweet.image){
-            tweet.image = await getObjectSignedUrl(tweet.image + "-image");
+            tweet.image = await getObjectSignedUrl(tweet.tweetId + "-image");
         }
     }
 
     for (let tweet of tweets){
         if (tweet.video){
-            tweet.image = await getObjectSignedUrl(tweet.video + "-video");
+            tweet.image = await getObjectSignedUrl(tweet.tweetId + "-video");
         }
     }    
 
@@ -92,10 +92,10 @@ router.post('/createTweet', upload.single('image'), async (req, res) => {
             var fileName;
             if (fileType === 'video'){
                 fileName = tweetId + "-video"; //E.g. 1-tweetVideo
-                await query(`UPDATE Tweet SET video = ? WHERE tweetId = ?;`, [tweetId + "-tweetVideo", tweetId]);
+                await query(`UPDATE Tweet SET video = ? WHERE tweetId = ?;`, [tweetId + "-video", tweetId]);
             } else if (fileType === 'image') {
                 fileName = tweetId + "-image"; //E.g. 1-tweetImage
-                await query(`UPDATE Tweet SET image = ? WHERE tweetId = ?;`, [tweetId + "-tweetImage", tweetId]);
+                await query(`UPDATE Tweet SET image = ? WHERE tweetId = ?;`, [tweetId + "-image", tweetId]);
             }
     
             const x = await uploadFile(fileBuffer, fileName, file.mimetype);   
