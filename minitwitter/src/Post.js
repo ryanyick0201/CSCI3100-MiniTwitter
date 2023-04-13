@@ -30,11 +30,12 @@ const Post = ({ post }) => {
   const [retweets, setRetweets] = useState([]);
   const [retweeted, setRetweeted] = useState(false);
   const [retweetCount, setRetweetCount] = useState(post.retweet);
+  const [user, setUser] = useState({});
   
 
   useEffect(() => {
     const fetchStatus = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/viewLikeTweet?username=${myUsername}&tweetId=${post.tweetId}`);
+      const response = await fetch(`http://localhost:3000/tweet/viewLikeTweet?username=${myUsername}&tweetId=${post.tweetId}`);
       const data = await response.json();
       if (data.result.length == 0 ) {
         setStatus("neither");
@@ -44,12 +45,18 @@ const Post = ({ post }) => {
       }
     };
     const fetchRetweets = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/viewRetweet?senderUsername=${myUsername}`);
+      const response = await fetch(`http://localhost:3000/tweet/viewRetweet?senderUsername=${myUsername}`);
       const data = await response.json();
       setRetweets(data.result);
     };
+    const fetchUser = async () => {
+      const response = await fetch(`http://localhost:3000/user/searchUser?username=${post.username}&exactMatch=true`);
+      const data = await response.json();
+      setUser(data.result[0]);
+    };
     fetchStatus();
     fetchRetweets();
+    fetchUser();
   }, [myUsername]);
 
 
@@ -79,7 +86,7 @@ const Post = ({ post }) => {
       status: liked ? null : 'like',
     };
   
-    fetch('http://localhost:2000/tweet/likeTweet', {
+    fetch('http://localhost:3000/tweet/likeTweet', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -115,7 +122,7 @@ const Post = ({ post }) => {
       status: disliked ? null : 'dislike',
     };
   
-    fetch('http://localhost:2000/tweet/likeTweet', {
+    fetch('http://localhost:3000/tweet/likeTweet', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -158,7 +165,7 @@ const Post = ({ post }) => {
         senderUsername: myUsername,
         tweetId: post.tweetId,
       };
-      fetch('http://localhost:2000/tweet/retweet', {
+      fetch('http://localhost:3000/tweet/retweet', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -182,13 +189,13 @@ const Post = ({ post }) => {
   return (
     <Card>
       <CardHeader
-        avatar={<Avatar src />}
+        avatar={<Avatar src={user?.profilePic} />}
         title={post.username}
         subheader={new Date(post.postTime).toLocaleString('en-US')}
         onClick={() => handleUserClick(post)}
         className={classes.use}
       />
-      {/*post.image && <CardMedia image />*/}
+      {post.image && <CardMedia image={post.image} />}
       <CardContent>
         <Typography variant="body1">{post.tweetContent}</Typography>
           <Button size="small" color="primary" style={{textTransform: 'none'}}>

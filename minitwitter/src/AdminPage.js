@@ -111,7 +111,7 @@ function AdminPage() {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
+      const response = await fetch(`http://localhost:3000/user/searchUser?exactMatch=true`);
       const data = await response.json();
       setUsers(data.result);
     };
@@ -128,7 +128,7 @@ function AdminPage() {
 
   const handleRetrieve = () => {
     const fetchUsers = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
+      const response = await fetch(`http://localhost:3000/user/searchUser?exactMatch=true`);
       const data = await response.json();
       setUsers(data.result);
     };
@@ -146,7 +146,7 @@ function AdminPage() {
         email: `${usernameInput}@gmail.com`,
         hasVerified: false,
       };
-      const response = await fetch('http://localhost:2000/user/createUser', {
+      const response = await fetch('http://localhost:3000/user/createUser', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -164,7 +164,7 @@ function AdminPage() {
       personalBio: "",
       privacySetting: "public",
     };
-      const response = await fetch('http://localhost:2000/user/updateUser', {
+      const response = await fetch('http://localhost:3000/user/updateUser', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -179,7 +179,7 @@ function AdminPage() {
       const data = {
         username: usernameInput,
       };
-        const response = await fetch('http://localhost:2000/user/deleteUser', {
+        const response = await fetch('http://localhost:3000/user/deleteUser', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),

@@ -19,7 +19,7 @@ const RecommendationPage = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/searchMyTweet?username${myUsername}`);
+      const response = await fetch(`http://localhost:3000/tweet/searchMyTweet?username${myUsername}`);
       const data = await response.json();
       setMyPosts(data);
     };
@@ -51,7 +51,7 @@ const RecommendationPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       if (recommendCategories.length === 0) {
-        const response = await fetch(`http://localhost:2000/tweet/searchMyTweet`);
+        const response = await fetch(`http://localhost:3000/tweet/searchMyTweet`);
         const data = await response.json();
         setPosts(data.result);
         console.log(1);
@@ -59,7 +59,7 @@ const RecommendationPage = () => {
       else {
         const posts = [];
         for (const category of recommendCategories) {
-        const response = await fetch(`http://localhost:2000/tweet/searchOtherTweet?myUsername=${myUsername}&category=${category}`);
+        const response = await fetch(`http://localhost:3000/tweet/searchOtherTweet?myUsername=${myUsername}&category=${category}`);
         const data = await response.json();
         posts.push(...data.result);
         }
@@ -74,12 +74,12 @@ const RecommendationPage = () => {
 
   useEffect(() => {
     const fetchFollowees = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&status=Accepted`);
+      const response = await fetch(`http://localhost:3000/user/searchFollow?follower=${myUsername}&status=Accepted`);
       const data = await response.json();
       setFolloweesId(data.result.map(result => result.followee));
     };
     const fetchUsers = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
+      const response = await fetch(`http://localhost:3000/user/searchUser?exactMatch=true`);
       const data = await response.json();
       setUsers(data);
     };

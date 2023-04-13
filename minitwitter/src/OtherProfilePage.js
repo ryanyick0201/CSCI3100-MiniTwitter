@@ -36,12 +36,12 @@ function OtherProfilePage() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?username=${username}&exactMatch=true`);
+      const response = await fetch(`http://localhost:3000/user/searchUser?username=${username}&exactMatch=true`);
       const data = await response.json();
       setUser(data);
     };
     const fetchPosts = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/searchOtherTweet?lookForUsername=${username}&myUsername=${myUsername}`);
+      const response = await fetch(`http://localhost:3000/tweet/searchOtherTweet?lookForUsername=${username}&myUsername=${myUsername}`);
       const data = await response.json();
       setPosts(data);
     };
@@ -53,10 +53,10 @@ function OtherProfilePage() {
   useEffect(() => {
     var data = {};
     const fetchStatus = async () => {
-      const response1 = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Pending`);
+      const response1 = await fetch(`http://localhost:3000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Pending`);
       data = await response1.json();
       if (data.result.length === 0) {
-        const response2 = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Accepted`);
+        const response2 = await fetch(`http://localhost:3000/user/searchFollow?follower=${myUsername}&followee=${username}&status=Accepted`);
         data = await response2.json();
       } 
       if (data.result.length === 0) {
@@ -76,7 +76,7 @@ function OtherProfilePage() {
         followee: username,
         status: "Pending",
       };
-      fetch('http://localhost:2000/user/followUser', {
+      fetch('http://localhost:3000/user/followUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -97,7 +97,7 @@ function OtherProfilePage() {
         follower: myUsername,
         followee: username,
       };
-      fetch('http://localhost:2000/user/followUser', {
+      fetch('http://localhost:3000/user/followUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -121,9 +121,9 @@ function OtherProfilePage() {
   return (
     <div >
       <div className="up">
-        <Avatar aria-label="recipe"  style={{width: 150, height: 150}}>
+        <Avatar aria-label="recipe"  style={{width: 150, height: 150}} src={user.result && user?.result[0].profilePic}/>
             
-        </Avatar>
+        
         
         {user.result && user.result.length > 0 && (
           <div className="nameAndBio" style={{ display: 'flex', flexDirection: 'column' }}>

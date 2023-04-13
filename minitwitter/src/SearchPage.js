@@ -85,7 +85,7 @@ function SearchPage() {
       setSearchResults({});
       return;
     }
-    const response = await fetch(`http://localhost:2000/user/searchUser?username=${searchTerm}`);
+    const response = await fetch(`http://localhost:3000/user/searchUser?username=${searchTerm}`);
     const data = await response.json();
     setSearchResults(data);
   };
@@ -106,12 +106,12 @@ function SearchPage() {
 
   useEffect(() => {
     const fetchFollowees = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&status=Accepted`);
+      const response = await fetch(`http://localhost:3000/user/searchFollow?follower=${myUsername}&status=Accepted`);
       const data = await response.json();
       setFolloweesId(data.result.map(result => result.followee));
     };
     const fetchUsers = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
+      const response = await fetch(`http://localhost:3000/user/searchUser?exactMatch=true`);
       const data = await response.json();
       setUsers(data);
     };
@@ -130,7 +130,7 @@ function SearchPage() {
       let count = 0;
       let targetUsers = [];
       for (let i = 0; i < followees.length && count < 3; i++) {
-        const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${followees[i].username}&status=Accepted`);
+        const response = await fetch(`http://localhost:3000/user/searchFollow?follower=${followees[i].username}&status=Accepted`);
         const data = await response.json();
         const followeeFolloweesId = data.result?.map(result => result.followee);
         const followeeFollowees = users.result?.filter(user => followeeFolloweesId.includes(user.userId));
@@ -196,14 +196,14 @@ function SearchPage() {
           <div>
           {user.username !== myUsername ? (
             <div className={classes.user} key={user.userId} onClick={() => handleUserClick(user)}>
-              <Avatar className={classes.avatar} src alt={user.username} />
+              <Avatar className={classes.avatar} src={user.profilePic} alt={user.username} />
               <Typography variant="subtitle1" className={classes.userName}>
                 {user.username}
               </Typography>
             </div>
           ) : (
             <div className={classes.user} key={user.userId} onClick={() => navigate('/my profile')}>
-              <Avatar className={classes.avatar} src alt={user.username} />
+              <Avatar className={classes.avatar} src={user.profilePic} alt={user.username} />
               <Typography variant="subtitle1" className={classes.userName}>
                 {user.username}
               </Typography>
@@ -232,7 +232,7 @@ function SearchPage() {
       <div className={classes.recomUsersContainer}>
         {recommendUsers?.map((user) => (
           <div className={classes.recomUser} key={user.name} onClick={() => handleUserClick(user)}>
-            <Avatar />
+            <Avatar src={user.profilePic}/>
             <Typography variant="subtitle1" className={classes.userName}>
               {user.username}
             </Typography>

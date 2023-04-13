@@ -42,22 +42,22 @@ function FollowerPage() {
 
   useEffect(() => {
     const fetchRequests = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchFollow?followee=${myUsername}&status=Pending`);
+      const response = await fetch(`http://localhost:3000/user/searchFollow?followee=${myUsername}&status=Pending`);
       const data = await response.json();
       setRequestsId(data.result?.map(result => result.follower));
     };
     const fetchFollowees = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&status=Accepted`);
+      const response = await fetch(`http://localhost:3000/user/searchFollow?follower=${myUsername}&status=Accepted`);
       const data = await response.json();
       setFolloweesId(data.result?.map(result => result.followee));
     };
     const fetchFollowers = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchFollow?followee=${myUsername}&status=Accepted`);
+      const response = await fetch(`http://localhost:3000/user/searchFollow?followee=${myUsername}&status=Accepted`);
       const data = await response.json();
       setFollowersId(data.result?.map(result => result.follower));
     };
     const fetchUsers = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
+      const response = await fetch(`http://localhost:3000/user/searchUser?exactMatch=true`);
       const data = await response.json();
       setUsers(data);
     };
@@ -85,7 +85,7 @@ function FollowerPage() {
       followee: myUsername,
       status: "Accepted",
     };
-    fetch('http://localhost:2000/user/followUser', {
+    fetch('http://localhost:3000/user/followUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ function FollowerPage() {
       follower: username,
       followee: myUsername,
     };
-    fetch('http://localhost:2000/user/followUser', {
+    fetch('http://localhost:3000/user/followUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -129,7 +129,7 @@ function FollowerPage() {
       follower: myUsername,
       followee: username,
     };
-    fetch('http://localhost:2000/user/followUser', {
+    fetch('http://localhost:3000/user/followUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -151,7 +151,7 @@ function FollowerPage() {
       follower: username,
       followee: myUsername,
     };
-    fetch('http://localhost:2000/user/followUser', {
+    fetch('http://localhost:3000/user/followUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -176,7 +176,7 @@ function FollowerPage() {
         {requests?.length === 0 && <h4>none</h4>}
         {requests?.slice(0, showAllRequests ? requests?.length : 2).map((request) => (
           <Card key={request.userId} style={{ display: 'flex', alignItems: 'center' }} className="car">
-            <Avatar alt={request.username} src className={classes.Avatar}/>
+            <Avatar src={request.profilePic}  className={classes.Avatar}/>
             <CardContent>
               <h4>{request.username}</h4>                
             </CardContent>
@@ -203,7 +203,7 @@ function FollowerPage() {
         {followees?.length === 0 && <h4>none</h4>}
         {followees?.map((followee) => (
           <Card key={followee.userId} style={{ display: 'flex', alignItems: 'center' }} className="car">
-            <Avatar alt={followee.username} src className={classes.Avatar}/>
+            <Avatar alt={followee.username} src={followee.profilePic} className={classes.Avatar}/>
             <CardContent>
               <h4>{followee.username}</h4>              
             </CardContent>            
@@ -222,7 +222,7 @@ function FollowerPage() {
         {followers?.length === 0 && <h4>none</h4>}
         {followers?.map((follower) => (
           <Card key={follower.userId} style={{ display: 'flex', alignItems: 'center' }} className="car">
-            <Avatar alt={follower.username} src className={classes.Avatar}/>
+            <Avatar alt={follower.username} src={follower.profilePic} className={classes.Avatar}/>
             <CardContent>
               <h4>{follower.username}</h4>              
             </CardContent>

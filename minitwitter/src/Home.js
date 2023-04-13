@@ -32,12 +32,12 @@ const Home = () => {
 
   useEffect(() => {
     const fetchFollowees = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchFollow?follower=${myUsername}&status=Accepted`);
+      const response = await fetch(`http://localhost:3000/user/searchFollow?follower=${myUsername}&status=Accepted`);
       const data = await response.json();
       setFolloweesId(data.result.map(result => result.followee));
     };
     const fetchUsers = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?exactMatch=true`);
+      const response = await fetch(`http://localhost:3000/user/searchUser?exactMatch=true`);
       const data = await response.json();
       setUsers(data);
     };
@@ -56,7 +56,7 @@ const Home = () => {
       const tweets = [];
       await Promise.all(
         followees?.map(async (followee) => {
-          const response = await fetch(`http://localhost:2000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`);
+          const response = await fetch(`http://localhost:3000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`);
           const data = await response.json();
           tweets.push(...data.result);
         })

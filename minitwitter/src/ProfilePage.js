@@ -25,18 +25,19 @@ function ProfilePage() {
 
   const [user, setUser] = useState({});
   const [posts, setPosts] = useState({});
+  
 
   useEffect(() => {
     var myTweetandRetweet = [];
     const fetchUser = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?username=${myUsername}`);
+      const response = await fetch(`http://localhost:3000/user/searchUser?username=${myUsername}`);
       const data = await response.json();
       setUser(data);
     };
     const fetchPosts = async () => {
-      const response1 = await fetch(`http://localhost:2000/tweet/searchMyTweet?username=${myUsername}`);
+      const response1 = await fetch(`http://localhost:3000/tweet/searchMyTweet?username=${myUsername}`);
       const data1 = await response1.json();
-      const response2 = await fetch(`http://localhost:2000/tweet/viewRetweet?senderUsername=${myUsername}`);
+      const response2 = await fetch(`http://localhost:3000/tweet/viewRetweet?senderUsername=${myUsername}`);
       const data2 = await response2.json();
       myTweetandRetweet.push(...data1.result);
       myTweetandRetweet.push(...data2.result);
@@ -51,7 +52,7 @@ function ProfilePage() {
   return (
     <div >
       <div className="up">
-        <Avatar aria-label="recipe"  style={{width: 150, height: 150}} />
+        <Avatar aria-label="recipe" src={user.result && user?.result[0].profilePic}  style={{width: 150, height: 150}} />
 
         
         

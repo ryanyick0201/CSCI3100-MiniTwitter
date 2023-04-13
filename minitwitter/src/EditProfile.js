@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Avatar, Button, TextField, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import './editProfile.css'
@@ -36,6 +36,28 @@ const EditProfile = () => {
   const [newBio, setNewBio] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPrivacySetting, setPrivacySetting] = useState("public");
+  const [media, setMedia] = useState(null);
+  const [user, setUser] = useState({});
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await fetch(`http://localhost:3000/user/searchUser?username=${myUsername}`);
+      const data = await response.json();
+      setUser(data);
+    };
+    fetchUser();
+  }, [myUsername]);
+
+
+
+  const handleMediaChange = (event) => {
+    setMedia(event.target.files[0]);
+  };
+
+  useEffect(() => {
+    console.log(media);
+  }, [media]);
   
 
   const handleSubmit = async (e) => {
@@ -47,13 +69,24 @@ const EditProfile = () => {
       personalBio: newBio,
       privacySetting: newPrivacySetting
     };
-    const response = await fetch('http://localhost:2000/user/updateUser', {
+    
+    const response = await fetch('http://localhost:3000/user/updateUser', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
     const result = await response.json();
     console.log(result);
+
+    const data2 = new FormData();
+    data2.append('username', myUsername);
+    data2.append('image', media); 
+
+    const response2 = await fetch('http://localhost:3000/user/editProfilePic', {
+      method: 'POST',
+      body: data2
+    });
+    const result2 = await response2.json();
     navigate(-1);
   };
 
@@ -66,9 +99,9 @@ const EditProfile = () => {
         </Button>
     <div className="edit">
       <div className="conta">
-      <Avatar style={{width: 150, height: 150}}/>
+      <Avatar src={ user.result && user?.result[0].profilePic} style={{width: 150, height: 150}}/>
       <div style={{width: "100px"}}></div>
-      <UploadButtonIma variant="contained">change profile picture</UploadButtonIma>
+      <UploadButtonIma variant="contained" onChange={handleMediaChange}>change profile picture</UploadButtonIma>
       </div>
 
       <div className="name">

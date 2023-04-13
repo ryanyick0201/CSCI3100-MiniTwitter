@@ -36,18 +36,18 @@ const PostDetailPage = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/searchMyTweet`);
+      const response = await fetch(`http://localhost:3000/tweet/searchMyTweet`);
       const data = await response.json();
       setPosts(data);
       
     };
     const fetchComments = async () => {
-      const response = await fetch(`http://localhost:2000/tweet/searchCommentByTweetId?tweetId=${tweetId}`);
+      const response = await fetch(`http://localhost:3000/tweet/searchCommentByTweetId?tweetId=${tweetId}`);
       const data = await response.json();
       setComments(data);
     };
     const fetchMe = async () => {
-      const response = await fetch(`http://localhost:2000/user/searchUser?username=${myUsername}&exactMatch=true`);
+      const response = await fetch(`http://localhost:3000/user/searchUser?username=${myUsername}&exactMatch=true`);
       const data = await response.json();
       setMe(data.result[0]);
     };
@@ -80,7 +80,7 @@ const PostDetailPage = () => {
       commentContent: comment,
     };
 
-    fetch('http://localhost:2000/tweet/commentTweet', {
+    fetch('http://localhost:3000/tweet/commentTweet', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -89,7 +89,7 @@ const PostDetailPage = () => {
     })
     .then(response => response.json())
     .then(() => {
-      fetch(`http://localhost:2000/tweet/searchCommentByTweetId?tweetId=${tweetId}`)
+      fetch(`http://localhost:3000/tweet/searchCommentByTweetId?tweetId=${tweetId}`)
       .then(response => response.json())
       .then(data => {
         setComments(data);
