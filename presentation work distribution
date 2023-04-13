@@ -9,12 +9,14 @@ Amina
 	- ```Explanation```
 
 Ryan
+- Admin user interface
+	- list all users
+	- delete users
+	- create users (!)
+	- update users (!)
+	- show validation rules (some possible failed cases)
 - Database integration
 	- Showcasing the MySQL queries / data change
-- Search for user
-	- Search username
-	- Search userId
-	- "No user found" case
 - Like / dislike tweets
 	- Show counter
 	- Boundary case: like/dislike my own tweets
@@ -22,26 +24,27 @@ Ryan
 	- Post a tweet
 	- Add an image
 	- View the tweet
-Fung
-- Admin user interface
-	- list all users
-	- delete users
-	- create users (!)
-	- update users (!)
-	- show validation rules (some possible failed cases)
-- Follow other users
-	- Follow
-	- Unfollow (!)
-	- Accept request (!)
 - Comment tweets
 	- Leave a comment
 	- View that comment
 - Retweet
 	- Retweet a tweet
 	- View the retweeted tweet
+
+Raymond
+- Search for user
+	- Search username
+	- Search userId
+	- "No user found" case
+
+- Follow other users
+	- Follow
+	- Unfollow (!)
+	- Accept request (!)
 - Show following user tweets
 	- View the tweets
 	- Boundary case: no following users
+
 Raymond
 - Privacy control / visibility (V)
 	- ```Explanation```
@@ -51,6 +54,7 @@ Raymond
 	- ```Explanation```
 - Archive tweets (!)
 	- ```Explanation```
+
 Jason
 - Private chat (!)
 	- ```Explanation```
