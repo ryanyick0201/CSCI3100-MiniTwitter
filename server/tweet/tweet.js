@@ -52,7 +52,7 @@ async function searchOthersTweetByMultiple(myUsername, lookForUsername, category
     (select COUNT(*) commentId from tweetComment c where c.tweetId = t.tweetId group by tweetId) AS comment,
     (select COUNT(*) retweetTime from TweetRetweet r where r.tweetId = t.tweetId group by tweetId) AS retweet
     FROM tweet t, tweetlike l, user u, follow f
-    WHERE ${category} t.creator = u.userId and t.archived IS NULL and f.followee = t.creator and
+    WHERE t.creator = u.userId and t.archived IS NULL and f.followee = t.creator and
     f.follower = ${myUserId} and f.followee = ${lookForUserId} and ${category}
     f.status = "Accepted" and
     f.followee IN (SELECT UserId FROM User WHERE privacySetting = "follower")
@@ -62,7 +62,7 @@ async function searchOthersTweetByMultiple(myUsername, lookForUsername, category
 
     if (rows.length > 0){
         for (let i = 0; i < rows.length; i++)
-            tweets = [...tweets, ...rows];
+            tweets.push(rows[i]);
     }
 
     rows = await query(`
@@ -72,7 +72,7 @@ async function searchOthersTweetByMultiple(myUsername, lookForUsername, category
     (select COUNT(*) commentId from tweetComment c where c.tweetId = t.tweetId group by tweetId) AS comment,
     (select COUNT(*) retweetTime from TweetRetweet r where r.tweetId = t.tweetId group by tweetId) AS retweet
     FROM tweet t, tweetlike l, user u
-    WHERE ${category} t.creator = u.userId and t.category = "programming" and t.archived IS NULL and u.privacySetting = 'public' and t.creator = ${lookForUserId}
+    WHERE ${category} t.creator = u.userId and t.archived IS NULL and u.privacySetting = 'public' and t.creator = ${lookForUserId}
     GROUP BY tweetId, category
     ORDER BY tweetId;
     `)
