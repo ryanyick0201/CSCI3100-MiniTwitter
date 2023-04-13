@@ -13,6 +13,7 @@ import ChatPage from "./component/ChatPage";
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<ChatPage sender="user1" />} />
       <Route path="/" element={<Content />} />
       <Route path="/forgot_password" element={<ForgotPassword />} />
       <Route path="/signUp" element={<SignUp />} />
