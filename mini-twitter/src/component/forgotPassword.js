@@ -106,9 +106,9 @@ function ForgotPassword({ setIsLoggedIn }) {
         if (data.message === "Verify otp success.") {
             // ##TODO Route to usermain page
             alert("Going to user home page");
-           
-            navigate("/userHome"); 
             setIsLoggedIn(true);
+            navigate("/userHome"); 
+            
           } else {
             //Alert user
             alert(data.message);
