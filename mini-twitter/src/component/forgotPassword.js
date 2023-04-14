@@ -101,15 +101,17 @@ function ForgotPassword({ setIsLoggedIn }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(postBody),
       })
-        .then((res) => {
-          if (res.ok) {
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "Verify otp success.") {
             // ##TODO Route to usermain page
             alert("Going to user home page");
+           
+            navigate("/userHome"); 
             setIsLoggedIn(true);
-            navigate("/userHome");
           } else {
             //Alert user
-            alert(res.text);
+            alert(data.message);
           }
         })
         .catch((err) => alert(err));
