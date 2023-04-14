@@ -9,12 +9,15 @@ import {
 } from "@material-ui/core";
 import { UseStyles } from "./CssFormat";
 import { passwordValidator, usernameloginValidator } from "./Validator";
+import { sendEmail } from "./sendEmail";
+import Cookies from "js-cookie";
 
 function Login({ setIsLoggedIn }) {
   const classes = UseStyles();
   let navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  Cookies.set("signUpUsernameCookie", username);
 
   const handleSubmit = (event) => {
     console.log("handleSubmit");
@@ -71,7 +74,15 @@ function Login({ setIsLoggedIn }) {
             setIsLoggedIn(true);
             navigate("/userHome");
           } else navigate("/adminHome");
-        } else {
+        } 
+        else if(data.message === "Account not yet verified."){
+            sessionStorage.setItem("username", username);
+            Cookies.set("signUpUsernameCookie", username);
+            sendEmail(username);
+            alert(data.message);
+            navigate("/emailVerf");
+        }   
+          else {
           alert(data.message);
         }
       })
