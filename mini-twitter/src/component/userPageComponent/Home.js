@@ -56,15 +56,18 @@ const Home = () => {
   useEffect(() => {
     const fetchTweets = async () => {
       const tweets = [];
-      await Promise.all(
-        followees?.map(async (followee) => {
-          const response = await fetch(
-            `http://${window.location.hostname}:3000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`
-          );
-          const data = await response.json();
-          tweets.push(...data.result);
-        })
-      );
+      if (followees) {
+        await Promise.all(
+          followees?.map(async (followee) => {
+            const response = await fetch(
+              `http://${window.location.hostname}:3000/tweet/searchOtherTweet?lookForUsername=${followee.username}&myUsername=${myUsername}`
+            );
+            const data = await response.json();
+            tweets.push(...data.result);
+          })
+        );
+      }
+      console.log(tweets);
       setPosts(tweets);
     };
     fetchTweets();
