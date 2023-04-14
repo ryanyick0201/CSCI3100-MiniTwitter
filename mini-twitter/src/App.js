@@ -39,7 +39,10 @@ function App() {
       </Routes>
       {isLoggedIn && <UserPage />}
       <Routes>
-        <Route path="/adminHome" element={<AdminPage />} />
+        <Route
+          path="/adminHome"
+          element={<AdminPage setIsLoggedIn={setIsLoggedIn} />}
+        />
       </Routes>
     </>
   );
