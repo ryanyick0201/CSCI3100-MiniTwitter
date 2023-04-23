@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 
-const usePanel = (socket) => {
+const usePanel = (sender, socket) => {
   const [nameList, setNameList] = useState([]);
 
   useEffect(() => {
