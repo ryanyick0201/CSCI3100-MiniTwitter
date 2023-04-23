@@ -1,3 +1,17 @@
+/** emailVerf - Email verification for otp
+ * PROGRAMMER: Li, Hang Chi (SID: 1155142983)
+ * CALLING SEQUENCE: import emailVerf From "./component/emailVerf"
+ *                   import the js and call to render this page
+ * PURPOSE: Provide a form for user to do otp verification though email
+ * ALGORITHM: "countdown" state used to count 60s after each time user click the resend button.
+ *            "isResendEnable" state determines the "resend" button is enabled or not.
+ *            "otp" state is used to store the input of user.
+ *            "username" is extracted from cookies.
+ *            handleOtpChange(event) is used to prevent user enter an otp more than 6 digits.
+ *            handleSubmit(event) is used to perform action after user click the submit button. It will     vaildate the otp and fetch the api for otp vaildation. If success, route user to login page, else alert the error to user.
+ *
+ */
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {

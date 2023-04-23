@@ -1,3 +1,17 @@
+/** login - Login form
+ * PROGRAMMER: Li, Hang Chi (SID: 1155142983)
+ * CALLING SEQUENCE: import Login From "./Login"
+ *                   import the js and call to render this page
+ * PURPOSE: Provide a form for user to login
+ * ALGORITHM: "username" state used to store the username of user's input
+ *            "password" state used to store the password of user's input
+ *            "cookie" is used to set the username in cookie.
+ *
+ *            loginAction() is a async function used fetch the login api and set the login mode after checking user login as admin if the username includes "admin" else login as user and perform format vaildation by calling the validater. If the api result if success, then route the user to the admin page or user page based on their mode. If user account has not verified by email, then call sendEmail(username) function.
+ *            handleSubmit(event) is used to perform action after user click the login button. It will call the loginAction.
+ *
+ */
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
