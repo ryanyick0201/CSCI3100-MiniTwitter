@@ -14,10 +14,10 @@ import ChatPage from "./ChatPage";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-const UserPage = ({ setIsLoggedIn }) => {
+const UserPage = ({ setLogInAs }) => {
   return (
     <div>
-      <Sidebar setIsLoggedIn={setIsLoggedIn} />
+      <Sidebar setLogInAs={setLogInAs} />
       <Routes>
         <Route path="/userHome" element={<Home />} />
         <Route path="/post" element={<PostDetailPage />} />

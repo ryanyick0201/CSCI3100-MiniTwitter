@@ -46,7 +46,7 @@ function App() {
             If unauthorized user tries to view the after-login page by entering the URL,
             he would only see a blank page
         */
-        logInAs == "user" && <UserPage />
+        logInAs == "user" && <UserPage setLogInAs={setLogInAs} />
       }
 
       {

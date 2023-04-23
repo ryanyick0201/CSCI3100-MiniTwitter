@@ -11,7 +11,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 import { useState } from "react";
 
-function Sidebar({ setIsLoggedIn }) {
+function Sidebar({ setLogInAs }) {
   const [clickedButton, setClickedButton] = useState("Home");
 
   return (
@@ -64,7 +64,7 @@ function Sidebar({ setIsLoggedIn }) {
         to="/"
         onClick={() => {
           setClickedButton("");
-          setIsLoggedIn(false);
+          setLogInAs("");
         }}
       />
     </div>
