@@ -1,3 +1,10 @@
+/** RoomHeader - Chatroom Header component
+ * PROGRAMMER: Choi, Man Wai (SID: 1155159354)
+ * CALLING SEQUENCE: RoomHeader({recipient})
+ *  Where recipient is a state storing the username, whose message history with the sender is being viewed by the sender
+ * PURPOSE: Hold the name tag of the recipient
+ */
+
 import { Card, Grid } from "@material-ui/core";
 import NameTag from "./NameTag.jsx";
 

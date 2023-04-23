@@ -1,8 +1,17 @@
-import React, { useState, useEffect } from "react";
+/** MsgBubble - Message bubble component
+ * PROGRAMMER: Choi, Man Wai (SID: 1155159354)
+ * CALLING SEQUENCE: MsgBubble({msgList})
+ *  Where msgList is a state storing the message between the sender and the recipient in an array
+ * PURPOSE: Rendering message bubbles in a room, each message takes one bubble
+ * ALGORITHM: Map the msgList input into an ordered list,
+ *            Helper component <Image/> for rendering image messages
+ */
+
+import React from "react";
 import { makeStyles } from "@material-ui/core";
 import moment from "moment";
-//import { Blob } from 'buffer'
 
+// Styling
 const useStyles = makeStyles({
   ol: {
     paddingInlineEnd: "40px",
@@ -28,19 +37,8 @@ const useStyles = makeStyles({
   },
 });
 
+// Define helper component <Image/> for rendering image messages
 const Image = ({ imgSrc, alt }) => {
-  /* old version without AWS
-  const [imgSrc, setImgSrc] = useState("");
-
-  useEffect(() => {
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onloadend = () => {
-      setImgSrc(reader.result);
-    };
-  }, [blob]);
-  */
-  //
   return (
     <div style={{ height: 150 }}>
       <a href={imgSrc} target="_blank">
@@ -64,18 +62,28 @@ const MsgBubble = ({ msgList }) => {
             (msg.isSender ? classes.sender : classes.guest)
           }
         >
-          {(msg.isImg && (
-            <Image imgSrc={msg.imgUrl} alt={"An image from " + msg.sender} />
-          )) || <div>{msg.message}</div>}
-          <div
-            style={{
-              textAlign: "right",
-              fontSize: "0.5em",
-              fontStyle: "italic",
-            }}
-          >
-            {moment(msg.sendTime).format("MMM Do, YYYY HH:mm")}
-          </div>
+          {
+            /*
+              Render <Image/> Object if the message is of image type,
+              otherwise render it as text.
+            */
+            (msg.isImg && (
+              <Image imgSrc={msg.imgUrl} alt={"An image from " + msg.sender} />
+            )) || <div>{msg.message}</div>
+          }
+
+          {
+            // Display message sent time
+            <div
+              style={{
+                textAlign: "right",
+                fontSize: "0.5em",
+                fontStyle: "italic",
+              }}
+            >
+              {moment(msg.sendTime).format("MMM Do, YYYY HH:mm")}
+            </div>
+          }
         </li>
       ))}
     </ol>

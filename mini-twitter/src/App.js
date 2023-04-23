@@ -1,6 +1,16 @@
+/** App - Integrate different routes as a whole app
+ * PROGRAMMER: Li, Hang Chi (SID: 1155142983) for pages before logging in
+ *             Choi, Man Wai (SID: 1155159354) for the remaining
+ * CALLING SEQUENCE: App() IS_COMPONENT_OF "./index.js"
+ * PURPOSE: Integrate before-log-in page, user page and admin page into one whole app
+ * ALGORITHM: "logInAs" state determines if the actor is logged in as "user" or "admin",
+ *            setLogInAs set "logInAs" state after login action in <Content/> or <ForgotPassword/>
+ *            Render <UserPage/> if logInAs == "user", or render <AdminPage/> if logInAs == "admin"
+ *            This prevent users to view AdminPage by changing the URL, or admin viewing UserPage by doing the same thing.
+ */
 import "./App.css";
 import Content from "./component/Content";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import ForgotPassword from "./component/forgotPassword";
 import SignUp from "./component/signUp";
 import React from "react";
@@ -17,8 +27,9 @@ function App() {
   return (
     <>
       {
-        /* Before logging in
-         */
+        /* 
+          Before logging in
+        */
         <Routes>
           <Route path="/" element={<Content setLogInAs={setLogInAs} />} />
           <Route

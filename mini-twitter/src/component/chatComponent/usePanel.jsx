@@ -1,25 +1,14 @@
+/** usePanel - Helper funtions used in Panel.jsx
+ * PROGRAMMER: Choi, Man Wai (SID: 1155159354)
+ * CALLING SEQUENCE: usePanel(socket)
+ *  Where socket is a socket object defined in "../ChatPage.jsx" for listening to socket events
+ * PURPOSE: For maintainability, define all socket event emitter and listener to be used by "./Panel.jsx"
+ * ALGORITHM: useEffect((...)=>{...}, []) to define listener only once when the page is rendered for the first time
+ */
+
 import { useEffect, useState } from "react";
 
-const getRecipientList = async (username) => {
-  console.log("enter getRecipientList");
-
-  const url =
-    "http://" +
-    window.location.hostname +
-    ":3000/chat/chattedUser?q=" +
-    username;
-  const res = await fetch(url, { mode: "cors" });
-
-  console.log("finish fetch, now parse res to json");
-
-  const data = await res.json();
-
-  console.log("finished parsing, data is", data);
-
-  return data;
-};
-
-const usePanel = (sender, socket) => {
+const usePanel = (socket) => {
   const [nameList, setNameList] = useState([]);
 
   useEffect(() => {
