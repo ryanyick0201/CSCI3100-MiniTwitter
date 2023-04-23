@@ -12,7 +12,7 @@ import { passwordValidator, usernameloginValidator } from "./Validator";
 import { sendEmail } from "./sendEmail";
 import Cookies from "js-cookie";
 
-function Login({ setIsLoggedIn }) {
+function Login({ setLogInAs }) {
   const classes = UseStyles();
   let navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -71,18 +71,19 @@ function Login({ setIsLoggedIn }) {
           alert("Login Success");
           // TODO Need Integration
           if (mode === "user") {
-            setIsLoggedIn(true);
+            setLogInAs("user");
             navigate("/userHome");
-          } else navigate("/adminHome");
-        } 
-        else if(data.message === "Account not yet verified."){
-            sessionStorage.setItem("username", username);
-            Cookies.set("signUpUsernameCookie", username);
-            sendEmail(username);
-            alert(data.message);
-            navigate("/emailVerf");
-        }   
-          else {
+          } else {
+            setLogInAs("admin");
+            navigate("/adminHome");
+          }
+        } else if (data.message === "Account not yet verified.") {
+          sessionStorage.setItem("username", username);
+          Cookies.set("signUpUsernameCookie", username);
+          sendEmail(username);
+          alert(data.message);
+          navigate("/emailVerf");
+        } else {
           alert(data.message);
         }
       })

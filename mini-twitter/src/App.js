@@ -1,5 +1,4 @@
 import "./App.css";
-//import 'bootstrap/dist/css/bootstrap.min.css';
 import Content from "./component/Content";
 import { Routes, Route, useLocation } from "react-router-dom";
 import ForgotPassword from "./component/forgotPassword";
@@ -11,39 +10,48 @@ import AdminPage from "./component/AdminPage.js";
 
 import { useState } from "react";
 
-const loggedin = () => {
-  var status = false;
-  var fetch_result = "";
-  const url = "http://" + window.location.hostname + ":3000/getSessionUsername";
-  fetch(url, { mode: "cors" })
-    .then((res) => res.json())
-    .then((obj) => (fetch_result = !!obj.result));
-
-  status = fetch_result == sessionStorage.getItem("username");
-  return status;
-};
-
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // track the access right ("user" || "admin") of the logged-in user
+  const [logInAs, setLogInAs] = useState("");
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Content setIsLoggedIn={setIsLoggedIn} />} />
-        <Route
-          path="/forgot_password"
-          element={<ForgotPassword setIsLoggedIn={setIsLoggedIn} />}
-        />
-        <Route path="/signUp" element={<SignUp />} />
-        <Route path="/emailVerf" element={<EmailVerf />} />
-      </Routes>
-      {isLoggedIn && <UserPage />}
-      <Routes>
-        <Route
-          path="/adminHome"
-          element={<AdminPage setIsLoggedIn={setIsLoggedIn} />}
-        />
-      </Routes>
+      {
+        /* Before logging in
+         */
+        <Routes>
+          <Route path="/" element={<Content setLogInAs={setLogInAs} />} />
+          <Route
+            path="/forgot_password"
+            element={<ForgotPassword setLogInAs={setLogInAs} />}
+          />
+          <Route path="/signUp" element={<SignUp />} />
+          <Route path="/emailVerf" element={<EmailVerf />} />
+        </Routes>
+      }
+
+      {
+        /* User page, render after logging in as user.
+            If unauthorized user tries to view the after-login page by entering the URL,
+            he would only see a blank page
+        */
+        logInAs == "user" && <UserPage />
+      }
+
+      {
+        /* Admin page, render after logging in as user.
+            If unauthorized user tries to view the after-login page by entering the URL,
+            he would only see a blank page
+        */
+        logInAs == "admin" && (
+          <Routes>
+            <Route
+              path="/adminHome"
+              element={<AdminPage setLogInAs={setLogInAs} />}
+            />
+          </Routes>
+        )
+      }
     </>
   );
 }

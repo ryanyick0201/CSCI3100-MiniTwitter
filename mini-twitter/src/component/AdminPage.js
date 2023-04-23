@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AdminPage({ setIsLoggedIn }) {
+function AdminPage({ setLogInAs }) {
   const classes = useStyles();
 
   const [users, setUsers] = useState([]);
@@ -134,7 +134,7 @@ function AdminPage({ setIsLoggedIn }) {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
-    setIsLoggedIn(false);
+    setLogInAs("");
     navigate("/");
   };
 

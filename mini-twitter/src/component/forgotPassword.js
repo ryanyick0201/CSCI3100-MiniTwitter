@@ -10,7 +10,7 @@ import {
 import { UseStyles } from "./CssFormat";
 import { usernameValidator, optValidator } from "./Validator";
 
-function ForgotPassword({ setIsLoggedIn }) {
+function ForgotPassword({ setLogInAs }) {
   const classes = UseStyles();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -101,14 +101,13 @@ function ForgotPassword({ setIsLoggedIn }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(postBody),
       })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message === "Verify otp success.") {
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message === "Verify otp success.") {
             // ##TODO Route to usermain page
             alert("Going to user home page");
-            setIsLoggedIn(true);
-            navigate("/userHome"); 
-            
+            setLogInAs("user");
+            navigate("/userHome");
           } else {
             //Alert user
             alert(data.message);
