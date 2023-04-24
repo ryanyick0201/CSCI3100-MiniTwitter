@@ -1,3 +1,19 @@
+/** forgotPassword - Form for user to reset password
+ * PROGRAMMER: Li, Hang Chi (SID: 1155142983)
+ * CALLING SEQUENCE: import forgotPassword From "./component/forgotPassword"
+ *                   import the js and call to render this page
+ * PURPOSE: Provide a form for user to reset password though email with the OTP
+ * ALGORITHM: "countdown" state used to count 60s after each time user click the resend button.
+ *            "isResendEnable" state determines the "resend" button is enabled or not.
+ *            "otp" state is used to store the input of user.
+ *            "username" state is used to store the username input by user
+ *            sendEmail() is a function used to fetch the api with username to send otp within the email to user
+ *            handleOtpChange(event) is used to prevent user enter an otp more than 6 digits.
+ *            handleSendOtp() is a function used to perform username validation on user input and call sendEmail() when if pass the validation.
+ *            handleSubmitOtp(event) is a function used to fetch the api to verify the otp input by user. If success, route user to home page of user, else alert the error to user.
+ *
+ */
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {

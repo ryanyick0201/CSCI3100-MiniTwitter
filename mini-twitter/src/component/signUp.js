@@ -1,3 +1,16 @@
+/** signUp - Form for user to sign up a user account
+ * PROGRAMMER: Li, Hang Chi (SID: 1155142983)
+ * CALLING SEQUENCE: import signUp From "./component/signUp"
+ *                   import the js and call to render this page
+ * PURPOSE: Provide a form for user to sign up an account with username, password and email.
+ * ALGORITHM: "username" state is used to store the username input by user
+ *            "password" state is used to store the password input by user
+ *            "email" state is used to store the email address input by user
+ *            passwordRegex and emailRegex are used to check the input of user for password and email are fuifill the requirement or not.
+ *            handleSubmit(event) is a async function used to fetch the api with username, password and email to sign up an account.  If success, route user to email verification page and trigger sendEmail(username), else alert the error to user.
+ *
+ */
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TextField, Button, Typography, Box } from "@material-ui/core";
@@ -61,12 +74,6 @@ function SignUp() {
         })
         .catch((err) => alert(err));
     }
-  };
-
-  const hashPassword = async (password) => {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    return hashedPassword;
   };
 
   const handlePasswordChange = (event) => {
