@@ -27,6 +27,7 @@ async function verifyOTP(username, otp){
 
         x = await query(`SELECT * FROM User WHERE username = ? AND otp = ?`, [username, otp]);
         if (x.length === 1){
+            await query(`UPDATE User SET hasVerified = true where username = "${username}"`);
             return `{"message": "Verify otp success."}`
         } else {
             return `{"message": "Verify otp failed. Wrong otp"}`;

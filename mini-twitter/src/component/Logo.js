@@ -1,19 +1,19 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import logo from './logo_twi.png';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import logo from "./logo_twi.png";
 
 const useStyles = makeStyles({
   root: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: 'white',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    backgroundColor: "white",
   },
   image: {
-    width: '100%',
-    maxWidth: 'auto',
-    height: 'auto',
+    width: "100%",
+    maxWidth: "auto",
+    height: "auto",
   },
 });
 

@@ -75,6 +75,7 @@ io.on("connection", async (socket) => {
 
 
   socket.on("reqChatted", async (username) => {
+    console.log("reqChatted received, the username is,", username);
     var id = await searchUserByUsername(username, "true");
     id = JSON.parse(id).result[0].userId;
     let chattedUserList = await getChattedUser(id);
@@ -82,6 +83,7 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("joinRoom", async (usernamePair) => {
+    console.log("received joinRoom, usernamePair is", usernamePair);
     if(usernamePair[1]==""){
       console.log("recipient empty, now return");
       return;
@@ -91,8 +93,18 @@ io.on("connection", async (socket) => {
       return;
     }
 
+    // fix username if there is \n
+    if(usernamePair[1].includes("\n")){
+      console.log("forward-slashn in username, now remove,", usernamePair)
+      USERNAME_PAIR[0] = usernamePair[0];
+      USERNAME_PAIR[1] = usernamePair[1].replaceAll("\n", "");  
+      console.log("USERNAME_PAIR now is,", USERNAME_PAIR)
+    } else{    
+	    USERNAME_PAIR = usernamePair;
+    }
+
     IN_ROOM_FLAG = true;
-    USERNAME_PAIR = usernamePair;
+  
     // SOCKET_USERNAME_PAIR = usernamePair;
     console.log(`this is the socket.id that emitted 'joinroom' ${socket.id}`);
     console.log("joinRoom event triggered", usernamePair);
@@ -342,7 +354,7 @@ async function writeChatToDb(messageContent, userIdPair, fileName=null, mimeType
 async function getChattedUser(userId) {
   try {
 
-    // console.log('getChattedUser starts');
+    console.log('getChattedUser starts, userId is', userId);
 
     let chattedUser = await query(`
       SELECT chatteduser 
@@ -359,7 +371,8 @@ async function getChattedUser(userId) {
       GROUP BY chatteduser
       ORDER BY max(sendtime) DESC `);
 
-    // console.log("chattedUser is", chattedUser);
+    console.log("sql result of chattedUser is", chattedUser);
+
     chattedUser = chattedUser.map((obj) => obj.chatteduser);
     const chattedUserList = [];
     for (const userId of chattedUser) {
@@ -370,6 +383,7 @@ async function getChattedUser(userId) {
       // console.log(username);
       chattedUserList.push(username[0]["username"]);
     }
+    console.log("mapped result is,", chattedUserList);
     return chattedUserList;
   } catch {
     console.log("Retrieve chatted failed. DB error when getting chattedUser");
@@ -401,6 +415,8 @@ router.get("/", async (req, res) => {
 
 // req query username=...
 router.get("/chatTables", async (req, res) => {
+  console.log("**************\nrecevied get request at /chatTables**************\n")
+
   const username = req.query.username || "";
   // fetch userId
   var id = await searchUserByUsername(username, "true");
@@ -439,6 +455,9 @@ router.get("/chatTables", async (req, res) => {
 });
 
 router.get("/chattedUser", async (req, res) => {
+  console.log("**************\nrecevied get request at /chatttedUser**************\n")
+
+
   const username = req.query.username || "";
   // fetch userId
   var id = await searchUserByUsername(username, "true");

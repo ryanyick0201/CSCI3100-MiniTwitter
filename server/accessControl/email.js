@@ -18,7 +18,7 @@ PS. Remember to use try-catch block(s) to handle the errors. Otherwise, the serv
 PSS. Check other functions for the formats
 */
 
-const { setOTP} = require("./otp");
+const { setOTP } = require("./otp");
 const nodemailer = require("nodemailer");
 const { query } = require("../database");
 
@@ -31,8 +31,8 @@ var transport = nodemailer.createTransport({
     pass: "CSCI3100b8!",
   },
   tls: {
-        rejectUnauthorized: false
-    },
+    rejectUnauthorized: false,
+  },
 });
 
 const emailGenerator = (toEmail, otp) => {
@@ -80,9 +80,7 @@ async function sendEmail(username) {
       `SELECT email FROM User WHERE username = '${username}'`
     );
     toEmail = row[0]["email"];
-  }
-  catch (err)
-  {
+  } catch (err) {
     return `{"message": "Fetching receipient email db error."}`;
   }
 
@@ -96,13 +94,12 @@ async function sendEmail(username) {
         return `{"message": "Send email error."}`;
       } else {
         console.log(
-          `Email sent to: ${toEmail}, OTP is ${otp}, user is ${username}, server response is "${info.response}"`);
+          `Email sent to: ${toEmail}, OTP is ${otp}, user is ${username}, server response is "${info.response}"`
+        );
       }
     });
     return `{"message": "Email sent."}`;
-  }
-  catch (err)
-  {
+  } catch (err) {
     return `{"message": "Send email error."}`;
   }
 }
@@ -122,4 +119,4 @@ async function sendEmail(username) {
 //     return `{"message": "Email sent."}`;
 // }
 
-module.exports = {sendEmail};
+module.exports = { sendEmail };

@@ -12,13 +12,13 @@ const useStyles = makeStyles({
   pageContainer: {
     position: "relative",
     top: "5vh",
-    //left: "5%",
+    left: "350px",
     borderStyle: "solid",
     borderColor: "green",
 
     display: "flex",
     flex: 1,
-    //width: "90vw",
+    width: "70vw",
     height: "90vh",
     backgroundColor: "#263238",
   },

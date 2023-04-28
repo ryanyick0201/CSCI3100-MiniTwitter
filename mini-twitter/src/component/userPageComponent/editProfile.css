@@ -1,0 +1,26 @@
+.edit {
+  margin: 40px 0 120px 400px;
+}
+
+.conta {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  margin: 60px 0 20px 100px;
+}
+
+.pass {
+  display: flex;
+  align-items: center;
+  margin: 60px 0 20px 100px;
+}
+
+.select {
+  display: flex;
+  align-items: center;
+  margin: 60px 0 20px 100px;
+}

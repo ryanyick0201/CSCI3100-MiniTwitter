@@ -9,14 +9,16 @@ async function login(username, password){
             throw `{"message": "Field(s) missing."}`;
         }
 
-        if (username.includes("admin"))
+        if (username.includes("admin")){
             var rows = await query(`SELECT * FROM ADMIN WHERE adminname = ?`, [username]);
-        else
+            var usernameMatched = username === rows[0].adminname
+        } else {
             var rows = await query(`SELECT * FROM USER WHERE username = ?`, [username]);
-            
-        if (rows.length > 0 && username === rows[0].username){
+            var usernameMatched = username === rows[0].username
+    	}
+        if (rows.length > 0 && usernameMatched){
             if (bcrypt.compareSync(password, rows[0].password))
-                if (rows[0].hasVerified)
+                if (rows[0].adminname || rows[0].hasVerified)
                     return `{"message": "Login succeeded."}`;
                 else
                     return `{"message": "Account not yet verified."}`;

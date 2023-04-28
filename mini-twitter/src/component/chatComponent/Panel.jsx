@@ -29,7 +29,11 @@ const Panel = ({ sender, setRecipient, socket }) => {
 
   return (
     <Card square className={classes.panelContainer}>
-      <PanelHeader sender={sender} setRecipient={setRecipient} />
+      <PanelHeader
+        sender={sender}
+        setRecipient={setRecipient}
+        socket={socket}
+      />
       <div className={classes.recipientContainer}>
         {nameList.map((name, i) => (
           <CardActionArea
