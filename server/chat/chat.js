@@ -27,8 +27,102 @@ Step 3: write codes on server.js to integrate the module into the server
 // This video gives you lots of hints: https://www.youtube.com/watch?v=jD7FnbI76Hg&ab_channel=TraversyMedia
 // Check the description box for the GitHub code too. You'll know more about how it works (and copy half of the code).
 
-// calling libraries
+/*
+chat.js - chat room functions
+Contributor: Tai Tsun Yiu
+Purpose: Create a socket.io socket instance on the server, handle all incoming joinroom and sending message event
+Explanation: 
+When a user joins a chatroom, the server will create a socket.io instance with it. The socket will listen for below events from the user:
+reqChatted: get the list of users that the user chatted with before and send it to the client
+joinRoom: when user chooses another user to chat with, the user's socket will be placed in room of that user pair, fetch the chat history between the user and send it to the client, 
+newMessageEvent: listen for message sent from the client, write the message to the database. If the message is image, the image will be uploaded to our S3 file server. Then, the message will be emitted to all users in the room.
 
+The server also responds to http GET request query for the list of user that a user can chat with.
+
+Inclusion of libraries in the list below implies the use of source code and citing its documentation. 
+These libraries may depend on external libraries which are not mentioned here. For more information, please refer to the documentation of each libraries.
+Libraries used:
+  1.  Name: Socket.io software and documentation
+      Author: Socket.io development team
+      Link: https://github.com/socketio/socket.io
+      License: MIT License
+      
+  2.  Name: ExpressJS software and documentation
+      Author: ExpressJS development team
+      Link: https://github.com/expressjs/express
+      License: MIT License
+
+  3.  Name: bodyParser software and documentation
+      Author: bodyParser development team
+      Link: https://github.com/expressjs/body-parser
+      License: MIT License
+
+  4.  Name: cors software and documentation
+      Author: cors development team
+      Link: https://github.com/expressjs/cors
+      License: MIT Liscense
+
+  5.  Name: Node.js (including http and crypto)
+      Author: Node.js development team
+      Link: https://github.com/nodejs/node/tree/v18.0.0
+      License: MIT Liscense 
+
+
+Reference List:
+  1.  Name: #1 answer of Javascript date format like ISO but local
+      Author: Denis Howe
+      Link: https://stackoverflow.com/a/51643788
+      License: CC BY-SA 4.0
+
+  2.  Name: #1 answer of How to use DISTINCT and ORDER BY in same SELECT statement?
+      Author: Prutswonder
+      Link: https://stackoverflow.com/a/5391642
+      License: CC BY-SA 4.0
+
+  3.  Name: React with Socket.IO Messaging App
+      Author: peterhle
+      Link: https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
+            https://github.com/peterhle/react-socket-io
+      License: MIT License
+
+  4.  Name: #1 answer of Create an object from an array of keys and an array of values
+      Author: georg
+      Link: https://stackoverflow.com/a/39128144
+      License: CC BY-SA 4.0
+
+  5.  Name: s3-get-put-and-delete
+      Author: 
+      Link: https://github.com/meech-ward/s3-get-put-and-delete
+
+  6.  Name: #1 answer of Create an object from an array of keys and an array of values
+      Author: jfriend00
+      Link: https://stackoverflow.com/a/36418598
+      License: CC BY-SA 4.0
+
+  7.  Name: #1 answer of How to check file MIME type with JavaScript before upload?
+      Author: Drakes & Hassan Baig
+      Link: https://stackoverflow.com/a/29672957
+      License: CC BY-SA 4.0
+
+  8.  Name: #1 answer of How to access a javascript object value without knowing the key
+      Author: D.Shawley & Elliot Bonneville
+      Link: https://stackoverflow.com/a/12344684
+      License: CC BY-SA 4.0
+
+  9.  Name: #1 answer of How can I remove a specific item from an array in JavaScript?
+      Author: Justin Liu
+      Link: https://stackoverflow.com/a/5767357
+      License: CC BY-SA 4.0
+
+  10. Name: #1 answer of JavaScript set object key by variable
+      Author: gen_Eric
+      Link: https://stackoverflow.com/a/11508490
+      License: CC BY-SA 4.0
+
+  2.
+  */
+
+// calling libraries
 
 const express = require("express");
 const app = express();
@@ -38,7 +132,7 @@ router.use(bodyParser.json());
 
 const cors = require("cors");
 const http = require("http");
-const crypto = require('crypto') // for randcomized image name
+const crypto = require('crypto')      // for randcomized image name
 const socketIO = require("socket.io");
 const { query } = require("../database");
 const { searchUserByUsername } = require("../user/user");
@@ -59,13 +153,16 @@ const server = http.createServer(app);
 const io = socketIO(server, {
   cors: true,
   origins: ["localhost:3000"],
-  maxHttpBufferSize: 1e9
+  maxHttpBufferSize: 1e9 // increased from default 1e3 to handle large photos
 });
 
 app.use(cors());
 
+// create a socket.io instance for each new useer establishing connection
 io.on("connection", async (socket) => {
   console.log(`a user connected, the socket.id is ${socket.id}`);
+
+  // create a set of global variables for the socket
   let SOCKET_ROOM_ID = -1;
   let USER_ID_PAIR = [];            // format: [ 1, 2 ]
   let USERNAME_ID_DICT = {};        // format: [ '1': 'user1, '2': 'user2']
@@ -73,7 +170,7 @@ io.on("connection", async (socket) => {
   let USERNAME_PAIR = [];           // format: [ 'user1', 'user2']
   let IN_ROOM_FLAG = false;
 
-
+  // listen for "reqChatted" event from client and emit the list of chatted users with the "chattedUser" event
   socket.on("reqChatted", async (username) => {
     console.log("reqChatted received, the username is,", username);
     var id = await searchUserByUsername(username, "true");
@@ -82,6 +179,7 @@ io.on("connection", async (socket) => {
     io.to(socket.id).emit("chattedUser", chattedUserList);
   });
 
+  // listen for "joinRoom" event, 
   socket.on("joinRoom", async (usernamePair) => {
     console.log("received joinRoom, usernamePair is", usernamePair);
     if(usernamePair[1]==""){
@@ -113,17 +211,18 @@ io.on("connection", async (socket) => {
     );
 
     // find userid of the pair
+    // note that userId key coerced to string
     USER_ID_PAIR = await findUserIdPair(USERNAME_PAIR);
     USER_ID_PAIR.forEach((id, i) => {
       USERNAME_ID_DICT[id] = USERNAME_PAIR[i];
-    }); // note that userId key coerced to string
+    }); 
 
     console.log("userIdPair", USER_ID_PAIR);
     console.log("usernameIdDict", USERNAME_ID_DICT);
 
     addUsernameSocketDict(USERNAME_PAIR[0], socket.id);
 
-    // find room number, if not exist, open enw
+    // find room number, if not exist, open new
     SOCKET_ROOM_ID = findRoom(USER_ID_PAIR);
     if (SOCKET_ROOM_ID == "-1") {
       SOCKET_ROOM_ID = addRoom(USER_ID_PAIR);
@@ -133,15 +232,13 @@ io.on("connection", async (socket) => {
     // join the room
     socket.join(SOCKET_ROOM_ID);
 
-    // fetch chat history
+    // fetch chat history and send to client
     let result = await fetchChat(USER_ID_PAIR);
       console.log("chat history succesfully retreived");
       // console.log(result);
       // io.to(socket.id).emit("chat message",`this is emit message after ${socket.id} join retrieving chat history`);
 
       // convert sender from userId to username & add imgUrl & convert sendTime back to UTC+8
-      // note that the sendTime received is a Date object?????
-
       const emitObj = [];
       for (chatObj of result) {
         let url = "";
@@ -165,9 +262,8 @@ io.on("connection", async (socket) => {
     // fetch and send chattedUserLists (chatted User of both user)
     sendChattedUsers(USER_ID_PAIR, USERNAME_PAIR, io);
 
-    // start handling client sending message after join room
 
-    console.log("reached line166");
+    // console.log("reached line166");
 
     if(!IN_ROOM_FLAG) {
       console.log('reaching return statement of joinroom callback');
@@ -176,6 +272,8 @@ io.on("connection", async (socket) => {
 
   });
   
+
+  // listen to NEW_MESSAGE_EVENT from user
   socket.on(NEW_MESSAGE_EVENT, async (data) => {
     if(!IN_ROOM_FLAG){
       console.log("inRoomFlag false, but receive msg from client:" + data["message"]);
@@ -224,6 +322,7 @@ io.on("connection", async (socket) => {
     sendChattedUsers(USER_ID_PAIR, USERNAME_PAIR, io);
   });
 
+  // listen to leaveRoom from user
   socket.on("leaveRoom", () => {
     console.log("leaveRoom event received");
     console.log(`inRoomFlag is ${IN_ROOM_FLAG}`);
@@ -246,14 +345,13 @@ io.on("connection", async (socket) => {
     return;
   });
 
-
   // debugging event
   socket.on("test", () => {
     console.log("test received");
     return;
   });
 
-
+  // when user's socket disconnects, i.e. close the browser or going to another page
   socket.on("disconnect", () => {
     if(IN_ROOM_FLAG){
       console.log("socket disconnected without leaving room");
@@ -276,6 +374,7 @@ server.listen(PORT, () => {
   console.log(`listening on *:${PORT}`);
 });
 
+// helper function for finding the userId of the usernamePair
 async function findUserIdPair(usernamePair) {
   try {
     var id1 = await searchUserByUsername(usernamePair[0], "true");
@@ -291,6 +390,7 @@ async function findUserIdPair(usernamePair) {
   }
 }
 
+// helper function to retrieve chat history from database of the usernamePair
 async function fetchChat(userIdPair) {
 
   // fetch chat
@@ -308,8 +408,17 @@ async function fetchChat(userIdPair) {
   }
 }
 
+// parse javascript Date To UTC8 string format
+/*
+function parseDateToUTC8 is adapted and modified from #1 answer of https://stackoverflow.com/questions/12413243/javascript-date-format-like-iso-but-local 
+title: 
+author: Denis Howe
+date: Oct 29, 2022
+link: https://stackoverflow.com/a/51643788
+license: CC BY-SA 4.0
+*/
+
 function parseDateToUTC8 (dateObject){
-    // referenced hhttps://stackoverflow.com/questions/12413243/javascript-date-format-like-iso-but-local
     let offsetToUTC = dateObject.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
     let nowWithOffset = dateObject - offsetToUTC;
     const newNow = new Date(nowWithOffset);
@@ -317,9 +426,9 @@ function parseDateToUTC8 (dateObject){
   return formattedTime;
 }
 
+// function for writing chat message to database 
 async function writeChatToDb(messageContent, userIdPair, fileName=null, mimeType=null) {
   try {
-    // referenced hhttps://stackoverflow.com/questions/12413243/javascript-date-format-like-iso-but-local
     const now = new Date();
     // let offsetToUTC = now.getTimezoneOffset() * 60 * 1000; // minutes offset to milliseconds
     // let nowWithOffset = now - offsetToUTC;
@@ -350,6 +459,16 @@ async function writeChatToDb(messageContent, userIdPair, fileName=null, mimeType
     return `{"message": "write chat to db failed. db error."}`;
   }
 }
+
+// helper function to retrieve the list of chatted user
+/*
+function getChattedUser contain code snippets adapted and modified from #1 answer of How to use DISTINCT and ORDER BY in same SELECT statement?
+Name: #1 answer of How to use DISTINCT and ORDER BY in same SELECT statement?
+Author: Prutswonder
+Date: Dec 28, 2017
+Link: https://stackoverflow.com/a/51643788
+License: CC BY-SA 4.0
+*/
 
 async function getChattedUser(userId) {
   try {
@@ -391,6 +510,7 @@ async function getChattedUser(userId) {
   }
 }
 
+// function to send the list of chatted usernames in reverse time order to all sockets of each user of the usernamePair
 async function sendChattedUsers(userIdPair, usernamePair, bigIOsocket) {
   // fetch chatted user
   let chattedUserList0 = await getChattedUser(userIdPair[0]);
@@ -413,7 +533,7 @@ router.get("/", async (req, res) => {
   res.send("this is chat!");
 });
 
-// req query username=...
+// listen to http GET query at /chatTables, respond with the list of username that the user can chat with
 router.get("/chatTables", async (req, res) => {
   console.log("**************\nrecevied get request at /chatTables**************\n")
 
@@ -454,6 +574,7 @@ router.get("/chatTables", async (req, res) => {
   }
 });
 
+// listen to http GET query at /chattedUser, respond with the list of username that the user has chattet with
 router.get("/chattedUser", async (req, res) => {
   console.log("**************\nrecevied get request at /chatttedUser**************\n")
 
