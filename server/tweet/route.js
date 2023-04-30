@@ -1,3 +1,9 @@
+/** route.js
+PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+PURPOSE: Handle CRUD operations for tweets and associated operations
+Artificial intelligence tool such as ChatGPT is used for code generation.
+*/
+
 const express = require("express");
 const router = express.Router();
 
@@ -28,6 +34,11 @@ const {
 } = require("../multimedia/image");
 const { query } = require("../database");
 
+/*
+PURPOSE: Handles the search request for tweets made by the authenticated user
+OUTPUT: Sends a JSON response containing the message and search result to the client
+FUNCTIONS CALLED: searchSelfTweetByMultiple, getObjectSignedUrl
+*/
 router.get("/searchMyTweet", async (req, res) => {
   //Map all tweets with username, content, postTime, category, #likes, #dislikes, #comments, #retweets
   var tweets = await searchSelfTweetByMultiple(
@@ -61,6 +72,12 @@ router.get("/searchMyTweet", async (req, res) => {
   );
 });
 
+
+/*
+PURPOSE: Handles the request to search for tweets by other users
+OUTPUT: Sends the search result response with message to the client
+FUNCTIONS CALLED: query, searchOthersTweetByMultiple, getObjectSignedUrl
+*/
 router.get("/searchOtherTweet", async (req, res) => {
   if (!req.query.lookForUsername) {
     var users = await query(`SELECT username FROM User`);
@@ -106,6 +123,11 @@ router.get("/searchOtherTweet", async (req, res) => {
   );
 });
 
+/*
+PURPOSE: Handles the creation of a new tweet from a user
+OUTPUT: Sends the message back to the client
+FUNCTIONS CALLED: createTweet, query, uploadFile
+*/
 router.post("/createTweet", upload.single("image"), async (req, res) => {
   if (
     req.body.username &&
@@ -160,6 +182,11 @@ router.post("/createTweet", upload.single("image"), async (req, res) => {
   }
 });
 
+/*
+PURPOSE: Handles the view like/dislike request from the client and returns the status of a tweet for a specific user
+OUTPUT: Sends the status of a tweet and the message for a specific user to the client
+FUNCTIONS CALLED: viewLikeTweetByUser
+*/
 router.get("/viewLikeTweet", async (req, res) => {
   if (req.query.username && req.query.tweetId) {
     let x = await viewLikeTweetByUser(
@@ -176,6 +203,11 @@ router.get("/viewLikeTweet", async (req, res) => {
   }
 });
 
+/*
+PURPOSE: Handles the request to view retweets of a user's tweets
+OUTPUT: Sends the result containing the retweets to the client
+FUNCTIONS CALLED: viewRetweet()
+*/
 router.get("/viewRetweet", async (req, res) => {
   if (req.query.senderUsername) {
     let x = await viewRetweet(req.query.senderUsername);
@@ -188,6 +220,11 @@ router.get("/viewRetweet", async (req, res) => {
   }
 });
 
+/*
+PURPOSE: Archives a tweet with a given tweetId and status from a user
+OUTPUT: Sends the message back to the client
+FUNCTIONS CALLED: archiveTweet
+*/
 router.post("/archiveTweet", async (req, res) => {
   if (req.body.tweetId) {
     let x = await archiveTweet(req.body.tweetId, req.body.status);
@@ -197,6 +234,11 @@ router.post("/archiveTweet", async (req, res) => {
   }
 });
 
+/*
+PURPOSE: Handles the liking or disliking of a tweet by a user
+OUTPUT: Sends the message back to the client
+FUNCTIONS CALLED: likeTweet
+*/
 router.post("/likeTweet", async (req, res) => {
   if (req.body.username && req.body.tweetId) {
     //status can only be null, 'like' or 'dislike'
@@ -211,6 +253,11 @@ router.post("/likeTweet", async (req, res) => {
   }
 });
 
+/*
+PURPOSE: Handles the retweeting of a tweet by a user
+OUTPUT: Sends the message back to the client
+FUNCTIONS CALLED: retweet
+*/
 router.post("/retweet", async (req, res) => {
   if (req.body.senderUsername && req.body.tweetId) {
     let x = await retweet(req.body.tweetId, req.body.senderUsername);
@@ -220,11 +267,21 @@ router.post("/retweet", async (req, res) => {
   }
 });
 
+/*
+PURPOSE: Handles the retrieval of comments associated with a tweet
+OUTPUT: Sends the message with comment result back to the client
+FUNCTIONS CALLED: viewCommentByTweetId
+*/
 router.get("/searchCommentByTweetId", async (req, res) => {
   x = await viewCommentByTweetId(req.query.tweetId);
   res.send(x);
 });
 
+/*
+PURPOSE: Handles the creation of a new comment on a tweet by a user
+OUTPUT: Sends the message back to the client
+FUNCTIONS CALLED: commentTweet
+*/
 router.post("/commentTweet", async (req, res) => {
   let x = await commentTweet(
     req.body.userId,
