@@ -1,4 +1,4 @@
-/* route.js
+/* user.js
  * PROGRAMMER: YICK Ka Ho (SID: 1155142189)
  * PURPOSE: Handle CRUD operations of user accounts
  * Artificial intelligence tool such as ChatGPT is used for code generation.
