@@ -1,6 +1,18 @@
+/* like.js
+PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+PURPOSE: Functions that support viewing and editing the like status of tweets with a certain user
+Artificial intelligence tool such as ChatGPT is used for code generation.
+*/
 const { query } = require("../database");
 const { searchUserByUsername } = require("../user/user");
 
+/**
+PURPOSE: view tweet likes/dislikes of a user or a tweet
+@param {number} userId - the id of the user to view their tweet likes/dislikes
+@param {string} username - the username of the user to view their tweet likes/dislikes (either userId or username is needed, but not both)
+@param {number} tweetId - the id of the tweet to view its likes/dislikes
+@returns {string} a message indicating whether the view tweet likes/dislikes operation was successful or not and the result in JSON format
+*/
 async function viewLikeTweetByUser(userId, username, tweetId) {
   try {
     let reqQuery = [userId, username];
@@ -33,6 +45,13 @@ async function viewLikeTweetByUser(userId, username, tweetId) {
   }
 }
 
+/**
+PURPOSE: like/dislike a tweet for a user
+@param {string} username - the username of the user who likes/dislikes the tweet
+@param {number} tweetId - the id of the tweet to be liked/disliked
+@param {string} status - the status of the like/dislike operation. "like" if the tweet is liked, "dislike" if it's disliked, and null if the like/dislike record is to be deleted.
+@returns {string} a message indicating whether the like/dislike tweet operation was successful or not
+*/
 async function likeTweet(username, tweetId, status) {
   try {
     var id = await searchUserByUsername(username, "true");
