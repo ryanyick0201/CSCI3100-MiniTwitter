@@ -1,3 +1,10 @@
+/* [authentication.js]
+ * PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+ * PURPOSE: Handle authentication related routes such as login, logout, setting OTP, verifying OTP and retrieving session username
+ * Artificial intelligence tool such as ChatGPT is used for code generation.
+ */
+
+//Defining libraries and files
 const express = require("express");
 const router = express.Router();
 
@@ -22,6 +29,11 @@ router.use(
 
 var session;
 
+/*
+PURPOSE: Handles the login request from the client and sets up the session for the user
+OUTPUT: Sends the login response to the client
+FUNCTIONS CALLED: login()
+*/
 router.post("/login", async (req, res) => {
   x = await login(req.body.username, req.body.password);
 
@@ -34,6 +46,11 @@ router.post("/login", async (req, res) => {
   res.send(x);
 });
 
+/*
+PURPOSE: Handles the logout request from the client and destroys the session for the user
+OUTPUT: Sends the logout response to the client
+FUNCTIONS CALLED: None
+*/
 router.get("/logout", async (req, res) => {
   try {
     req.session.destroy();
@@ -47,18 +64,32 @@ router.get("/logout", async (req, res) => {
   }
 });
 
+/*
+PURPOSE: Handles the request from the client to set up OTP for a user
+OUTPUT: Sends the OTP setup response to the client
+FUNCTIONS CALLED: setOTP()
+*/
 router.post("/setOTP", async (req, res) => {
   x = await setOTP(req.body.username);
   console.log(x);
   res.send(x);
 });
 
+/*
+PURPOSE: Handles the request from the client to verify OTP for a user
+OUTPUT: Sends the OTP verification response to the client
+FUNCTIONS CALLED: verifyOTP()
+*/
 router.post("/verifyOTP", async (req, res) => {
   x = await verifyOTP(req.body.username, req.body.otp);
   console.log(x);
   res.send(x);
 });
 
+/*
+PURPOSE: Get the username stored in the current session
+FUNCTIONS CALLED: None
+*/
 router.get("/getSessionUsername", async (req, res) => {
   try {
     console.log(
@@ -85,18 +116,33 @@ router.get("/getSessionUsername", async (req, res) => {
 //   }, 300000);
 // });
 
+/*
+PURPOSE: Sends email to the user's email address with a verification code
+OUTPUT: Response from the sendEmail function
+FUNCTIONS CALLED: sendEmail
+*/
 router.get("/sendEmail", async (req, res) => {
   x = await sendEmail(req.query.username || "");
   console.log(x);
   res.send(x);
 });
 
+/*
+PURPOSE: This route is used to verify the OTP entered by the user for a specific username
+OUTPUT: The output is the verification result returned by the function verifyOTP
+FUNCTIONS CALLED: verifyOTP
+*/
 router.post("/verifyOTP", async (req, res) => {
   x = await verifyOTP(req.body.username, req.body.otp);
   console.log(x);
   res.send(x);
 });
 
+/*
+PURPOSE: This route is used to get the username of the current session
+OUTPUT: The output is a JSON object containing the message and result of the operation, with the username stored in session.username
+FUNCTIONS CALLED: None
+*/
 router.get("/getSessionUsername", async (req, res) => {
   try {
     console.log(
@@ -115,6 +161,11 @@ router.get("/getSessionUsername", async (req, res) => {
   }
 });
 
+/*
+PURPOSE: This route is used to delete the OTP of a specific username after a certain amount of time (5 minutes)
+OUTPUT: The output is the result of deleting the OTP returned by the function deleteOTP
+FUNCTIONS CALLED: deleteOTP
+*/
 router.delete("/deleteOTP", async (req, res) => {
   setTimeout(async () => {
     x = await deleteOTP(req.body.username);
