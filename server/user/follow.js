@@ -1,4 +1,4 @@
-/* route.js
+/* follow.js
  * PROGRAMMER: YICK Ka Ho (SID: 1155142189)
  * PURPOSE: Handle retrieval and creation/update of following record in database 
  * Artificial intelligence tool such as ChatGPT is used for code generation.
