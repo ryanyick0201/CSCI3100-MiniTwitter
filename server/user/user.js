@@ -1,6 +1,18 @@
+/* route.js
+ * PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+ * PURPOSE: Handle CRUD operations of user accounts
+ * Artificial intelligence tool such as ChatGPT is used for code generation.
+ */
+
 const { query } = require("../database");
 const bcrypt = require("bcrypt");
 
+/**
+PURPOSE: Search usersby their username in the database.
+@param {string} username - The username to search.
+@param {string} exactMatch - Whether to search for exact match or not.
+@return {string} - A JSON string representing the search result.
+*/
 async function searchUserByUsername(username, exactMatch) {
   try {
     if (username && exactMatch === "true") {
@@ -24,6 +36,14 @@ async function searchUserByUsername(username, exactMatch) {
   }
 }
 
+/**
+PURPOSE: create a user in the database.
+@param {string} username - The username of the new user.
+@param {string} password - The password of the new user.
+@param {string} email - The email of the new user.
+@param {boolean} hasVerified - Whether the new user has been verified or not.
+@return {string} - A JSON string representing the result of creating the user.
+*/
 async function createUser(username, password, email, hasVerified) {
   try {
     let rec = JSON.parse(await searchUserByUsername(username))["result"];
@@ -46,6 +66,11 @@ async function createUser(username, password, email, hasVerified) {
   }
 }
 
+/**
+PURPOSE: Delete a user from the database.
+@param {string} username - The username of the user to delete.
+@return {string} - A JSON string representing the result of deleting the user.
+*/
 async function deleteUser(username) {
   try {
     if (username) {
@@ -60,6 +85,17 @@ async function deleteUser(username) {
     else return `{"message": "Delete user failed. Db error."}`;
   }
 }
+
+/**
+PURPOSE: Update a user in the database.
+@oldUsername {string} - The original username of the user to be updated.
+@newUsername {string} - The new username of the user to be updated.
+@password {string} - The new password of the user to be updated.
+@personalBio{string} - The new personalBio of the user to be updated.
+@privacySetting {string} - The new privacySetting of the user to be updated.
+@hasVerified {boolean} - The new hasVerified of the user to be updated.
+@return {string} - A JSON string representing the result of deleting the user.
+*/
 
 async function updateUser(
   oldUsername,
