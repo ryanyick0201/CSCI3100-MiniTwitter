@@ -1,3 +1,11 @@
+/* PROGRAM OtherProfilePage - the component showing other user's profile
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: OtherProfilePage()
+ * PURPOSE: rendering other user's profile, including Bio, tweets he created, tweets he retweeted.
+ * ALGORITHM: use Location hook to obtain the username of the target user,
+ *  fetching the object of the user, and fetching the tweets of the user,
+ *  for the follow function, fetching the status to indicate whether "I" am following the user.
+ */
 import React, { useState, useEffect } from "react";
 
 import { Avatar, Button } from "@material-ui/core";
@@ -24,11 +32,12 @@ function OtherProfilePage() {
   const [user, setUser] = useState({});
   const [posts, setPosts] = useState({});
 
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(""); //"status" can be "not following", "Accepted" or "Pending"
 
   const location = useLocation();
   const username = location.state.username;
 
+  //fetching the object of the user, and fetching the tweets of the user
   useEffect(() => {
     const fetchUser = async () => {
       const response = await fetch(
@@ -48,6 +57,7 @@ function OtherProfilePage() {
     fetchPosts();
   }, [username]);
 
+  //fetching the status to indicate whether "I" am following the user
   useEffect(() => {
     var data = {};
     const fetchStatus = async () => {
@@ -70,6 +80,7 @@ function OtherProfilePage() {
     fetchStatus();
   }, [myUsername, username]);
 
+  //handle the clicking on the follow button according to the status
   const handleFollow = () => {
     if (status == "not following") {
       const data = {

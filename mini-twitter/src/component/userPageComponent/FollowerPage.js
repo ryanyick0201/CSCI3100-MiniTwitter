@@ -1,3 +1,12 @@
+/* PROGRAM FollowerPage - the component shows the list of requests, following and followers
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: FollowerPage()
+ * PURPOSE: rendering the list of requests, following and followers,
+ *  and let user manage his requests, following and followers.
+ * ALGORITHM: the way to obtaining requests, following and followers users:
+ *  fetching the ID of requests, following and followers, and fetching the list of all users,
+ *  then filtering out the requests, following and followers from all users according to the IDs.
+ */
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -41,8 +50,9 @@ function FollowerPage() {
   const [requests, setRequests] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [followees, setFollowees] = useState([]);
-  const [newState, setNewState] = useState(0);
+  const [newState, setNewState] = useState(0); //"newState" is the tool to render the component again after the list change
 
+  //fecthing the IDs of requests, following and followers, and fetching the list of all users
   useEffect(() => {
     const fetchRequests = async () => {
       const response = await fetch(
@@ -78,6 +88,7 @@ function FollowerPage() {
     fetchUsers();
   }, [myUsername, newState]);
 
+  //filtering out the requests, following and followers from all users according to the IDs
   useEffect(() => {
     setRequests(
       users.result?.filter((user) => requestsId.includes(user.userId))
@@ -90,6 +101,7 @@ function FollowerPage() {
     );
   }, [followeesId, followersId, requestsId, users]);
 
+  //It is the controller. When the list is too long, user can click "view more", then "showAllRequests" becomes true and render the whole list.
   const [showAllRequests, setShowAllRequests] = useState(false);
 
   const handleAccept = (username) => {
@@ -108,7 +120,7 @@ function FollowerPage() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setNewState(newState + 1);
+        setNewState(newState + 1); //after "newState" change, it triggers the re-rendering of the list with new data
       })
       .catch((error) => {
         console.error(error);
@@ -187,7 +199,7 @@ function FollowerPage() {
       <div style={{ display: "flex", flexDirection: "column" }}>
         <h2>Requests({requests?.length})</h2>
         {requests?.length === 0 && <h4>none</h4>}
-        {requests
+        {requests //if the length list is below 2, then just render it
           ?.slice(0, showAllRequests ? requests?.length : 2)
           .map((request) => (
             <Card
@@ -223,17 +235,18 @@ function FollowerPage() {
               </CardActions>
             </Card>
           ))}
-        {requests?.length > 2 && !showAllRequests && (
-          <div>
-            <div style={{ height: 16 }} />
-            <Button
-              className={classes.viewButton}
-              onClick={() => setShowAllRequests(true)}
-            >
-              View More
-            </Button>
-          </div>
-        )}
+        {requests?.length > 2 &&
+          !showAllRequests && ( //if the length is above 2, render the "view more" button. Clicking it then render the whole list.
+            <div>
+              <div style={{ height: 16 }} />
+              <Button
+                className={classes.viewButton}
+                onClick={() => setShowAllRequests(true)}
+              >
+                View More
+              </Button>
+            </div>
+          )}
       </div>
 
       <div style={{ height: "40px" }} />

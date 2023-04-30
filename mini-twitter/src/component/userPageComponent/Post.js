@@ -1,3 +1,14 @@
+/* PROGRAM Post - the component rendering the content of a tweet
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: Post = ({ post })
+ *  where post is an object of a tweet, from the parent component
+ * PURPOSE: rendering the content of a tweet,
+ *  including username, time, tweet text, hashtag, like, dislike, comment count, retweet count
+ * ALGORITHM: for the like and dislike function, fetching the status of like and set states called "liked" and "disliked"
+ *  using the states to control the rendering of like and dislike icons and the query to the server.
+ *  for the retweet function, fetching the status to set the state of "retweeted",
+ *  using the state to control the rendering of retweet icon and the query to the server.
+ */
 import React, { useState, useEffect } from "react";
 import {
   Avatar,
@@ -34,14 +45,15 @@ const Post = ({ post }) => {
 
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
-  const [status, setStatus] = useState("");
-  const [likes, setLikes] = useState(post.likes);
-  const [dislikes, setDislikes] = useState(post.dislikes);
-  const [retweets, setRetweets] = useState([]);
-  const [retweeted, setRetweeted] = useState(false);
-  const [retweetCount, setRetweetCount] = useState(post.retweet);
-  const [user, setUser] = useState({});
+  const [status, setStatus] = useState(""); //indicate whether "I" am liking or disliking the tweet
+  const [likes, setLikes] = useState(post.likes); //the count of likes
+  const [dislikes, setDislikes] = useState(post.dislikes); //the count of dislikes
+  const [retweets, setRetweets] = useState([]); //the list of tweets which have been retweeted by "me"
+  const [retweeted, setRetweeted] = useState(false); //indicate whether "I" have retweeted the tweet
+  const [retweetCount, setRetweetCount] = useState(post.retweet); //the count of retweet
+  const [user, setUser] = useState({}); //the user created the tweet
 
+  //fetching the status of like and the list of tweets retweeted and the object of the user
   useEffect(() => {
     const fetchStatus = async () => {
       const response = await fetch(
@@ -73,6 +85,7 @@ const Post = ({ post }) => {
     fetchUser();
   }, [myUsername]);
 
+  //setting the states of liked and disliked and retweeted
   useEffect(() => {
     if (status == "neither") {
       setLiked(false);
@@ -89,6 +102,7 @@ const Post = ({ post }) => {
   }, [status, retweets, post.tweetId]);
 
   const handleLike = () => {
+    //there are two steps, first is updated to the server, second is updated the states of liked and disliked
     const data = {
       username: myUsername,
       tweetId: post.tweetId,
@@ -158,6 +172,7 @@ const Post = ({ post }) => {
 
   const navigate = useNavigate();
 
+  //handle the clicking on the header of a card
   const handleUserClick = (post) => {
     navigate("/other profile", { state: { username: post.username } });
   };

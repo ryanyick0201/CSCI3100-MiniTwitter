@@ -1,3 +1,9 @@
+/* PROGRAM PostDetailPage - the component rendering the detail content of a tweet
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: PostDetailPage = ()
+ * PURPOSE: rendering the detail content of a tweet,
+ *  including username, time, tweet text, hashtag, like, dislike, comment count, retweet count, comments and comment text field
+ */
 import React, { useState, useEffect } from "react";
 import "./postDetailPage.css";
 import PostWithBox from "./PostWithBox";
@@ -23,9 +29,9 @@ const PostDetailPage = () => {
   const classes = useStyles();
 
   const [comments, setComments] = useState({});
-  const [posts, setPosts] = useState({});
-  const [post, setPost] = useState({});
-  const [me, setMe] = useState({});
+  const [posts, setPosts] = useState({}); //all tweets
+  const [post, setPost] = useState({}); //the target tweet
+  const [me, setMe] = useState({}); //the object of "me"
 
   const location = useLocation();
   const tweetId = location.state?.tweetId;
@@ -57,6 +63,7 @@ const PostDetailPage = () => {
     fetchMe();
   }, [tweetId]);
 
+  //find the target tweet from all the tweets according to tweetId
   useEffect(() => {
     if (posts.result) {
       console.log(posts.result);
@@ -67,6 +74,7 @@ const PostDetailPage = () => {
 
   const navigate = useNavigate();
 
+  //handle that "I" add a comment to the tweet
   const handleAddComment = (comment) => {
     const data = {
       userId: me.userId,
@@ -83,6 +91,7 @@ const PostDetailPage = () => {
     })
       .then((response) => response.json())
       .then(() => {
+        //fetching the updated comment list and rendering it
         fetch(
           `http://${window.location.hostname}:3000/tweet/searchCommentByTweetId?tweetId=${tweetId}`
         )

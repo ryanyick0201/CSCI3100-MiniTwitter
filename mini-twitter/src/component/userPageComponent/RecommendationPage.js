@@ -1,3 +1,17 @@
+/* PROGRAM RecommendationPage - the component recommending tweets to "me"
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: RecommendationPage = ()
+ * PURPOSE: recommending some tweets which "I" may be interested in.
+ * ALGORITHM:
+ *  fetching the tweets created by "me", and obtain the top three catagories (hashtags),
+ *  using these three catagoried to fetch the relative tweets in the database which are recommended.
+ *
+ *  fetching the IDs of the followees, and fetching the list of all users,
+ *  then filtering out the followees from all users according to the IDs,
+ *
+ *  filtering out the tweets from the recommended tweets which are not created by "my" followees,
+ *  as the final tweets recommended.
+ */
 import React, { useState, useEffect } from "react";
 import "./recommendationPage.css";
 import Post from "./Post";
@@ -7,12 +21,13 @@ const RecommendationPage = () => {
 
   const [myPosts, setMyPosts] = useState({});
   const [recommendCategories, setRecommendCategories] = useState([]);
-  const [posts, setPosts] = useState({});
+  const [posts, setPosts] = useState({}); //the tweets obtained based on the top three catagories
 
   const [followeesId, setFolloweesId] = useState([]);
   const [users, setUsers] = useState({});
   const [followees, setFollowees] = useState([]);
 
+  //fetching the tweets created by "me"
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch(
@@ -24,6 +39,7 @@ const RecommendationPage = () => {
     fetchPosts();
   }, [myUsername]);
 
+  //obtain the top three catagories (hashtags)
   useEffect(() => {
     if (!myPosts.result) {
       setRecommendCategories([]);
@@ -46,6 +62,7 @@ const RecommendationPage = () => {
     );
   }, [myPosts]);
 
+  //using these three catagoried to fetch the relative tweets in the database which are recommended
   useEffect(() => {
     const fetchPosts = async () => {
       if (recommendCategories.length === 0) {
@@ -71,6 +88,7 @@ const RecommendationPage = () => {
     fetchPosts();
   }, [recommendCategories]);
 
+  //fetching the IDs of the followees, and fetching the list of all users,
   useEffect(() => {
     const fetchFollowees = async () => {
       const response = await fetch(
@@ -90,6 +108,7 @@ const RecommendationPage = () => {
     fetchUsers();
   }, [myUsername]);
 
+  //filtering out the followees from all users according to the IDs
   useEffect(() => {
     setFollowees(
       users.result?.filter((user) => followeesId.includes(user.userId))
@@ -103,7 +122,7 @@ const RecommendationPage = () => {
       </div>
 
       <div className="card">
-        {Array.isArray(posts) &&
+        {Array.isArray(posts) && //filtering out the tweets from the recommended tweets which are not created by "my" followees
           posts
             ?.filter(
               (post) =>

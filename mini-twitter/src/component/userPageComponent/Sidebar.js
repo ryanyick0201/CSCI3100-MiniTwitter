@@ -1,3 +1,9 @@
+/* PROGRAM Sidebar - the sidebar component
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: Sidebar({ setLogInAs })
+ *   where setLogInAs is the access right of login
+ * PURPOSE: providing buttons to go to different pages
+ */
 import "./sidebar.css";
 import SidebarButton from "./SidebarButton";
 
@@ -12,7 +18,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { useState } from "react";
 
 function Sidebar({ setLogInAs }) {
-  const [clickedButton, setClickedButton] = useState("Home");
+  const [clickedButton, setClickedButton] = useState("Home"); //record which of the button is clicked
 
   return (
     <div className="sidebar">

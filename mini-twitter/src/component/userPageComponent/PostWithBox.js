@@ -1,3 +1,15 @@
+/* PROGRAM PostWithBox - the component rendering the content of a tweet and providing a textfield
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: PostWithBox = ({ post, AddComment })
+ *  where post is an object of a tweet, from the parent component, and AddComment is a callback function
+ * PURPOSE: rendering the content of a tweet,
+ *  including username, time, tweet text, hashtag, like, dislike, comment count, retweet count
+ *  and providing a textfield for "me" to add comments
+ * ALGORITHM: for the like and dislike function, fetching the status of like and set states called "liked" and "disliked"
+ *  using the states to control the rendering of like and dislike icons and the query to the server.
+ *  for the retweet function, fetching the status to set the state of "retweeted",
+ *  using the state to control the rendering of retweet icon and the query to the server.
+ */
 import React, { useState, useEffect } from "react";
 import {
   Avatar,
@@ -43,15 +55,16 @@ const PostWithBox = ({ post, AddComment }) => {
 
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(""); //indicate whether "I" am liking or disliking the tweet
   const [likes, setLikes] = useState(post.likes);
   const [dislikes, setDislikes] = useState(post.dislikes);
   const [retweets, setRetweets] = useState([]);
-  const [retweeted, setRetweeted] = useState(false);
+  const [retweeted, setRetweeted] = useState(false); //indicate whether "I" have retweeted the tweet
   const [retweetCount, setRetweetCount] = useState(post.retweet);
   const [commentCount, setCommentCount] = useState(post.comment);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({}); //the user created the tweet
 
+  //fetching the status of like and the list of tweets retweeted and the object of the user
   useEffect(() => {
     const fetchStatus = async () => {
       const response = await fetch(
@@ -83,6 +96,7 @@ const PostWithBox = ({ post, AddComment }) => {
     fetchUser();
   }, [myUsername]);
 
+  //setting the states of liked and disliked and retweeted
   useEffect(() => {
     if (status == "neither") {
       setLiked(false);
@@ -99,6 +113,7 @@ const PostWithBox = ({ post, AddComment }) => {
   }, [status, retweets, post.tweetId]);
 
   const handleLike = () => {
+    //there are two steps, first is updated to the server, second is updated the states of liked and disliked
     const data = {
       username: myUsername,
       tweetId: post.tweetId,
@@ -166,13 +181,15 @@ const PostWithBox = ({ post, AddComment }) => {
     }
   };
 
+  //the content of a new comment
   const [comment, setComment] = useState("");
 
+  //handle submission of the new comment
   const handleSubmit = (event) => {
     event.preventDefault();
     AddComment(comment);
-    setComment("");
-    setCommentCount(commentCount + 1);
+    setComment(""); //clear the state and the text field
+    setCommentCount(commentCount + 1); //update the count of the comments
   };
 
   const navigate = useNavigate();

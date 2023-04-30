@@ -1,3 +1,9 @@
+/* PROGRAM ProfilePage - the component rendering "my" profile
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: ProfilePage()
+ * PURPOSE: rendering "my" profile,
+ *  including username, Bio, the tweets "I" created, the tweets "I" retweeted
+ */
 import React, { useState, useEffect } from "react";
 
 import { Avatar, Button } from "@material-ui/core";
@@ -21,8 +27,8 @@ function ProfilePage() {
   const myUsername = sessionStorage.getItem("username");
   const classes = useStyles();
 
-  const [user, setUser] = useState({});
-  const [posts, setPosts] = useState({});
+  const [user, setUser] = useState({}); //it is the object of "me"
+  const [posts, setPosts] = useState({}); //the tweets created by "me" and retweeted by "me"
 
   useEffect(() => {
     var myTweetandRetweet = [];

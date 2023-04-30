@@ -1,3 +1,9 @@
+/* PROGRAM CommentList - the component shows the comment of a tweet
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: CommentList = ({ comment })
+ *  where comment is an object containing content and time
+ * PURPOSE: rendering a comment of a tweet
+ */
 import React from "react";
 import { List, ListItem, ListItemText } from "@material-ui/core";
 

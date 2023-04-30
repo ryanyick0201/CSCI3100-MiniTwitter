@@ -1,3 +1,8 @@
+/* PROGRAM EditProfile - the profile editing component
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: EditProfile = ()
+ * PURPOSE: let user edit his profile and change the account setting
+ */
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -40,9 +45,10 @@ const EditProfile = () => {
   const [newBio, setNewBio] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newPrivacySetting, setPrivacySetting] = useState("public");
-  const [media, setMedia] = useState(null);
-  const [user, setUser] = useState({});
+  const [media, setMedia] = useState(null); //media is the icon the user uploads
+  const [user, setUser] = useState({}); //user is an object of user representing "me"
 
+  //fetching the object of "me"
   useEffect(() => {
     const fetchUser = async () => {
       const response = await fetch(
@@ -65,6 +71,7 @@ const EditProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = {
+      //"data" is the changed information except image
       oldUsername: myUsername,
       newUsername: newUsername,
       password: newPassword,
@@ -83,7 +90,7 @@ const EditProfile = () => {
     const result = await response.json();
     console.log(result);
 
-    const data2 = new FormData();
+    const data2 = new FormData(); //"data2" is for the image
     data2.append("username", myUsername);
     data2.append("image", media);
 

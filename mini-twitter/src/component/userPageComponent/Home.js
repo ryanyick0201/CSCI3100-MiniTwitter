@@ -1,3 +1,12 @@
+/* PROGRAM Home - the user home component
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: Home = ()
+ * PURPOSE: render the tweets which are posted by the followees of "me"
+ * ALGORITHM:
+ *  fetching the IDs of the followees, and fetching the list of all users,
+ *  then filtering out the followees from all users according to the IDs,
+ *  then fetching the tweets according to the list of followees.
+ */
 import React, { useState, useEffect } from "react";
 import "./home.css";
 import Post from "./Post";
@@ -28,6 +37,7 @@ const Home = () => {
   const [followees, setFollowees] = useState([]);
   const [posts, setPosts] = useState({});
 
+  //fetching the IDs of the followees, and fetching the list of all users
   useEffect(() => {
     const fetchFollowees = async () => {
       const response = await fetch(
@@ -47,12 +57,14 @@ const Home = () => {
     fetchUsers();
   }, [myUsername]);
 
+  //filtering out the followees from all users according to the IDs
   useEffect(() => {
     setFollowees(
       users.result?.filter((user) => followeesId.includes(user.userId))
     );
   }, [followeesId, users]);
 
+  //fetching the tweets according to the list of followees
   useEffect(() => {
     const fetchTweets = async () => {
       const tweets = [];

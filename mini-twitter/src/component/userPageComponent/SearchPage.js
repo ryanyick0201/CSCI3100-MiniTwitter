@@ -1,3 +1,17 @@
+/* PROGRAM SearchPage - the component used to search users, and recommend three users to "me"
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: SearchPage()
+ * PURPOSE: search users by username, and recommend three users to "me"
+ * ALGORITHM:
+ *  for the user recommenndation:
+ *  fetching the IDs of the followees, and fetching the list of all users,
+ *  then filtering out the followees from all users according to the IDs,
+ *
+ *  then fetching the followees of followees using the same steps above.
+ *  The fetching is random.
+ *  then filter out the target users from the followees of followees which are not the followees of "my"
+ *  (if the user has already been "my" followee, there is no need to recommend him)
+ */
 import { useState, useEffect } from "react";
 import {
   Avatar,
@@ -83,6 +97,7 @@ function SearchPage() {
   const [followees, setFollowees] = useState([]);
   const [recommendUsers, setRecommendUsers] = useState([]);
 
+  //When the list is too long, user can click "click to view more", then "showAllRequests" becomes true and render the whole list
   const [showAllResults, setShowAllResults] = useState(false);
 
   const handleSearch = async () => {
@@ -107,6 +122,7 @@ function SearchPage() {
     navigate("/other profile", { state: { username: user.username } });
   };
 
+  //fetching the IDs of the followees, and fetching the list of all users
   useEffect(() => {
     const fetchFollowees = async () => {
       const response = await fetch(
@@ -126,12 +142,14 @@ function SearchPage() {
     fetchUsers();
   }, [myUsername]);
 
+  //filtering out the followees from all users according to the IDs
   useEffect(() => {
     setFollowees(
       users.result?.filter((user) => followeesId.includes(user.userId))
     );
   }, [followeesId, users]);
 
+  //fetching the followees of followees using the same steps above, starting from the first followee
   useEffect(() => {
     async function getRecommendUsers() {
       let count = 0;

@@ -1,3 +1,8 @@
+/* PROGRAM CreateNewPost - the page for user to create a new tweet
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: CreateNewPost = ()
+ * PURPOSE: providing some textfield and selection list for user to input the information of the new tweet
+ */
 import React, { useState, useEffect } from "react";
 import { Avatar, Button, TextField, MenuItem, Select } from "@material-ui/core";
 import "./createNewPost.css";
@@ -33,11 +38,12 @@ const CreateNewPost = () => {
   const classes = useStyles();
 
   const [postContent, setPostContent] = useState("");
-  const [hashtag, setHashtag] = useState("");
-  const [media, setMedia] = useState(null);
-  const [imaOrVi, setImaOrVi] = useState("");
-  const [user, setUser] = useState({});
+  const [hashtag, setHashtag] = useState(""); //the hashtag is also the catagory of the tweet
+  const [media, setMedia] = useState(null); //the append media, it can be image or video
+  const [imaOrVi, setImaOrVi] = useState(""); //the indicator to indicate the attach media is image or video
+  const [user, setUser] = useState({}); //all the users
 
+  //fetch all the user
   useEffect(() => {
     const fetchUser = async () => {
       const response = await fetch(
@@ -60,6 +66,7 @@ const CreateNewPost = () => {
   const handleMediaChange = (event) => {
     setMedia(event.target.files[0]);
     if (media.type.startsWith("image/")) {
+      //obtain the type of the media which the user upload
       setImaOrVi("image");
     } else if (media.type.startsWith("video/")) {
       setImaOrVi("video");

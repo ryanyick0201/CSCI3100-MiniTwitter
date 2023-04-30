@@ -1,3 +1,11 @@
+/* PROGRAM UserPage - Integrate different routes for the user
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: UserPage = ({ setLogInAs })
+ *  where setLogInAs is the access right of login
+ * PURPOSE: Integrate sidebar, home page, follower page, etc.
+ *  for the user to go to different pages and take functions
+ */
+
 import "./UserPage.css";
 import Sidebar from "./userPageComponent/Sidebar";
 import Home from "./userPageComponent/Home";
@@ -10,7 +18,6 @@ import SearchPage from "./userPageComponent/SearchPage";
 import RecommendationPage from "./userPageComponent/RecommendationPage";
 import OtherProfilePage from "./userPageComponent/OtherProfilePage";
 import ChatPage from "./ChatPage";
-//import AdminPage from './userPageComponent/AdminPage'
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 

@@ -1,3 +1,13 @@
+/* PROGRAM ADMIN PAGE - admin page component
+ * PROGRAMMER: YU Zhuofeng SID: 1155159772
+ * CALLING SEQUENCE: AdminPage({ setLogInAs })
+ *  where setLogInAs is the access right of login
+ * PURPOSE: rendering a page to let an admin manage the users,
+ *  containing user list and three function: create user, update user and delete user
+ * ALGORITHM: "option" state indicates the function the admin choose to take,
+ *  and send corresponding request to the server according to the input by the admin and the function he chooses.
+ */
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -111,8 +121,8 @@ const useStyles = makeStyles((theme) => ({
 function AdminPage({ setLogInAs }) {
   const classes = useStyles();
 
-  const [users, setUsers] = useState([]);
-  const [option, setOption] = useState("");
+  const [users, setUsers] = useState([]); //an array of all users
+  const [option, setOption] = useState(""); //the function of the admin choose: create, update or delete
 
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -120,6 +130,7 @@ function AdminPage({ setLogInAs }) {
   const [oldUsernameInput, setOldUsernameInput] = useState("");
   const [newUsernameInput, setNewUsernameInput] = useState("");
 
+  //fetch all users
   useEffect(() => {
     const fetchUsers = async () => {
       const response = await fetch(
@@ -138,6 +149,7 @@ function AdminPage({ setLogInAs }) {
     navigate("/");
   };
 
+  //retrieve the user list
   const handleRetrieve = () => {
     const fetchUsers = async () => {
       const response = await fetch(
@@ -152,6 +164,7 @@ function AdminPage({ setLogInAs }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (option === "create") {
+      //when option equal to "create", it is the condiction of choosing create function
       const data = {
         username: usernameInput,
         password: passwordInput,
@@ -168,8 +181,8 @@ function AdminPage({ setLogInAs }) {
       );
       const result = await response.json();
       console.log(result);
-      setUsernameInput("");
-      setPasswordInput("");
+      setUsernameInput(""); //clear the text field after succeeding in taking the function
+      setPasswordInput(""); //clear the text filed after succeeding in taking the function
     } else if (option === "update") {
       const data = {
         oldUsername: oldUsernameInput,
@@ -299,6 +312,7 @@ function AdminPage({ setLogInAs }) {
               </Button>
             </div>
 
+            {/* there are three condictions which we need to render different text field according to the option */}
             <div>
               {option === "create" || option === "" ? (
                 <>
