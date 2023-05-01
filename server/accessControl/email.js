@@ -1,22 +1,40 @@
 /*
-Step 0: call all the libraries / modules
-Step 1: create a function called sendEmail()
-Step 2: the function should be able to:
-    - create and write a one-time-password to the db
-        - use the module setOTP(username) in accessControl/otp.js
-        - don't write the function again
-    - connect to a email server
-        - you can create a new email account or use your own email account
-        - if you use your email account, you need to hard-code your credentials (password and email address)
-    - send an email
-        - the subject and content can be very simple (e.g. "Your one time password is: ... The password will expire at ...")
-    - return a message
-        - telling the client whether the email is sent successfully
-Step 3: export the function
-Step 4: un-comment accessControl/route.js to test your function out
-PS. Remember to use try-catch block(s) to handle the errors. Otherwise, the server will crash.
-PSS. Check other functions for the formats
-*/
+email.js - sending OTP emails
+Contributor: Tai Tsun Yiu
+Purpose: Sending email containing a OTP to the user's email address.
+Triggering sequence:
+  1.  The user create an account and request a OTP.
+  2.  An OTP will be generated in otp.js and store in database.
+  3.  sendEmail() will retreive the user's email address and the otp, compose a email, and send it to the user.
+
+
+Inclusion of libraries in the list below implies the use of source code and citing its documentation. 
+These libraries may depend on external libraries which are not mentioned here. For more information, please refer to the documentation of each libraries.
+Libraries used:
+  1.  Name: nodemailer software and documentation
+      Author: andris9
+      Link: https://github.com/nodemailer/nodemailer/
+      License: https://github.com/nodemailer/nodemailer/blob/master/LICENSE
+      
+  2.  Name: ExpressJS software and documentation
+      Author: ExpressJS development team
+      Link: https://github.com/expressjs/express
+      License: MIT License
+
+  3.  Name: Node.js (including http and crypto)
+      Author: Node.js development team
+      Link: https://github.com/nodejs/node/tree/v18.0.0
+      License: MIT Liscense 
+
+
+Reference List:
+  1.  Name: #1 answer of Error: self signed certificate in certificate chain Nodejs nodemailer express
+      Author: ty2k
+      Link: https://stackoverflow.com/a/46752426
+      License: CC BY-SA 3.0
+
+  */
+
 
 const { setOTP } = require("./otp");
 const nodemailer = require("nodemailer");
@@ -27,8 +45,8 @@ var transport = nodemailer.createTransport({
   port: 465,
   secure: true, //ssl
   auth: {
-    user: "csci3100.group.b8@zohomail.com",
-    pass: "CSCI3100b8!",
+    user: "***redacted***",
+    pass: "***redacted***",
   },
   tls: {
     rejectUnauthorized: false,
@@ -37,7 +55,7 @@ var transport = nodemailer.createTransport({
 
 const emailGenerator = (toEmail, otp) => {
   return {
-    from: "csci3100.group.b8@zohomail.com",
+    from: "***redacted***",
     to: `${toEmail}`,
     subject: "OTP from Minitwitter",
     text: `Your one time password is: ${otp}.`,
@@ -45,14 +63,6 @@ const emailGenerator = (toEmail, otp) => {
   };
 };
 
-//  debug block
-//   transport.verify(function (error, success) {
-//     if (error) {
-//       console.log(error);
-//     } else {
-//       console.log("Server is ready to take our messages");
-//     }
-//   });
 
 async function sendEmail(username) {
   if (username == "") return `{"message": "username empty."}`;
@@ -103,20 +113,5 @@ async function sendEmail(username) {
     return `{"message": "Send email error."}`;
   }
 }
-
-// async function sendEmail(username){
-
-//     // send the email
-
-//     transport.sendMail(emailGenerator('csci3100.group.b8@gmail.com', 'otp', 'expiryTime'), function(error, info){
-//         if (error) {
-//           console.log(error);
-//         } else {
-//           console.log('Email sent: ' + info.response);
-//         }
-//       });
-
-//     return `{"message": "Email sent."}`;
-// }
 
 module.exports = { sendEmail };
