@@ -1,3 +1,8 @@
+/* route.js
+ * PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+ * PURPOSE: Handles user management, including CRUD user accounts, following/unfollowing users, and editing user profile pictures.
+ * Artificial intelligence tool such as ChatGPT is used for code generation.
+ */
 const express = require('express');
 const router = express.Router();
 
@@ -15,6 +20,12 @@ const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: false}));
 
+/*
+PURPOSE: Handles the search for a user by their username
+OUTPUT: Sends the message and result back to the client
+FUNCTIONS CALLED: searchUserByUsername, getObjectSignedUrl
+*/
+
 router.get('/searchUser', async (req, res) => {
     users = await searchUserByUsername(req.query.username, req.query.exactMatch);
 
@@ -28,18 +39,34 @@ router.get('/searchUser', async (req, res) => {
     res.send(`{"message": ${JSON.stringify(JSON.parse(users).message)}, "result": ${JSON.stringify(usersResJson)}}`);   
 });
 
+
+/*
+PURPOSE: Handles the creation of a new user in the system
+OUTPUT: Sends the response back to the client
+FUNCTIONS CALLED: createUser
+*/
 router.post('/createUser', async (req, res) => {
     let x = await createUser(req.body.username, req.body.password, req.body.email, req.body.hasVerified);
     console.log(x);
     res.send(x);   
 });
 
+/*
+PURPOSE: Handles the deletion of an existing user from the system
+OUTPUT: Sends the response back to the client
+FUNCTIONS CALLED: deleteUser
+*/
 router.post('/deleteUser', async (req, res) => {
     let x = await deleteUser(req.body.username);
     console.log(x);
     res.send(x);   
 });
 
+/*
+PURPOSE: Handles the updating of a user's information
+OUTPUT: Sends the message back to the client
+FUNCTIONS CALLED: updateUser
+*/
 router.post('/updateUser', async (req, res) => {
     if (! req.body.oldUsername) throw `{"message": "Old username must not be null."}`
     var oldUsername = req.body.oldUsername;
@@ -54,6 +81,11 @@ router.post('/updateUser', async (req, res) => {
     res.send(x);
 });
 
+/*
+PURPOSE: Handles the search for follower/followee by status (i.e. follow/unfollow)
+OUTPUT: Sends the message and follow result back to the client
+FUNCTIONS CALLED: searchFollow
+*/
 router.get('/searchFollow', async (req, res) => {
     if (! ((req.query.follower || req.query.followee) && req.query.status))
         throw `{"message": "Field(s) missing."}`
@@ -62,9 +94,13 @@ router.get('/searchFollow', async (req, res) => {
     res.send(x);
 });
 
+/*
+PURPOSE: Handles the following/unfollowing of a user by another user in the system
+OUTPUT: Sends the message back to the client
+FUNCTIONS CALLED: followUser
+*/
 router.post('/followUser', async (req, res) => {
     if (req.body.follower && req.body.followee){
-    //status can only be null, 'like' or 'dislike'
         let status = "";
         if (req.body.status)
             status = req.body.status
@@ -79,6 +115,12 @@ router.post('/followUser', async (req, res) => {
         res.send(`{"message": "Follow/unfollow a user failed. Field(s) missing."}`);
     }
 });
+
+/*
+PURPOSE: Handles the editing and creation of a user's profile picture
+OUTPUT: Sends the response back to the client
+FUNCTIONS CALLED: uploadFile, query
+*/
 
 //edit includes both create and update
 router.post('/editProfilePic', upload.single('image'), async (req, res) => {

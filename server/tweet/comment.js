@@ -1,5 +1,15 @@
+/* comment.js
+PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+PURPOSE: Functions that support retrieval and addition of comment to a given tweet
+Artificial intelligence tool such as ChatGPT is used for code generation.
+*/
 const{query} = require('../database')
 
+/**
+PURPOSE: retrieves comments for the given tweet ID
+@param {number} tweetId - the ID of the tweet to retrieve comments for
+@returns {string} a message indicating whether the retrieval operation was successful or not, along with the retrieved comments (if any)
+*/
 async function viewCommentByTweetId(tweetId){
     try{
         let rows = await query(`SELECT t.tweetId, c.commentId, c.commentTime, c.commentContent
@@ -12,6 +22,13 @@ async function viewCommentByTweetId(tweetId){
     }
 }
 
+/**
+PURPOSE: adds a comment to the given tweet
+@param {number} userId - the ID of the user adding the comment
+@param {number} tweetId - the ID of the tweet to add a comment to
+@param {string} commentContent - the content of the comment to be added
+@returns {string} a message indicating whether the comment addition operation was successful or not
+*/
 async function commentTweet(userId, tweetId, commentContent){
     try{
     //console.log([userId, tweetId ,commentContent]);

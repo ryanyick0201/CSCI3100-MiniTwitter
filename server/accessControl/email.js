@@ -1,3 +1,11 @@
+/* email.js
+PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+PURPOSE: This program file exports a function named "sendEmail" that sends an email containing a one-time password (OTP) to a given
+user's email address, with the OTP value retrieved from a database. The function uses nodemailer package to send the email,
+and also calls a function named "setOTP" to set the OTP value in the database.
+Artificial intelligence tool such as ChatGPT is used for code generation.
+*/
+
 /*
 email.js - sending OTP emails
 Contributor: Tai Tsun Yiu

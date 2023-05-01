@@ -1,5 +1,18 @@
+/* loginOut.js
+PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+PURPOSE: Handle authentication and login
+Artificial intelligence tool such as ChatGPT is used for code generation.
+*/
+
 const {query} = require('../database')
 const bcrypt = require("bcrypt");
+
+/**
+PURPOSE: Log in a user.
+@param {string} username - The username of the user.
+@param {string} password - The password of the user.
+@returns {string} A message indicating if the login succeeded or failed.
+*/
 
 async function login(username, password){
     try{
