@@ -17,7 +17,7 @@ import EditProfile from "./userPageComponent/EditProfile";
 import SearchPage from "./userPageComponent/SearchPage";
 import RecommendationPage from "./userPageComponent/RecommendationPage";
 import OtherProfilePage from "./userPageComponent/OtherProfilePage";
-import ChatPage from "./ChatPage";
+import ChatPage from "./userPageComponent/ChatPage";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
