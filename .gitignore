@@ -1,4 +1,6 @@
-
+/.DS_Store
+/*/node_modules
+server/package-lock.json
 server/node_modules/.bin/color-support
 server/node_modules/.bin/color-support.cmd
 server/node_modules/.bin/color-support.ps1
@@ -1774,3 +1776,6 @@ server/node_modules/yallist/LICENSE
 server/node_modules/yallist/package.json
 server/node_modules/yallist/README.md
 server/node_modules/yallist/yallist.js
+client/package-lock.json
+.gitignore
+client/package.json

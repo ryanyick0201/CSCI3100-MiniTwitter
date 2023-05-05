@@ -1,3 +1,19 @@
+/** RoomFooter - Chatroom Footer component
+ * PROGRAMMER: Choi, Man Wai (SID: 1155159354)
+ * CALLING SEQUENCE: RoomFooter({sendMessage, newMessage, setNewMessage, showEmojis, setShowEmojis, cursorPos, inputRef}))
+ *  Where sendMessage is a function defined in "./useRoom.jsx"
+ *        newMessage is a state storing what the user typed in the textbox
+ *        setNewMessage is a function to set the newMessage state
+ *        showEmojis is a Boolean state determine whether to display <EmojiPicker/> in "./Room" or not
+ *        setShowEmojis is a function to set the showEmojis state
+ *        cursorPos is a state storing the cursor position in the <TextField/>
+ *        inputRef is a React Ref obj to anchor to the <TextField/>
+ * PURPOSE: Contains all input method that a sender can use, except the render of <EmojiPicker/> which is placed in "./Room"
+ */
+/** Reference list
+ * Author: Peter LE
+ * Link: https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
+ */
 import React, { useEffect } from "react";
 import {
   TextField,

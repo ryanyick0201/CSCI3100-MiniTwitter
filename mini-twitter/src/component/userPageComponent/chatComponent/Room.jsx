@@ -1,10 +1,23 @@
+/** Room - Chatroom Header + Body + Footer component
+ * PROGRAMMER: Choi, Man Wai (SID: 1155159354)
+ * CALLING SEQUENCE: Room({sender, recipient, socket})
+ *  Where sender is the username of string type of the sender
+ *        recipient is a state storing the username, whose message history with the sender is being viewed by the sender
+ *          recipient state is set by actions in "./Panel.jsx" (not shown in the below code)
+ *        socket is a socket object defined in "../ChatPage.jsx" for listening to socket events
+ * PURPOSE: Combine <RoomHeader/> and <RoomFooter/> with Room body, so the whole chatrroom can be used by ChatPage
+ *  Where Room body shows the list of message between the sender and the recipient
+ * ALGORITHM: useChatroom(sender, recipient, socket) from "./useChatRoom.jsx" for emitting and listening to socket event
+ *            Rendering <EmojiPicker/> in Room body, visability based on a state set in <RoomFooter/>
+ */
+/** Reference list
+ * Author: Peter LE
+ * Link: https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
+ */
 import React, { useRef, useState, useEffect } from "react";
 import { Paper, makeStyles } from "@material-ui/core";
-//import { Paper, TextField, Button, IconButton } from '@mui/material';
-//import { makeStyles } from '@mui/styles'; // makeStyles is not supported by in v5
 import EmojiPicker from "emoji-picker-react";
 
-// Import self-defined items
 import useChatRoom from "./useChatRoom.jsx";
 import MsgBubble from "./MsgBubble.jsx";
 import RoomHeader from "./RoomHeader.jsx";
@@ -51,7 +64,6 @@ const Room = ({ sender, recipient, socket }) => {
     setCursorPos(front.length + emoji.length);
   };
 
-  // Remove the outermost container class and set Paper height as 100vh
   return (
     <Paper elevation={8} className={classes.roomContainer}>
       <RoomHeader recipient={recipient} />

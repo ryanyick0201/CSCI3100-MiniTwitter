@@ -1,3 +1,16 @@
+/** useChatRoom - Functions for sending and receiving messages used in Room.jsx
+ * PROGRAMMER: Choi, Man Wai (SID: 1155159354)
+ * CALLING SEQUENCE: useChatRoom(msgSender, msgRecipient, socket)
+ *  Where msgSender, msgRecipient are usernames
+ *        socket is a socket object defined in "../ChatPage.jsx" for listening to socket events
+ * PURPOSE: For maintainability, define all socket event emitter and listener to be used by "./Room.jsx"
+ * ALGORITHM: useEffect((...)=>{...}, []) to define listener only once when the page is rendered for the first time
+ *            nowFormattedString() for formatting message sent time
+ */
+/** Reference list
+ * Author: Peter LE
+ * Link: https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
+ */
 import { useEffect, useState } from "react";
 
 const NEW_MESSAGE_EVENT = "newMessageEvent";
@@ -25,7 +38,6 @@ const useChatRoom = (msgSender, msgRecipient, socket) => {
     console.log(`socket id of "${msgSender}"(sender) is`, socket.id);
 
     // Join chat room, emit the two parties in an array to server
-    // *** To be replaced by socket.on event
     socket.emit("joinRoom", [msgSender, msgRecipient]);
     socket.emit("reqChatted", msgSender);
     socket.on("chatHistory", (res) => {
@@ -37,7 +49,7 @@ const useChatRoom = (msgSender, msgRecipient, socket) => {
   }, [msgRecipient]);
 
   useEffect(() => {
-    // Receive message
+    // Receive message and add it to the message list for rendering
     socket.on(NEW_MESSAGE_EVENT, (message) => {
       console.log("received", message);
       const incomingMessage = {
@@ -59,11 +71,11 @@ const useChatRoom = (msgSender, msgRecipient, socket) => {
       sender: msgSender,
       recipient: msgRecipient,
       isImg: isImg,
-      message: messageBody, // if (isImg) message = {file, mimeType, fileName} else message is String
+      message: messageBody, // if (isImg) message = {file, mimeType, fileName} else message is of type String
       sendTime: nowFormattedString(),
     });
   };
-  return { messages, sendMessage, socket };
+  return { messages, sendMessage };
 };
 
 export default useChatRoom;
