@@ -1,4 +1,3 @@
-DROP DATABASE Twitter;
 CREATE DATABASE Twitter;
 
 USE Twitter;

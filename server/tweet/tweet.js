@@ -1,7 +1,20 @@
+/* searchTweet.js
+PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+PURPOSE: functions that support
+(i)  search tweets for both user and other users with optional parameters,
+(ii) creation of tweet
+Artificial intelligence tool such as ChatGPT is used for code generation.
+*/
 const { query } = require("../database");
 
 const { searchUserByUsername } = require("../user/user");
 
+/**
+PURPOSE: search self tweet by multiple optional parameters
+@param {string} [username] - the username of the user to search tweet for
+@param {string} [category] - the category to search tweet for
+@returns {string} - a JSON string containing the search result or an error message
+*/
 //Map all tweets with username, content, postTime, category, #likes, #dislikes, #comments, #retweets
 //Accept username, tweetContent and category as optional parameter
 async function searchSelfTweetByMultiple(username, category) {
@@ -32,6 +45,13 @@ async function searchSelfTweetByMultiple(username, category) {
   }
 }
 
+/**
+PURPOSE: search other user's tweet by multiple optional parameters
+@param {string} myUsername - the username of the user to search tweet for
+@param {string} lookForUsername - the username of the user to search tweet for
+@param {string} [category] - the category to search tweet for
+@returns {string} - a JSON string containing the search result or an error message
+*/
 async function searchOthersTweetByMultiple(
   myUsername,
   lookForUsername,
@@ -95,6 +115,11 @@ async function searchOthersTweetByMultiple(
   )}}`;
 }
 
+/**
+PURPOSE: search tweets by tweetId
+@param {integer} tweetId - the tweetId to search tweet for
+@returns {string} - a JSON string containing the search result or null (if an error arises)
+*/
 async function searchTweetByTweetId(tweetId) {
   try {
     return await query(`
@@ -113,6 +138,15 @@ async function searchTweetByTweetId(tweetId) {
   }
 }
 
+/**
+PURPOSE: create a new tweet to database
+@param {string} username - the username to create tweet to
+@param {string} tweetContent - the tweetContent of the tweet to be created
+@param {string} category -  the category of the tweet to be created
+@param {string} image -  the iamge file name of the tweet to be created
+@param {string} video - the video file name to create tweet to
+@returns {string} - a JSON string containing the search result or error message
+*/
 async function createTweet(username, tweetContent, category, image, video) {
   try {
     var id = await searchUserByUsername(username, "true");

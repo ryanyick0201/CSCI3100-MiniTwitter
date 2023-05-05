@@ -1,5 +1,19 @@
+/* follow.js
+ * PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+ * PURPOSE: Handle retrieval and creation/update of following record in database
+ * Artificial intelligence tool such as ChatGPT is used for code generation.
+ */
+
 const { query } = require("../database");
 const { searchUserByUsername } = require("./user");
+
+/**
+PURPOSE: Search follow relationship between two users.
+@param {string} follower - The username of the follower.
+@param {string} followee - The username of the followee.
+@param {string} status - The status of the follow relationship.
+@returns {string} - A JSON string representing the search result or an error message.
+*/
 
 async function searchFollow(follower, followee, status) {
   try {
@@ -35,6 +49,13 @@ async function searchFollow(follower, followee, status) {
   }
 }
 
+/**
+PURPOSE: Follow or unfollow a user.
+@param {string} follower - The username of the follower.
+@param {string} followee - The username of the followee.
+@param {string} status - The status of the follow relationship.
+@returns {string} - A success message or an error message.
+*/
 async function followUser(follower, followee, status) {
   try {
     if (follower && followee) {

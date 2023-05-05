@@ -1,3 +1,9 @@
+/* otp.js
+PROGRAMMER: YICK Ka Ho (SID: 1155142189)
+PURPOSE: Setting up environment for the server, including Express, CORS, .env, Body parser, port and router
+Artificial intelligence tool such as ChatGPT is used for code generation.
+*/
+
 // Express
 const express = require("express");
 const app = express();
