@@ -4,7 +4,10 @@
  *  Where recipient is a state storing the username, whose message history with the sender is being viewed by the sender
  * PURPOSE: Hold the name tag of the recipient
  */
-
+/** Reference list
+ * Author: Peter LE
+ * Link: https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
+ */
 import { Card, Grid } from "@material-ui/core";
 import NameTag from "./NameTag.jsx";
 

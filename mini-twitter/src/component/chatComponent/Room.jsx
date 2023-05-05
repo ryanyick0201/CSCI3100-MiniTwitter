@@ -10,7 +10,10 @@
  * ALGORITHM: useChatroom(sender, recipient, socket) from "./useChatRoom.jsx" for emitting and listening to socket event
  *            Rendering <EmojiPicker/> in Room body, visability based on a state set in <RoomFooter/>
  */
-
+/** Reference list
+ * Author: Peter LE
+ * Link: https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
+ */
 import React, { useRef, useState, useEffect } from "react";
 import { Paper, makeStyles } from "@material-ui/core";
 import EmojiPicker from "emoji-picker-react";

@@ -7,7 +7,10 @@
  * ALGORITHM: useEffect((...)=>{...}, []) to define listener only once when the page is rendered for the first time
  *            nowFormattedString() for formatting message sent time
  */
-
+/** Reference list
+ * Author: Peter LE
+ * Link: https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
+ */
 import { useEffect, useState } from "react";
 
 const NEW_MESSAGE_EVENT = "newMessageEvent";

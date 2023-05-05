@@ -10,7 +10,10 @@
  *        inputRef is a React Ref obj to anchor to the <TextField/>
  * PURPOSE: Contains all input method that a sender can use, except the render of <EmojiPicker/> which is placed in "./Room"
  */
-
+/** Reference list
+ * Author: Peter LE
+ * Link: https://keyholesoftware.com/2021/04/01/react-with-socket-io-messaging-app/
+ */
 import React, { useEffect } from "react";
 import {
   TextField,
