@@ -1,9 +1,8 @@
 # Mini Twitter
----
+
 ## Introduction
 This is the GitHub repository of Mini Twitter, a social media web application that allow users to view, post and comment tweets. It also allows users to interact with other users, such as follow others and retweet. User and tweet recommendation systems are built on top of them.
 
----
 ## Installation
 1. Install Node from [Node.js](https://nodejs.org/en/download). Node version 19 is used during implementaion and testing phases.
 2. Install MySQL server from [MySQL Community Server](https://dev.mysql.com/downloads/mysql/).
